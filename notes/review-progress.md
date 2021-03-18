@@ -1,68 +1,4 @@
 # Review progress and questions I have to review
-## 12, ..., 11 Mar 2021 (18 Mar)
-### JavaScript
-<details>
-<summary>What are local and session storages and what is the difference?</summary>
-
-- simple key-value store
-- local storage lives till either user or browser (when ran out of space) clears it
-- session storage lives in the browser while you don't close the tab
-
-</details>
-
-<details>
-<summary>What are local and session storages good for?</summary>
-
-- manage user preferences or basic user data
-- simple, easy to use, but bad for complex data
-
-</details>
-
-<details>
-<summary>How are local and session storages being cleared?</summary>
-
-- can be cleared by the user and via JS
-
-</details>
-
-<details>
-<summary>How to work with the local storage?</summary>
-
-```JavaScript
-// local storage works sync
-const userId = '775';
-const user = {
-  name: 'Harry',
-  age: 33
-};
-
-// JS converts data into a string
-localStorage.setItem('userId', userId);
-localStorage.setItem('user', user); // => [object Object]
-localStorage.setItem('user', JSON.stringify(user));
-
-// to get item
-localStorage.getItem('user');
-```
-
-</details>
-
-<details>
-<summary>How to work with the session storage?</summary>
-
-```JavaScript
-// session storage works sync
-
-// JS converts data into a string
-sessionStorage.setItem('userId', userId);
-sessionStorage.setItem('user', JSON.stringify(user));
-
-// to get item
-sessionStorage.getItem('user');
-```
-
-</details>
-
 ## 13, ..., 13 Mar 2021 (20 Mar)
 ### JavaScript
 <details>
@@ -442,7 +378,7 @@ console.log(user.toString()); // => [object User]
 
 </details>
 
-## 01, ..., 11 Mar 2021 (18, 25, 01 Apr)
+## 01, ..., 18 Mar 2021 (25, 01 Apr)
 ### JavaScript
 <details>
 <summary>What are Iterators and how to use them?</summary>
@@ -909,7 +845,7 @@ const newPlayer = Object.fromEntries(playerMap.entries());
 
 </details>
 
-## 12, ..., 16 Mar 2021 (18, 22, 29, 05, 12 Apr)
+## 12, ..., 18 Mar 2021 (22, 29, 05, 12 Apr)
 ### JavaScript
 <details>
 <summary>What data structures could be used as a key in an Object?</summary>
@@ -1030,3 +966,20 @@ for (const key in character) {
 </details>
 
 ## 17 Mar 2021 (18, 19, 21, 23, 27, 03, 10, 17 Apr)
+```JavaScript
+const user = {
+  name: '',
+  'shot-name': '',
+  walk: function() {},
+  name,
+  go() {},
+  [name + name]: ''
+};
+const descriptors = Object.getOwnPropertyDescriptors(user);
+Object.defineProperty(user, 'name', {
+  writable: true,
+  configurable: true,
+  enumerable: true,
+  value: user.name
+});
+```

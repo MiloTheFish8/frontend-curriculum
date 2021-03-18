@@ -5,11 +5,11 @@
 - [Component Styling](#component-styling)
 - [Component Lifecycle](#component-lifecycle)
 - [Templates](#templates)
+- [Pipes](#pipes)
 - [Directives](#directives)
 - [Dependency Injection](#dependency-injection)
 - [Services](#services)
 - [Router](#router)
-- [Pipes](#pipes)
 - [Forms: TD](#forms-template-driven)
 - [Forms: Reactive](#forms-reactive)
 - [Http Client](#http-client)
@@ -1056,6 +1056,151 @@ ngOnDestroy() {
 
 </details>
 
+## Pipes
+<details>
+<summary>Why and how to use pipes?</summary>
+
+- to transform a value in the template (output) sync/async data
+- used inside the template
+- can be used on any output, even on `*ngFor` loop items
+
+</details>
+
+<details>
+<summary>How to use built-in pipes?</summary>
+
+```TypeScript
+{{ data | uppercase }}
+// with parameters (for multiple date:param1:param2)
+{{ new Date() | date:'fullDate' }}
+// chaining, from left to right, order matters
+{{ new Date() | date | uppercase }}
+```
+
+</details>
+
+<details>
+<summary>How to create a simple custom pipe?</summary>
+
+- add to module `declarations: [ShortenPipe]`
+- `{{ name | shorten }}` usage in template
+- `{{ name | shorten:10 }}` usage in template with params
+```TypeScript
+// shorten.pipe.ts
+import {Pipe, PipeTransform} from '@angular/core';
+
+@Pipe({
+  // camel case
+  name: 'shorten'
+})
+// not necessary, but good practice to implement interface
+export class ShortenPipe implements PipeTransform {
+  // without params
+  transform(value: any) {
+    if (value.length > 10) {
+      return value.substr(0, 10) + '...';
+    }
+
+    return value;
+  }
+
+  // with params
+  transform(value: any, limit: number) {
+    if (value.length > limit) {
+      return value.substr(0, limit) + '...';
+    }
+
+    return value;
+  }
+}
+```
+
+</details>
+
+<details>
+<summary>What's the difference between change detection and change detection for pipes?</summary>
+
+- change detection
+  - Angular looks for changes to data-bound values in a change detection process that runs after every DOM event: every keystroke, mouse move, timer tick, and server response
+  - ex: Angular updates the display every time the user adds, changes or removes a recipe
+- executing a pipe to update the display with every change would slow down your app's performance
+  - Angular uses a faster change-detection algorithm for executing a pipe
+  
+</details>
+
+<details>
+<summary>Custom complex pipe</summary>
+
+```HTML
+<input type="text" [(ngModel)]="filteredStatus">
+<ul *ngFor="let server of servers | filter:filteredStatus:'status'">
+  <li>...</li>
+</ul>
+```
+
+```TypeScript
+// filter.pipe.ts
+import { Pipe, PipeTransform } from '@angular/core';
+
+@Pipe({
+  name: 'filter',
+  // there is an issue if we want to add a new item dynamically
+  // the servers are added (without filter visible),
+  // but inside filtered items don't update dynamically,
+  // only when reapply filter (not a bug, ang doesn't reload the pipe on every change)
+  // changing the input (filter string) will trigger update
+  // but changing data (adding server) will not
+  // otherwise angular will rerun pipe every time ANY! data on the page changes
+  // bad performance
+  // so set pure to false only when needed
+  pure: false
+})
+export class FilterPipe implements PipeTransform {
+  transform(value: any, filterString: string, propName: string): any {
+    if (value.length === 0 || filterString === '') {
+      return value;
+    }
+
+    const resultArray = [];
+
+    for (const item of value) {
+      if (item[propName] === filterString) {
+        resultArray.push(item);
+      }
+    }
+
+    return resultArray;
+  }
+}
+```
+
+</details>
+
+<details>
+<summary>What does async pipe do and how to stop it?</summary>
+
+- returns the latest value from a stream of data and continues to do so for the life of a given component
+- when Angular destroys that component, the async pipe automatically stops
+
+</details>
+
+<details>
+<summary>Async pipes</summary>
+
+- `appStatus = new Promise((resolve, reject) => setTimeout(() => resolve('stable'), 2000));`
+- if we output `{{ appStatus }}` => `[object Object]` (ang doesn't watch the Promise, good for performance, we have to tell ang to watch)
+- add async pipe `{{ appStatus | async}}` => `''` => 2000 after => `stable`
+- `async` pipe recognizes Promise or Observable (automatically subscribes)
+
+</details>
+
+<details>
+<summary>Learn more</summary>
+
+- [Docs: AsyncPipe](https://angular.io/api/common/AsyncPipe)
+
+</details>
+
 ## Directives
 <details>
 <summary>Attribute built-in</summary>
@@ -1799,137 +1944,6 @@ Complex data (dynamic)
 <summary>Learn more</summary>
 
 - [Docs: In-app navigation: routing to views](https://angular.io/guide/router)
-
-</details>
-
-## Pipes
-<details>
-<summary>Usage</summary>
-
-- to transform a value in the template (output) sync/async data
-- used inside the template
-- can be used on any output, even on `*ngFor` loop items
-
-</details>
-
-<details>
-<summary>Built-in</summary>
-
-```TypeScript
-{{ data | uppercase }}
-{{ new Date() | date:'fullDate' }} // with parameters (for multiple date:param1:param2)
-{{ new Date() | date | uppercase }} // chaining, from left to right, order matters
-```
-
-</details>
-
-<details>
-<summary>Custom simple pipe</summary>
-
-- add to module `declarations: [ShortenPipe]`
-- `{{ name | shorten }}` usage in template
-- `{{ name | shorten:10 }}` usage in template with params
-```TypeScript
-// shorten.pipe.ts
-import { Pipe, PipeTransform } from '@angular/core';
-
-@Pipe({
-  name: 'shorten'
-})
-// not necessary, but good practice to implement interface
-export class ShortenPipe implements PipeTransform {
-  // without params
-  transform(value: any) {
-    if (value.length > 10) {
-      return value.substr(0, 10) + '...';
-    }
-
-    return value;
-  }
-
-  // with params
-  transform(value: any, limit: number) {
-    if (value.length > limit) {
-      return value.substr(0, limit) + '...';
-    }
-
-    return value;
-  }
-}
-```
-
-</details>
-
-<details>
-<summary>Custom complex pipe</summary>
-
-```HTML
-<input type="text" [(ngModel)]="filteredStatus">
-<ul *ngFor="let server of servers | filter:filteredStatus:'status'">
-  <li>...</li>
-</ul>
-```
-
-```TypeScript
-// filter.pipe.ts
-import { Pipe, PipeTransform } from '@angular/core';
-
-@Pipe({
-  name: 'filter',
-  // there is an issue if we want to add a new item dynamically
-  // the servers are added (without filter visible),
-  // but inside filtered items don't update dynamically,
-  // only when reapply filter (not a bug, ang doesn't reload the pipe on every change)
-  // changing the input (filter string) will trigger update
-  // but changing data (adding server) will not
-  // otherwise angular will rerun pipe every time ANY! data on the page changes
-  // bad performance
-  // so set pure to false only when needed
-  pure: false
-})
-export class FilterPipe implements PipeTransform {
-  transform(value: any, filterString: string, propName: string): any {
-    if (value.length === 0 || filterString === '') {
-      return value;
-    }
-
-    const resultArray = [];
-
-    for (const item of value) {
-      if (item[propName] === filterString) {
-        resultArray.push(item);
-      }
-    }
-
-    return resultArray;
-  }
-}
-```
-
-</details>
-
-<details>
-<summary>What does async pipe do and how to stop it?</summary>
-
-- returns the latest value from a stream of data and continues to do so for the life of a given component
-- when Angular destroys that component, the async pipe automatically stops
-
-</details>
-
-<details>
-<summary>Async pipes</summary>
-
-- `appStatus = new Promise((resolve, reject) => setTimeout(() => resolve('stable'), 2000));`
-- if we output `{{ appStatus }}` => `[object Object]` (ang doesn't watch the Promise, good for performance, we have to tell ang to watch)
-- add async pipe `{{ appStatus | async}}` => `''` => 2000 after => `stable`
-- `async` pipe recognizes Promise or Observable (automatically subscribes)
-
-</details>
-
-<details>
-<summary>Learn more</summary>
-
-- [Docs: AsyncPipe](https://angular.io/api/common/AsyncPipe)
 
 </details>
 
