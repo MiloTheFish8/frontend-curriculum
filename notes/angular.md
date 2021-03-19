@@ -12,6 +12,7 @@
 - [Router](#router)
 - [Forms: TD](#forms-template-driven)
 - [Forms: Reactive](#forms-reactive)
+- [Observables](#observables)
 - [Http Client](#http-client)
 - [Deploy](#deploy)
 - [Animations](#animations)
@@ -1118,19 +1119,26 @@ export class ShortenPipe implements PipeTransform {
 </details>
 
 <details>
-<summary>What's the difference between change detection and change detection for pipes?</summary>
+<summary>What's the difference between change detection and change detection for pipes (pure)?</summary>
 
 - change detection
   - Angular looks for changes to data-bound values in a change detection process that runs after every DOM event: every keystroke, mouse move, timer tick, and server response
   - ex: Angular updates the display every time the user adds, changes or removes a recipe
 - executing a pipe to update the display with every change would slow down your app's performance
   - Angular uses a faster change-detection algorithm for executing a pipe
-  
+  - by default pipes are defined as pure
+  - a pure pipe must use a pure function
+  - Angular executes the pipe only when it detects a pure change to the input value (change to a primitive input value or a changed object reference)
+  - Angular ignores changes within composite objects, such as a newly added element of an existing array, because checking a primitive value or object reference is much faster than performing a deep check for differences within objects
+  - Angular can quickly determine if it can skip executing the pipe and updating the view
+  -  if you mutate the input array, the pure pipe doesn't execute, if you replace the input array, the pipe executes and the display is updated
 </details>
 
 <details>
-<summary>Custom complex pipe</summary>
+<summary>How to create an impure pipe (for mutated objects)?</summary>
 
+- Angular executes an impure pipe every time change detection runs for a component (with every keystroke or mouse movement)
+- long-running impure pipe could dramatically slow down your app
 ```HTML
 <input type="text" [(ngModel)]="filteredStatus">
 <ul *ngFor="let server of servers | filter:filteredStatus:'status'">
@@ -1144,15 +1152,6 @@ import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
   name: 'filter',
-  // there is an issue if we want to add a new item dynamically
-  // the servers are added (without filter visible),
-  // but inside filtered items don't update dynamically,
-  // only when reapply filter (not a bug, ang doesn't reload the pipe on every change)
-  // changing the input (filter string) will trigger update
-  // but changing data (adding server) will not
-  // otherwise angular will rerun pipe every time ANY! data on the page changes
-  // bad performance
-  // so set pure to false only when needed
   pure: false
 })
 export class FilterPipe implements PipeTransform {
@@ -1177,20 +1176,88 @@ export class FilterPipe implements PipeTransform {
 </details>
 
 <details>
+<summary>Why is it good to use an async pipe?</summary>
+
+- without this pipe, your component code would have to subscribe to the observable to consume its values, extract the resolved values, expose them for binding, and unsubscribe when the observable is destroyed in order to prevent memory leaks
+
+</details>
+
+<details>
 <summary>What does async pipe do and how to stop it?</summary>
 
-- returns the latest value from a stream of data and continues to do so for the life of a given component
+- accepts an observable (but also works with promises, async code) as input and subscribes to the input automatically
+- an impure pipe that returns the latest value from a stream of data and continues to do so for the life of a given component
 - when Angular destroys that component, the async pipe automatically stops
 
 </details>
 
 <details>
-<summary>Async pipes</summary>
+<summary>How to use an async pipe?</summary>
 
-- `appStatus = new Promise((resolve, reject) => setTimeout(() => resolve('stable'), 2000));`
-- if we output `{{ appStatus }}` => `[object Object]` (ang doesn't watch the Promise, good for performance, we have to tell ang to watch)
-- add async pipe `{{ appStatus | async}}` => `''` => 2000 after => `stable`
-- `async` pipe recognizes Promise or Observable (automatically subscribes)
+```TypeScript
+import {Component} from '@angular/core';
+
+@Component({
+  selector: 'app-child',
+  templateUrl: './'
+})
+export class ChildComponent {
+  appStatus: Promise = new Promise((resolve, reject) => setTimeout(() => {
+    resolve('stable');
+  }, 3000));
+}
+```
+```HTML
+<!-- [object Object] as Angular doesn't watch the Promise automatically -->
+<!-- so have to use a pipe -->
+<p>{{ appStatus }}</p>
+<!-- '' and changes to 'stable' -->
+<!-- async pipe automatically subscribes -->
+<p>{{ appStatus | async }}</p>
+```
+
+</details>
+
+<details>
+<summary>How to create a custom async pipe to cache the HTTP requests?</summary>
+
+```TypeScript
+import {HttpClient} from '@angular/common/http';
+import {Pipe, PipeTransform} from '@angular/core';
+
+@Pipe({
+  name: 'fetchData',
+  pure: false
+})
+export class FetchDataPipe implements PipeTransform {
+  private cachedData: any = null;
+  private cachedUrl = '';
+
+  constructor(private http: HttpClient) {}
+
+  transform(url: string): any {
+    if (url !== this.cachedUrl) {
+      this.cachedData = null;
+      this.cachedUrl = url;
+      this.http.get(url)
+        .subscribe(result => this.cachedData = result);
+    }
+
+    return this.cachedData;
+  }
+}
+```
+```HTML
+<!-- simple.component.html -->
+<p>{{ 'mocks/data.json' | fetchData }}</p>
+```
+
+</details>
+
+<details>
+<summary>How to work with pipes and ternary operator?</summary>
+
+- `|` has higher precedence than `?:` so use `(condition ? a : b) | uppercase`
 
 </details>
 
@@ -2502,9 +2569,9 @@ export class CoreModule {}
 
 </details>
 
-## 13 - Observables
+## Observables
 <details>
-<summary>Theory</summary>
+<summary>What is an observable, an observer and how does it handle the data?</summary>
 
 - <b>Observable</b> - something we observe like publisher (also known as subject), data source, most common:
   - user events
@@ -2518,6 +2585,15 @@ export class CoreModule {}
 - added from `'rxjs'` package, not a part of TypeScript or Angular
 - no need to import if we use Angular Observables
 - need to import only when we use other Observables
+
+</details>
+
+<details>
+<summary>Why do we need observables?</summary>
+
+- let you pass messages between parts of your application
+- recommended for event handling, asynchronous programming, and handling multiple values
+- can deliver single or multiple values of any type, either synchronously (as a function delivers a value to its caller) or asynchronously on a schedule
 
 </details>
 
@@ -2667,6 +2743,8 @@ export class SimpleService {
   constructor(private http: HttpClient) {}
 
   getItems() {
+    // sends an HTTP request, and returns an observable
+    // that emits the requested data for the response
     return this.http.get('./mocks/data/items.json');
   }
 }

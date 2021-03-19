@@ -965,21 +965,52 @@ for (const key in character) {
 
 </details>
 
-## 17 Mar 2021 (18, 19, 21, 23, 27, 03, 10, 17 Apr)
+## 18 Mar 2021 (19, 20, 22, 24, 28, 04, 11, 18 Apr)
+### JavaScript
+<details>
+<summary>How to set up the parameter validation with default parameters?</summary>
+
 ```JavaScript
-const user = {
-  name: '',
-  'shot-name': '',
-  walk: function() {},
-  name,
-  go() {},
-  [name + name]: ''
+const isRequired = () => {
+  throw new Error('The parameter is required!');
 };
-const descriptors = Object.getOwnPropertyDescriptors(user);
-Object.defineProperty(user, 'name', {
-  writable: true,
-  configurable: true,
-  enumerable: true,
-  value: user.name
-});
+
+const doSomething = (text = isRequired()) => {};
 ```
+
+</details>
+
+<details>
+<summary>What are the differences between Function Declaration and Function Expression?</summary>
+
+- the syntax is different
+- declaration 'bubbles' (can be used before the declaration), expression is created when the execution flow reaches it
+- in strict mode, when a declaration is within a code block, it's visible everywhere inside that block but not outside
+```JavaScript
+const age = 18;
+
+if (age < 18) {
+  function sayHello() {
+    console.log('Hello!');
+  }
+} else {
+  function sayHello() {
+    console.log('Welcome!');
+  }
+}
+
+sayHello(); // error (not defined)
+```
+
+</details>
+
+<details>
+<summary>What is the arguments keyword in a function?</summary>
+
+- don't have to pass as a parameter (accessible as a keyword inside any function)
+- iterable structure
+- arrow functions do not have arguments keyword
+
+</details>
+
+## 18 Mar 2021 (19, 20, 22, 24, 28, 04, 11, 18 Apr)

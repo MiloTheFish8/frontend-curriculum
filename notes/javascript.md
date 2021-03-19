@@ -1485,6 +1485,7 @@ const getWizard = (name, level) => ({
 
 - don't have to pass as a parameter (accessible as a keyword inside any function)
 - iterable structure
+- arrow functions do not have arguments keyword
 
 </details>
 
