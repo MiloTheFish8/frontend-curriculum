@@ -1324,6 +1324,42 @@ for (const key in character) {
 
 </details>
 
+### What will be logged to the console?
+```JavaScript
+function createUser() {
+  return {
+    name: 'Harry',
+    ref: this
+  };
+}
+
+const user = createUser();
+
+console.log(user.ref.name);
+```
+
+<details>
+<summary>Answer</summary>
+
+- `this` doesn't look at an object definition, only the moment of call matters
+```JavaScript
+// => Error: Cannot read property 'name' of undefined
+console.log(user.ref.name);
+// this will work
+function createUser() {
+  return {
+    name: 'Harry',
+    ref() {
+      return this;
+    }
+  };
+}
+
+console.log(user.ref().name);
+```
+
+</details>
+
 <details>
 <summary>Learn more</summary>
 

@@ -145,7 +145,7 @@ getButton.addEventListener('click', () => {
 
 </details>
 
-## 23, ..., 12 Mar 2021 (19, 26 Mar)
+## 23, ..., 19 Mar 2021 (26 Mar)
 ### Angular
 <details>
 <summary>What are the core ideas behind Angular?</summary>
@@ -422,7 +422,7 @@ while(!friend.done) {
 
 </details>
 
-## 02, ..., 12 Mar 2021 (19, 26, 02 Apr)
+## 02, ..., 19 Mar 2021 (26, 02 Apr)
 ### JavaScript
 <details>
 <summary>What is API?</summary>
@@ -756,7 +756,7 @@ export class ChildComponent {
 
 </details>
 
-## 09, ..., 15 Mar 2021 (19, 26, 02, 09 Apr)
+## 09, ..., 19 Mar 2021 (26, 02, 09 Apr)
 ### JavaScript
 <details>
 <summary>How and why to create a queue using an Array (FIFO)?</summary>
@@ -965,7 +965,7 @@ for (const key in character) {
 
 </details>
 
-## 18 Mar 2021 (19, 20, 22, 24, 28, 04, 11, 18 Apr)
+## 18, ..., 19 Mar 2021 (20, 22, 24, 28, 04, 11, 18 Apr)
 ### JavaScript
 <details>
 <summary>How to set up the parameter validation with default parameters?</summary>
@@ -1013,4 +1013,4 @@ sayHello(); // error (not defined)
 
 </details>
 
-## 18 Mar 2021 (19, 20, 22, 24, 28, 04, 11, 18 Apr)
+## 20 Mar 2021 (21, 22, 24, 26, 30, 06, 13, 20 Apr)
