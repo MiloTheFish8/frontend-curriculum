@@ -257,6 +257,28 @@ export class NameComponent {}
 </details>
 
 <details>
+<summary>How does the data flow when using property binding?</summary>
+
+- moves a value in one direction, from a component's property into a target element property `[prop]`
+
+</details>
+
+<details>
+<summary>Is it secure to use property binding and string interpolation without sanitizing?</summary>
+
+- it is safe as Angular does sanitizing by itself
+
+</details>
+
+<details>
+<summary>What is the difference between string interpolation and property binding?</summary>
+
+- `{{}}` converts to a string
+- only prop binding is used when we need to pass the value which is not a string
+
+</details>
+
+<details>
 <summary>How is data binding implemented in Angular?</summary>
 
 ```TypeScript

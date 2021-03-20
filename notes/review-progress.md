@@ -1,55 +1,4 @@
 # Review progress and questions I have to review
-## 13, ..., 13 Mar 2021 (20 Mar)
-### JavaScript
-<details>
-<summary>What are cookies and the difference from local/session storage?</summary>
-
-- cookie stored to server
-- simple key-value store with some config options
-- not as easy to use
-- the advantage is that you can set it to expire or send to a server
-- available only if your app is served on a running server
-
-</details>
-
-<details>
-<summary>What are cookies good for?</summary>
-
-- manage user preferences or basic user data
-- bad for complex data
-
-</details>
-
-<details>
-<summary>How to clear the cookies?</summary>
-
-- can be cleared by the user and via JS
-
-</details>
-
-<details>
-<summary>How to use cookies?</summary>
-
-```JavaScript
-// cookies work sync
-const userId = 'fd3928';
-const user = {
-  name: 'Harry',
-  age: 33
-};
-// data stored as a string
-// under the hood uses a setter
-// so adds new cookie, not overrides
-document.cookie = `userId=${userId}; max-age=360`; // => seconds
-document.cookie = `user=${JSON.stringify(user)}; expires=date`; // => date
-
-// to get info
-// returns all the cookies stored in one string
-document.cookie;
-```
-
-</details>
-
 ## 14, ..., 14 Mar 2021 (21 Mar)
 ### JavaScript
 <details>
@@ -445,7 +394,7 @@ console.log('Hello!');
 
 </details>
 
-## 03, ..., 13 Mar 2021 (20, 27, 03 Apr)
+## 03, ..., 20 Mar 2021 (27, 03 Apr)
 ### JavaScript
 <details>
 <summary>How to create an Array?</summary>
@@ -802,7 +751,7 @@ addAsyncListener(() => console.log(5));
 
 </details>
 
-## 10, ..., 16 Mar 2021 (20, 27, 03, 10 Apr)
+## 10, ..., 20 Mar 2021 (27, 03, 10 Apr)
 ### JavaScript
 <details>
 <summary>Why a Map, not just an Object?</summary>
@@ -965,7 +914,7 @@ for (const key in character) {
 
 </details>
 
-## 18, ..., 19 Mar 2021 (20, 22, 24, 28, 04, 11, 18 Apr)
+## 18, ..., 20 Mar 2021 (22, 24, 28, 04, 11, 18 Apr)
 ### JavaScript
 <details>
 <summary>How to set up the parameter validation with default parameters?</summary>
