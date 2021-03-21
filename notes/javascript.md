@@ -1163,6 +1163,61 @@ console.log(person.hobbies);
 </details>
 
 <details>
+<summary>What is optional chaining and why is it useful?</summary>
+
+- to get `undefined` or `null` instead of error when accessing the properties of an object
+```JavaScript
+const user = {};
+// fail with an error as we try to get the street of undefined
+console.log(user.address.street);
+// can be solved with &&
+console.log(user.address && user.address.street && user.address.street.name);
+// with optional chaining
+// the variable must be declared
+// otherwise ReferenceError: user is not defined
+// stops if the value before ?. is undefined or null
+// and returns undefined
+console.log(user?.address?.street);
+// don't overuse (it's only for optional properties)
+// don't silence the errors
+// if user supposed to be created and address is optional
+console.log(user.address?.street);
+
+// or with DOM elements when there is no element (returns null)
+// error if it's null
+const element = document.querySelector('.element').textContent;
+```
+
+</details>
+
+<details>
+<summary>How does optional chaining work with () and []?</summary>
+
+```JavaScript
+const user = {};
+const player = {
+  play() {}
+};
+
+// nothing happened
+// the evaluation just stops, doesn't go to ()
+user.play?.();
+user['play']?.();
+// calls the method
+player.play?.();
+player['play']?.();
+```
+
+</details>
+
+<details>
+<summary>Can we use an optional chaining to delete or create a new property?</summary>
+
+- can be used for deleting but not for creating (error, because returns undefined and tries to assign the value to undefined)
+
+</details>
+
+<details>
 <summary>How to add and use getters and setters?</summary>
 
 ```JavaScript
@@ -2040,6 +2095,14 @@ const harryPotter = new Player('Harry', 'Potter');
 </details>
 
 <details>
+<summary>What if we return something from a constructor function?</summary>
+
+- if `return` is called with an object, the object is returned instead of `this`
+- if `return` is called with a primitive, it's ignored
+
+</details>
+
+<details>
 <summary>What the `new` keyword does?</summary>
 
 - `new` keyword doesn't call the function, it creates an object with it's fields (when we use `this.name = name`)
@@ -2076,8 +2139,15 @@ const ron = Player('Ron', 'Weasley'); // undefined, not created
 ```JavaScript
 // ES6+
 const Player = function(firstName, lastName) {
+  // undefined for regular calls
+  // equals the function if called with new
   if (!new.target) { 
     throw new Error('Should be called with new operator.'); 
+  }
+
+  // to create an object even if new is not used
+  if (!new.target) {
+    return new Player(firstName, lastName);
   }
 };
 ```
