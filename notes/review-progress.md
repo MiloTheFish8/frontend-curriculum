@@ -189,7 +189,7 @@ export class ChildComponent {
 
 </details>
 
-## 26, ..., 15 Mar 2021 (22, 29 Mar)
+## 26, ..., 22 Mar 2021 (29 Mar)
 ### JavaScript
 <details>
 <summary>When do you need to use meta-programming?</summary>
@@ -699,7 +699,7 @@ const newPlayer = Object.fromEntries(playerMap.entries());
 
 </details>
 
-## 12, ..., 18 Mar 2021 (22, 29, 05, 12 Apr)
+## 12, ..., 22 Mar 2021 (29, 05, 12 Apr)
 ### JavaScript
 <details>
 <summary>What data structures could be used as a key in an Object?</summary>
@@ -819,7 +819,7 @@ for (const key in character) {
 
 </details>
 
-## 18, ..., 20 Mar 2021 (22, 24, 28, 04, 11, 18 Apr)
+## 18, ..., 22 Mar 2021 (24, 28, 04, 11, 18 Apr)
 ### JavaScript
 <details>
 <summary>How to set up the parameter validation with default parameters?</summary>
@@ -867,4 +867,6 @@ sayHello(); // error (not defined)
 
 </details>
 
-## 20 Mar 2021 (21, 22, 24, 26, 30, 06, 13, 20 Apr)
+## 22 Mar 2021 (23, 24, 26, 28, 01, 08, 15, 22 Apr)
+```JavaScript
+```

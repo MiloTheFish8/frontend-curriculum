@@ -4535,13 +4535,18 @@ getButton.addEventListener('click', () => {
 <details>
 <summary>What are Symbols and how to use them?</summary>
 
-- primitive values
+- primitive value (represents a unique identifier)
 - used as keys in objects
 - built-in symbols and creatable symbols
 - uniqueness is guaranteed
+- do not auto-convert to a string
+- skipped by `for ... in` loop, `Object.keys`
 ```JavaScript
 const userId = Symbol(); // => Symbol()
-const playerId = Symbol('id'); // => Symbol(id)
+// can give a name
+// mostly useful for debugging (symbol with the description 'id')
+const playerId = Symbol('id');
+console.log(playerId.toString()); // => Symbol(id)
 
 const player = {
   [playerId]: 1, // can't access this property out of library
@@ -4562,6 +4567,26 @@ const user = {
 };
 
 console.log(user.toString()); // => [object User]
+```
+
+</details>
+
+<details>
+<summary>What are global symbols?</summary>
+
+```JavaScript
+// read or create in the global registry
+const id = Symbol.for('id');
+const id2 = Symbol.for('id');
+const idNotGlobal = Symbol('id');
+// true
+console.log(id === id2);
+// id
+console.log(Symbol.keyFor(id));
+// undefined
+console.log(Symbol.keyFor(idNotGlobal));
+// id
+console.log(idNotGlobal.description);
 ```
 
 </details>
