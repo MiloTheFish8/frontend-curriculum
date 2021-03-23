@@ -416,7 +416,7 @@ const clonedPartOfNumbers = numbers.slice(-3, -1); // => [1, 2]
 
 </details>
 
-## 06, ..., 16 Mar 2021 (23, 30, 06 Apr)
+## 06, ..., 23 Mar 2021 (30, 06 Apr)
 ### Angular
 <details>
 <summary>How to intercept input property changes with a setter?</summary>
@@ -867,6 +867,4 @@ sayHello(); // error (not defined)
 
 </details>
 
-## 22 Mar 2021 (23, 24, 26, 28, 01, 08, 15, 22 Apr)
-```JavaScript
-```
+## 24 Mar 2021 (25, 26, 28, 30, 03, 10, 17, 24 Apr)

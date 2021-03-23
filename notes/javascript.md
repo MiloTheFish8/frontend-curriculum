@@ -1218,6 +1218,88 @@ player['play']?.();
 </details>
 
 <details>
+<summary>What are the 'hint's to convert Object to primitive and how does the conversion work?</summary>
+
+- not always return the hinted primitive (ex: for hint `"number"` can return a string)
+- if the return value is not a primitive, it's just ignored (for historical reasons)
+- `"string"` - an operation on the object that expects a string
+- `"number"` - mostly maths operations
+- `"default"` - rare cases when the operator is not sure what type to expect, for built-in objects usually handled the same as `"number"`
+- there is no `"boolean"` as the Object is always `true`
+
+</details>
+
+<details>
+<summary>What is the algorithm for converting an Object to primitive?</summary>
+
+1. call `obj[Symbol.toPrimitive](hint)` if such method exists
+2. otherwise if hint is `"string"` - try `obj.toString()` and `obj.valueOf()` whatever exists
+3. otherwise if hint is `"number"` or `"default"` - try `obj.valueOf()` and `obj.toString()` whatever exists
+
+</details>
+
+<details>
+<summary>How to use Symbol.toPrimitive?</summary>
+
+```JavaScript
+let user = {
+  name: 'Harry',
+  age: 30
+
+  [Symbol.toPrimitive](hint) {
+    // handles all conversion cases
+    return hint === 'string' ? this.name : this.age;
+  }
+};
+
+// string => Harry
+console.log('' + user);
+// number => 30
+console.log(+user);
+// default => 35
+console.log(user + 5);
+```
+
+</details>
+
+<details>
+<summary>How to use toString and valueOf?</summary>
+
+```JavaScript
+// default implementation for an Object
+const user = {
+  name: 'Harry'
+};
+// [object Object]
+console.log(user.toSting());
+// object itself
+console.log(user.valueOf() === user);
+
+// can implement those methods
+const player = {
+  name: 'Harry',
+  age: 30,
+  // for "string" hint
+  toString() {
+    return this.name;
+  },
+  // "number" or "default"
+  valueOf() {
+    return this.age;
+  }
+};
+
+// string => Harry
+console.log('' + player);
+// number => 30
+console.log(+player);
+// default => 35
+console.log(player + 5);
+```
+
+</details>
+
+<details>
 <summary>How to add and use getters and setters?</summary>
 
 ```JavaScript
