@@ -1,16 +1,16 @@
 # JavaScript
 - [Basic definitions](#basic-definitions)
 - [Good practices](#good-practices)
-- [Code style](#code-style)
+- [Code quality](#code-quality)
 - [Constants and variables](#constants-and-variables)
 - [Data types and structures](#data-types-and-structures)
-- [Numbers](#numbers)
-- [Strings](#strings)
-- [Iterables](#iterables)
-- [Iterables: Arrays](#iterables-arrays)
-- [Iterables: Sets and WeakSets](#iterables-sets-and-weaksets)
-- [Iterables: Maps and WeakMaps](#iterables-maps-and-weakmaps)
-- [Objects](#objects)
+  - [Numbers](#numbers)
+  - [Strings](#strings)
+  - [Objects](#objects)
+  - [Iterables](#iterables)
+    - [Arrays](#iterables-arrays)
+    - [Sets and WeakSets](#iterables-sets-and-weaksets)
+    - [Maps and WeakMaps](#iterables-maps-and-weakmaps)
 - [Functions](#functions)
 - [Scope](#scope)
 - [Constructors and prototypes](#constructors-and-prototypes)
@@ -133,7 +133,7 @@ const name = prompt('What is your name?', 'Dia');
 
 </details>
 
-## Code style
+## Code quality
 <details>
 <summary>Where are semi-colons placed?</summary>
 
@@ -285,12 +285,82 @@ typeof Math; // object
 
 </details>
 
+<details>
+<summary>How and why can we access methods of primitives?</summary>
+
+- the main idea is to provide extra functionality but remain lightweight (that's why 'object wrappers' are used)
+- JavaScript engines are well tuned to optimize that internally, so they are not expensive to call
+```JavaScript
+// str is a primitive
+const str = 'Some text';
+// in the moment of accessing its property, a special object is created
+// that knows the value of the string, and has useful methods, like toUpperCase()
+// that method runs and returns a new string (logged to console)
+console.log(str.toUpperCase());
+// the special object is destroyed, leaving the primitive str alone
+```
+
+</details>
+
+<details>
+<summary>Why is it unrecommended to use constructor function to create a primitive?</summary>
+
+```JavaScript
+// number
+console.log(typeof 9);
+// object
+console.log(typeof new Number(9));
+
+// objects are always truthy
+// false
+console.log(!!0);
+// true
+console.log(new Number(0));
+```
+
+</details>
+
+<details>
+<summary>Is it ok to use constructor functions for primitives (without new) to convert a value to the corresponding type?</summary>
+
+```JavaScript
+// it is totally normal to use those functions
+const someNumber = Number('132');
+```
+
+</details>
+
+<details>
+<summary>Do null and undefined have any methods?</summary>
+
+- special primitives `null` and `undefined` have no 'wrapper objects' and provide no methods (error when you try to access such method)
+
+</details>
+
 ## Numbers
 <details>
 <summary>How are the numbers stored?</summary>
 
 - every number is a float
 - numbers are stored as 64 Bit Floating Points (some issues and limits)
+
+</details>
+
+<details>
+<summary>How to write a number?</summary>
+
+```JavaScript
+// the same number
+const num = 1000000000;
+const num2 = 1_000_000_000;
+// 1 * 1000000000
+const num3 = 1e9;
+
+// the same small number
+const num = 0.000001;
+// 1 / 1000000
+const num2 = 1e-6;
+```
 
 </details>
 
@@ -358,6 +428,42 @@ parseInt(10n) - 5; // => 5
 </details>
 
 <details>
+<summary>How does toString() work with a number?</summary>
+
+```JavaScript
+// converts the number into a string
+// with given base
+const num = 255;
+// ff
+console.log(num.toString(16));
+// 11111111
+console.log(num.toString(2));
+// maximum (0...9, A...Z)
+console.log(num.toString(36));
+```
+
+</details>
+
+<details>
+<summary>How to round a number?</summary>
+
+```JavaScript
+// down
+Math.floor(3.1); // 3
+Math.floor(-1.1); // -2
+// up
+Math.ceil(3.1); // 4
+Math.ceil(-1.1); // -1
+// nearest
+Math.round(3.1); // 3
+Math.round(3.5); // 4
+// removes after . (IE not supported)
+Math.trunc(3.1); // 3
+```
+
+</details>
+
+<details>
 <summary>How to convert to a number?</summary>
 
 ```JavaScript
@@ -398,6 +504,473 @@ console.log(playerName.includes('h')); // => false
 <summary>How to remove duplicates?</summary>
 
 - easy way is to convert into an array and use `Set`
+
+</details>
+
+## Objects
+<details>
+<summary>What data structures could be used as a key in an Object?</summary>
+
+- strings
+- numbers (positive int or floats)
+- symbols
+
+</details>
+
+<details>
+<summary>Is an Object iterable and how to iterate (not using keys/values/entries)?</summary>
+
+- not iterable (can use `for ... in` old loop, has some issues, not `for ... of`)
+
+</details>
+
+<details>
+<summary>How to use an Object as a dictionary (naming convention)? </summary>
+
+```JavaScript
+const filterValueToScale = {
+  'smallest': 0.25,
+  'small': 0.5,
+  'normal': 1,
+  'large': 2
+};
+```
+
+</details>
+
+<details>
+<summary>How to create an Object (ES5, ES6 creation of the properties)?</summary>
+
+```JavaScript
+// ES5
+// simple object
+const person = {
+  'short-name': 'Ron',
+  age: 22,
+  level: 3,
+  3.2: 'some value',
+  walk: function() {}
+};
+
+// ES6+
+// creation with variable
+const name = 'Harry';
+const user = {
+  name,
+  level: 1
+};
+// complex keys (could be useful for dictionaries)
+const potter = 'Harry Potter';
+const voldemort = 'Tom Riddle';
+const antagonist = {
+  [potter]: voldemort,
+  ['Sirius Black']: 'Bellatrix Lestrange'
+};
+// new syntax for methods
+const character = {
+  go() {}
+};
+```
+
+</details>
+
+<details>
+<summary>How the keys of an Object are ordered when logging?</summary>
+
+```JavaScript
+const person = {
+  'short-name': 'Ron',
+  age: 22,
+  level: 3,
+  3.2: 'some value',
+  walk: function() {}
+};
+
+// collapsed = not all keys are numbers - not sorted
+// collapsed = if all numbers - ascending
+// expanded = always sorted, numbers first
+console.log(person);
+```
+
+</details>
+
+<details>
+<summary>How to access the values in an Object?</summary>
+
+```JavaScript
+const person = {
+  'short-name': 'Ron',
+  age: 22,
+  level: 3,
+  3.2: 'some value',
+  walk: function() {}
+};
+
+console.log(person.age);
+console.log(person['short-name']);
+console.log(person[3.2]);
+console.log(person['3.2']);
+```
+
+</details>
+
+<details>
+<summary>What if we access the prop/method which doesn't exist in an object?</summary>
+
+```JavaScript
+const person = {
+  name: 'Ron',
+  age: 22,
+  level: 3
+};
+
+// if no property or method => undefined (not an error)
+console.log(person.hobbies);
+```
+
+</details>
+
+<details>
+<summary>What is optional chaining and why is it useful?</summary>
+
+- to get `undefined` or `null` instead of error when accessing the properties of an object
+```JavaScript
+const user = {};
+// fail with an error as we try to get the street of undefined
+console.log(user.address.street);
+// can be solved with &&
+console.log(user.address && user.address.street && user.address.street.name);
+// with optional chaining
+// the variable must be declared
+// otherwise ReferenceError: user is not defined
+// stops if the value before ?. is undefined or null
+// and returns undefined
+console.log(user?.address?.street);
+// don't overuse (it's only for optional properties)
+// don't silence the errors
+// if user supposed to be created and address is optional
+console.log(user.address?.street);
+
+// or with DOM elements when there is no element (returns null)
+// error if it's null
+const element = document.querySelector('.element').textContent;
+```
+
+</details>
+
+<details>
+<summary>How does optional chaining work with () and []?</summary>
+
+```JavaScript
+const user = {};
+const player = {
+  play() {}
+};
+
+// nothing happened
+// the evaluation just stops, doesn't go to ()
+user.play?.();
+user['play']?.();
+// calls the method
+player.play?.();
+player['play']?.();
+```
+
+</details>
+
+<details>
+<summary>Can we use an optional chaining to delete or create a new property?</summary>
+
+- can be used for deleting but not for creating (error, because returns undefined and tries to assign the value to undefined)
+
+</details>
+
+<details>
+<summary>What are the 'hint's to convert Object to primitive and how does the conversion work?</summary>
+
+- not always return the hinted primitive (ex: for hint `"number"` can return a string)
+- if the return value is not a primitive, it's just ignored (for historical reasons)
+- `"string"` - an operation on the object that expects a string
+- `"number"` - mostly maths operations
+- `"default"` - rare cases when the operator is not sure what type to expect, for built-in objects usually handled the same as `"number"`
+- there is no `"boolean"` as the Object is always `true`
+
+</details>
+
+<details>
+<summary>What is the algorithm for converting an Object to primitive?</summary>
+
+1. call `obj[Symbol.toPrimitive](hint)` if such method exists
+2. otherwise if hint is `"string"` - try `obj.toString()` and `obj.valueOf()` whatever exists
+3. otherwise if hint is `"number"` or `"default"` - try `obj.valueOf()` and `obj.toString()` whatever exists
+
+</details>
+
+<details>
+<summary>How to use Symbol.toPrimitive?</summary>
+
+```JavaScript
+let user = {
+  name: 'Harry',
+  age: 30
+
+  [Symbol.toPrimitive](hint) {
+    // handles all conversion cases
+    return hint === 'string' ? this.name : this.age;
+  }
+};
+
+// string => Harry
+console.log('' + user);
+// number => 30
+console.log(+user);
+// default => 35
+console.log(user + 5);
+```
+
+</details>
+
+<details>
+<summary>How to use toString and valueOf?</summary>
+
+```JavaScript
+// default implementation for an Object
+const user = {
+  name: 'Harry'
+};
+// [object Object]
+console.log(user.toSting());
+// object itself
+console.log(user.valueOf() === user);
+
+// can implement those methods
+const player = {
+  name: 'Harry',
+  age: 30,
+  // for "string" hint
+  toString() {
+    return this.name;
+  },
+  // "number" or "default"
+  valueOf() {
+    return this.age;
+  }
+};
+
+// string => Harry
+console.log('' + player);
+// number => 30
+console.log(+player);
+// default => 35
+console.log(player + 5);
+```
+
+</details>
+
+<details>
+<summary>How to add and use getters and setters?</summary>
+
+```JavaScript
+const character = {
+  // creation of a property is not required (can be omitted)
+  _level: 1,
+
+  // can't use getter/setter + property
+  // can't address itself = infinite cycle
+  get level() {
+    return this._level;
+  },
+  // always strictly 1 parameter
+  set level(value) {
+    if (value < 0) {
+      this._level = this._level;
+      // or set the default value
+      // or throw an error
+    }
+    this._level = value;
+  }
+};
+
+// addressing the getter or setter
+// if there is only setter, can't access the value
+const level = character.level;
+character.level = 100;
+```
+
+</details>
+
+<details>
+<summary>How to iterate (entries, values, keys) over an Object?</summary>
+
+```JavaScript
+// ES5
+// for ... in - deprecated (additional check)
+
+// ES6
+// for ... of works if using Symbol.iterator protocol
+const player = {
+  name: 'Harry',
+  level: 10
+};
+// [['name', 'Harry'], ['level', 10]]
+const playerEntries = Object.entries(player);
+// ['Harry', 10]
+const playerValues = Object.values(player);
+// ['name', 'level']
+const playerKeys = Object.keys(player);
+```
+
+</details>
+
+<details>
+<summary>How to add, modify, delete a property or a method of an Object?</summary>
+
+```JavaScript
+const player = {
+  name: 'Harry',
+  level: 10
+};
+
+player.age = 33;
+player.level = 20;
+delete player.name;
+```
+
+</details>
+
+<details>
+<summary>How to check if the property exists in an Object?</summary>
+
+```JavaScript
+const player = {
+  name: 'Harry',
+  level: 10
+};
+
+// but if the property = undefined, also returns false
+const hasNameTricky = player.name !== undefined;
+// true even if undefined
+const hasName = 'name' in player;
+// true even if undefined
+const hasName2 = player.hasOwnProperty('name');
+```
+
+</details>
+
+<details>
+<summary>How to copy an Object?</summary>
+
+- not a deep copy
+```JavaScript
+const player = {
+  name: 'Harry',
+  level: 10
+};
+
+// {} - where
+// player - what
+const newPlayer = Object.assign({}, player);
+// for several
+const newPlayer = Object.assign({}, player, {options: 'code'});
+
+// ES6
+const newPlayer = {...player};
+```
+
+</details>
+
+<details>
+<summary>How to deep copy an object?</summary>
+
+- copying deep - recursive with checking typeof function or object
+  - lodash has deep copy
+  - also there is a hack with `json.parse`, `json.stringify`
+
+</details>
+
+<details>
+<summary>How to work with Object Descriptors?</summary>
+
+```JavaScript
+const character = {
+  name: 'Harry',
+  printName: function() {
+    console.log(this.name);
+  }
+};
+
+const descriptors = Object.getOwnPropertyDescriptors(character);
+Object.defineProperty(character, 'name', {
+  // defaults
+  // can delete or define property
+  configurable: true,
+  // is accessible in for ... in loop
+  enumerable: true,
+  value: character.name,
+  // can rewrite
+  writable: true
+});
+
+// if writable === false
+// no error but won't change, stays the same (Harry)
+character.name = 'Ron';
+
+// if configurable === false
+// no error but won't delete, stays the same (Harry)
+// can't reset configuration also, be careful
+delete character.name;
+
+// if enumerable === false
+for (const key in character) {
+  // will skip the name key, logs only printName
+  console.log(key);
+}
+```
+
+</details>
+
+### What will be logged to the console?
+```JavaScript
+function createUser() {
+  return {
+    name: 'Harry',
+    ref: this
+  };
+}
+
+const user = createUser();
+
+console.log(user.ref.name);
+```
+
+<details>
+<summary>Answer</summary>
+
+- `this` doesn't look at an object definition, only the moment of call matters
+```JavaScript
+// => Error: Cannot read property 'name' of undefined
+console.log(user.ref.name);
+// this will work
+function createUser() {
+  return {
+    name: 'Harry',
+    ref() {
+      return this;
+    }
+  };
+}
+
+console.log(user.ref().name);
+```
+
+</details>
+
+<details>
+<summary>Learn more</summary>
+
+- [ ] [ES6 in Action: Enhanced Object Literals](https://www.sitepoint.com/es6-enhanced-object-literals/)
+- [ ] [Objects on MDN](https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Objects)
+- [ ] [Object.create on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/create)
 
 </details>
 
@@ -1036,473 +1609,6 @@ const newPlayer = Object.fromEntries(playerMap.entries());
 
 - [Map on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map)
 - [WeakMap on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap)
-
-</details>
-
-## Objects
-<details>
-<summary>What data structures could be used as a key in an Object?</summary>
-
-- strings
-- numbers (positive int or floats)
-- symbols
-
-</details>
-
-<details>
-<summary>Is an Object iterable and how to iterate (not using keys/values/entries)?</summary>
-
-- not iterable (can use `for ... in` old loop, has some issues, not `for ... of`)
-
-</details>
-
-<details>
-<summary>How to use an Object as a dictionary (naming convention)? </summary>
-
-```JavaScript
-const filterValueToScale = {
-  'smallest': 0.25,
-  'small': 0.5,
-  'normal': 1,
-  'large': 2
-};
-```
-
-</details>
-
-<details>
-<summary>How to create an Object (ES5, ES6 creation of the properties)?</summary>
-
-```JavaScript
-// ES5
-// simple object
-const person = {
-  'short-name': 'Ron',
-  age: 22,
-  level: 3,
-  3.2: 'some value',
-  walk: function() {}
-};
-
-// ES6+
-// creation with variable
-const name = 'Harry';
-const user = {
-  name,
-  level: 1
-};
-// complex keys (could be useful for dictionaries)
-const potter = 'Harry Potter';
-const voldemort = 'Tom Riddle';
-const antagonist = {
-  [potter]: voldemort,
-  ['Sirius Black']: 'Bellatrix Lestrange'
-};
-// new syntax for methods
-const character = {
-  go() {}
-};
-```
-
-</details>
-
-<details>
-<summary>How the keys of an Object are ordered when logging?</summary>
-
-```JavaScript
-const person = {
-  'short-name': 'Ron',
-  age: 22,
-  level: 3,
-  3.2: 'some value',
-  walk: function() {}
-};
-
-// collapsed = not all keys are numbers - not sorted
-// collapsed = if all numbers - ascending
-// expanded = always sorted, numbers first
-console.log(person);
-```
-
-</details>
-
-<details>
-<summary>How to access the values in an Object?</summary>
-
-```JavaScript
-const person = {
-  'short-name': 'Ron',
-  age: 22,
-  level: 3,
-  3.2: 'some value',
-  walk: function() {}
-};
-
-console.log(person.age);
-console.log(person['short-name']);
-console.log(person[3.2]);
-console.log(person['3.2']);
-```
-
-</details>
-
-<details>
-<summary>What if we access the prop/method which doesn't exist in an object?</summary>
-
-```JavaScript
-const person = {
-  name: 'Ron',
-  age: 22,
-  level: 3
-};
-
-// if no property or method => undefined (not an error)
-console.log(person.hobbies);
-```
-
-</details>
-
-<details>
-<summary>What is optional chaining and why is it useful?</summary>
-
-- to get `undefined` or `null` instead of error when accessing the properties of an object
-```JavaScript
-const user = {};
-// fail with an error as we try to get the street of undefined
-console.log(user.address.street);
-// can be solved with &&
-console.log(user.address && user.address.street && user.address.street.name);
-// with optional chaining
-// the variable must be declared
-// otherwise ReferenceError: user is not defined
-// stops if the value before ?. is undefined or null
-// and returns undefined
-console.log(user?.address?.street);
-// don't overuse (it's only for optional properties)
-// don't silence the errors
-// if user supposed to be created and address is optional
-console.log(user.address?.street);
-
-// or with DOM elements when there is no element (returns null)
-// error if it's null
-const element = document.querySelector('.element').textContent;
-```
-
-</details>
-
-<details>
-<summary>How does optional chaining work with () and []?</summary>
-
-```JavaScript
-const user = {};
-const player = {
-  play() {}
-};
-
-// nothing happened
-// the evaluation just stops, doesn't go to ()
-user.play?.();
-user['play']?.();
-// calls the method
-player.play?.();
-player['play']?.();
-```
-
-</details>
-
-<details>
-<summary>Can we use an optional chaining to delete or create a new property?</summary>
-
-- can be used for deleting but not for creating (error, because returns undefined and tries to assign the value to undefined)
-
-</details>
-
-<details>
-<summary>What are the 'hint's to convert Object to primitive and how does the conversion work?</summary>
-
-- not always return the hinted primitive (ex: for hint `"number"` can return a string)
-- if the return value is not a primitive, it's just ignored (for historical reasons)
-- `"string"` - an operation on the object that expects a string
-- `"number"` - mostly maths operations
-- `"default"` - rare cases when the operator is not sure what type to expect, for built-in objects usually handled the same as `"number"`
-- there is no `"boolean"` as the Object is always `true`
-
-</details>
-
-<details>
-<summary>What is the algorithm for converting an Object to primitive?</summary>
-
-1. call `obj[Symbol.toPrimitive](hint)` if such method exists
-2. otherwise if hint is `"string"` - try `obj.toString()` and `obj.valueOf()` whatever exists
-3. otherwise if hint is `"number"` or `"default"` - try `obj.valueOf()` and `obj.toString()` whatever exists
-
-</details>
-
-<details>
-<summary>How to use Symbol.toPrimitive?</summary>
-
-```JavaScript
-let user = {
-  name: 'Harry',
-  age: 30
-
-  [Symbol.toPrimitive](hint) {
-    // handles all conversion cases
-    return hint === 'string' ? this.name : this.age;
-  }
-};
-
-// string => Harry
-console.log('' + user);
-// number => 30
-console.log(+user);
-// default => 35
-console.log(user + 5);
-```
-
-</details>
-
-<details>
-<summary>How to use toString and valueOf?</summary>
-
-```JavaScript
-// default implementation for an Object
-const user = {
-  name: 'Harry'
-};
-// [object Object]
-console.log(user.toSting());
-// object itself
-console.log(user.valueOf() === user);
-
-// can implement those methods
-const player = {
-  name: 'Harry',
-  age: 30,
-  // for "string" hint
-  toString() {
-    return this.name;
-  },
-  // "number" or "default"
-  valueOf() {
-    return this.age;
-  }
-};
-
-// string => Harry
-console.log('' + player);
-// number => 30
-console.log(+player);
-// default => 35
-console.log(player + 5);
-```
-
-</details>
-
-<details>
-<summary>How to add and use getters and setters?</summary>
-
-```JavaScript
-const character = {
-  // creation of a property is not required (can be omitted)
-  _level: 1,
-
-  // can't use getter/setter + property
-  // can't address itself = infinite cycle
-  get level() {
-    return this._level;
-  },
-  // always strictly 1 parameter
-  set level(value) {
-    if (value < 0) {
-      this._level = this._level;
-      // or set the default value
-      // or throw an error
-    }
-    this._level = value;
-  }
-};
-
-// addressing the getter or setter
-// if there is only setter, can't access the value
-const level = character.level;
-character.level = 100;
-```
-
-</details>
-
-<details>
-<summary>How to iterate (entries, values, keys) over an Object?</summary>
-
-```JavaScript
-// ES5
-// for ... in - deprecated (additional check)
-
-// ES6
-// for ... of works if using Symbol.iterator protocol
-const player = {
-  name: 'Harry',
-  level: 10
-};
-// [['name', 'Harry'], ['level', 10]]
-const playerEntries = Object.entries(player);
-// ['Harry', 10]
-const playerValues = Object.values(player);
-// ['name', 'level']
-const playerKeys = Object.keys(player);
-```
-
-</details>
-
-<details>
-<summary>How to add, modify, delete a property or a method of an Object?</summary>
-
-```JavaScript
-const player = {
-  name: 'Harry',
-  level: 10
-};
-
-player.age = 33;
-player.level = 20;
-delete player.name;
-```
-
-</details>
-
-<details>
-<summary>How to check if the property exists in an Object?</summary>
-
-```JavaScript
-const player = {
-  name: 'Harry',
-  level: 10
-};
-
-// but if the property = undefined, also returns false
-const hasNameTricky = player.name !== undefined;
-// true even if undefined
-const hasName = 'name' in player;
-// true even if undefined
-const hasName2 = player.hasOwnProperty('name');
-```
-
-</details>
-
-<details>
-<summary>How to copy an Object?</summary>
-
-- not a deep copy
-```JavaScript
-const player = {
-  name: 'Harry',
-  level: 10
-};
-
-// {} - where
-// player - what
-const newPlayer = Object.assign({}, player);
-// for several
-const newPlayer = Object.assign({}, player, {options: 'code'});
-
-// ES6
-const newPlayer = {...player};
-```
-
-</details>
-
-<details>
-<summary>How to deep copy an object?</summary>
-
-- copying deep - recursive with checking typeof function or object
-  - lodash has deep copy
-  - also there is a hack with `json.parse`, `json.stringify`
-
-</details>
-
-<details>
-<summary>How to work with Object Descriptors?</summary>
-
-```JavaScript
-const character = {
-  name: 'Harry',
-  printName: function() {
-    console.log(this.name);
-  }
-};
-
-const descriptors = Object.getOwnPropertyDescriptors(character);
-Object.defineProperty(character, 'name', {
-  // defaults
-  // can delete or define property
-  configurable: true,
-  // is accessible in for ... in loop
-  enumerable: true,
-  value: character.name,
-  // can rewrite
-  writable: true
-});
-
-// if writable === false
-// no error but won't change, stays the same (Harry)
-character.name = 'Ron';
-
-// if configurable === false
-// no error but won't delete, stays the same (Harry)
-// can't reset configuration also, be careful
-delete character.name;
-
-// if enumerable === false
-for (const key in character) {
-  // will skip the name key, logs only printName
-  console.log(key);
-}
-```
-
-</details>
-
-### What will be logged to the console?
-```JavaScript
-function createUser() {
-  return {
-    name: 'Harry',
-    ref: this
-  };
-}
-
-const user = createUser();
-
-console.log(user.ref.name);
-```
-
-<details>
-<summary>Answer</summary>
-
-- `this` doesn't look at an object definition, only the moment of call matters
-```JavaScript
-// => Error: Cannot read property 'name' of undefined
-console.log(user.ref.name);
-// this will work
-function createUser() {
-  return {
-    name: 'Harry',
-    ref() {
-      return this;
-    }
-  };
-}
-
-console.log(user.ref().name);
-```
-
-</details>
-
-<details>
-<summary>Learn more</summary>
-
-- [ ] [ES6 in Action: Enhanced Object Literals](https://www.sitepoint.com/es6-enhanced-object-literals/)
-- [ ] [Objects on MDN](https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Objects)
-- [ ] [Object.create on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/create)
 
 </details>
 
