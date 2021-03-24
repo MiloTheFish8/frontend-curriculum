@@ -342,7 +342,7 @@ const someNumber = Number('132');
 <summary>How are the numbers stored?</summary>
 
 - every number is a float
-- numbers are stored as 64 Bit Floating Points (some issues and limits)
+- numbers are stored as 64-bit format IEEE-754 (double precision floating point numbers)
 
 </details>
 
@@ -360,6 +360,44 @@ const num3 = 1e9;
 const num = 0.000001;
 // 1 / 1000000
 const num2 = 1e-6;
+```
+
+</details>
+
+<details>
+<summary>In what other bases can we write numbers and how?</summary>
+
+```JavaScript
+// hexadecimal (colors, encode characters, and many other things)
+// prefix with 0x
+// 255 (case doesn't matter)
+console.log(0xff);
+console.log(0xFF);
+// binary 0b (255)
+console.log(0b11111111);
+// octal 0o (255)
+console.log(0o377);
+// true
+console.log(0b11111111 == 0o377);
+// for other systems parseInt is used
+// works without prefix
+parseInt('0xff', 16); // 255
+parseInt('ff', 16); // 255
+parseInt('2n9c', 36); // 123456
+```
+
+</details>
+
+<details>
+<summary>How do parseInt and parseFloat work?</summary>
+
+```JavaScript
+// read a number from a string till the not-number
+console.log(+'100px'); // NaN
+parseInt('100px'); // 100
+parseInt('14.6'); // 14
+parseFloat('15.5pt'); // 15.5
+parseFloat('15.5.6'); // 15.5
 ```
 
 </details>
@@ -392,8 +430,14 @@ Number.MAX_VALUE;
 <details>
 <summary>What are the strange number cases and why do they occur?</summary>
 
-- because JS works with binary and converts into decimal, there are some strange cases
+- 
 ```JavaScript
+// if a number is too big it would overflow the 64-bit storage
+// potentially giving an infinity
+// Infinity
+console.log(1e500);
+
+// because JS works with binary and converts into decimal
 0.2 + 0.4 === 0.6; // => false (0.6000...1)
 // something similar to 1/3 happens (0.33333(3))
 (1).toString(2); // => 1
@@ -402,6 +446,20 @@ Number.MAX_VALUE;
 (0.2).toString(2); // => 0.001100110011...
 0.2; // => 0.2
 0.2.toFixed(20); // => 0.2000...1110
+
+// there are 64 bits for the number, 52 of them can be used to store digits
+// but that’s not enough so the least significant digits disappear
+// no error, JS does its best to fit the number into the desired format
+// but unfortunately, this format is not big enough
+// => 10000000000000000
+console.log(9999999999999999);
+
+// two zeroes because a sign is represented by a single bit
+// so it can be set or not set for any number including a zero
+0;
+-0;
+// false
+Object.is(0, -0);
 ```
 
 </details>
@@ -432,7 +490,7 @@ parseInt(10n) - 5; // => 5
 
 ```JavaScript
 // converts the number into a string
-// with given base
+// with given base (from 2 to 36)
 const num = 255;
 // ff
 console.log(num.toString(16));
@@ -445,7 +503,7 @@ console.log(num.toString(36));
 </details>
 
 <details>
-<summary>How to round a number?</summary>
+<summary>How to round a number to integer with Math?</summary>
 
 ```JavaScript
 // down
@@ -464,6 +522,53 @@ Math.trunc(3.1); // 3
 </details>
 
 <details>
+<summary>How to create a random number?</summary>
+
+```JavaScript
+// number from 0 to 1 (included)
+Math.random();
+```
+
+</details>
+
+<details>
+<summary>How to find min/max number?</summary>
+
+```JavaScript
+Math.max(2, 3, -19, 6, 10); // 10
+Math.min(-14, 5, -6); // -14
+```
+
+</details>
+
+<details>
+<summary>How to raise a number into a given power?</summary>
+
+```JavaScript
+// with ** operator or with Math
+Math.pow(2, 10); // 2 in power of 10 => 1024
+```
+
+</details>
+
+<details>
+<summary>How to round a number to decimal?</summary>
+
+```JavaScript
+// multiply and divide
+// => 123.456 => 123 => 1.23
+console.log(Math.round(1.23456 * 100) / 100);
+
+// using toFixed(n) digits after the point
+// returns a string (round up and down)
+const num = 12.34;
+console.log(num.toFixed(1)); // '12.3'
+console.log(num.toFixed(5)); // '12.34000'
+```
+
+</details>
+
+<details>
 <summary>How to convert to a number?</summary>
 
 ```JavaScript
@@ -475,6 +580,30 @@ Number('1'); // => 1
 Number(' 1 '); // => 1
 Number(' \t 1 \n '); // => 1
 Number('1s'); // => NaN
+// but parseInt/parseFloat work different
+parseInt('100px'); // 100
+parseFloat('1.5.5'); // 1.5
+```
+
+</details>
+
+<details>
+<summary>How to test for infinity and NaN?</summary>
+
+```JavaScript
+// both checks convert to a number
+// true
+console.log(isNaN(NaN));
+console.log(isNaN('text'));
+Object.is(NaN, NaN);
+// false
+console.log(NaN === NaN);
+console.log(isNaN('15'));
+
+// true if it's regular number (not NaN, Infinity. -Infinity)
+console.log('15'); // => true
+console.log('text'); // => false (NaN)
+console.log(Infinity); // => false (NaN)
 ```
 
 </details>
