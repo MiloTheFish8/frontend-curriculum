@@ -617,14 +617,167 @@ console.log(Infinity); // => false (NaN)
 
 ## Strings
 <details>
-<summary>How to check if a string contains some text?</summary>
+<summary>How to get the length of a string?</summary>
+
+```JavaScript
+const text = 'Hello\nWorld!';
+// => 12 (\n counts as single special character)
+console.log(text.length);
+```
+
+</summary>
+
+<details>
+<summary>How to access the characters?</summary>
+
+```JavaScript
+const text = 'Hello';
+// H
+console.log(text[0]); // modern
+console.log(text.charAt(0)); // old
+// last character => 0
+console.log(text[text.length - 1]);
+// => undefined
+console.log(text[10]);
+// => ''
+console.log(text.charAt(10));
+```
+
+</details>
+
+<details>
+<summary>How to iterate over a string?</summary>
+
+```JavaScript
+const text = 'Hello';
+
+for (let char of text) {
+  // => H => e => l => l => o
+  console.log(char);
+}
+```
+
+</details>
+
+<details>
+<summary>Are strings immutable and how to change the specific character?</summary>
+
+```JavaScript
+// strings are immutable, to change the char have to change the string
+let text = 'Hello';
+// => error
+text[0] = 'h';
+// replace the string
+text = 'h' + text.slice(1);
+```
+
+</details>
+
+<details>
+<summary>How to change the case of only one character?</summary>
+
+```JavaScript
+const text = 'hello';
+// => H
+console.log(text[0].toUpperCase());
+```
+
+</details>
+
+<details>
+<summary>How to check if a string contains, starts, ends with some text?</summary>
 
 ```JavaScript
 const playerName = 'Harry Potter';
-
-// case sensitive
+// all are case sensitive
 console.log(playerName.includes('rr')); // => true
 console.log(playerName.includes('h')); // => false
+console.log(playerName.includes('rr', 5)); // => false
+// start (string, ?position)
+console.log(playerName.startsWith('Ha')); // => true
+console.log(playerName.startsWith('rr', 2)); // => true
+console.log(playerName.startsWith('ha')); // => false
+// end (string, ?length)
+console.log(playerName.endsWith('er')); // => true
+console.log(playerName.endsWith('tt')); // => false
+console.log(playerName.endsWith('tt', 10)); // => true
+```
+
+</details>
+
+<details>
+<summary>How to get the index of the substring?</summary>
+
+```JavaScript
+const text = 'Widget with id';
+// by default from 0 position
+// as it's in the beginning => 0
+console.log(text.indexOf('Widget'));
+// case sensitive => -1
+console.log(text.indexOf('widget'));
+// from the given position => 12
+console.log(text.indexOf('id', 3));
+// or from the end => 12
+console.log(text.lastIndexOf('id'));
+// => 1
+'canal'.lastIndexOf('a', 2);
+// limits only the beginning of the match => 2
+'abab'.lastIndexOf('ab', 2);
+```
+
+</details>
+
+<details>
+<summary>How to get all the indexes of the substring?</summary>
+
+```JavaScript
+const text = `As sly as a fox, as strong as an ox`;
+const target = 'as';
+
+let position = 0;
+
+while (position !== -1) {
+  position = text.indexOf(target, position);
+  console.log(position);
+  position++;
+}
+```
+
+</details>
+
+<details>
+<summary>How to get a substring of a given position(s)?</summary>
+
+```JavaScript
+const text = 'sensitive';
+// from till the end => ensitive
+const str = text.slice(1);
+// from to (not included) => ensi
+const str1 = text.slice(1, 5);
+// from the end => si
+const str2 = text.slice(-6, -4);
+// => ''
+const str3 = text.slice(6, 2);
+
+// between the given positions (greater one not included)
+// => ensitive
+const str = text.substring(1);
+// from to (not included) => ensi
+const str1 = text.substring(1, 5);
+// negative are not supported (mean 0) => ''
+const str2 = text.substring(-6, -4);
+// => nsit
+const str3 = text.substring(6, 2);
+
+// some non-browser environments may not support this method
+// but in practice works everywhere
+// from the given position of the given length
+// => ensitive
+const str = text.substr(1);
+// => ensit
+const str1 = text.substr(1, 5);
+// position from the end => siti
+const str2 = text.substr(-6, 4);
 ```
 
 </details>
