@@ -1087,6 +1087,67 @@ ngOnDestroy() {
 </details>
 
 <details>
+<summary>What us attribute binding and why do we need it?</summary>
+
+- recommended that you set an element property with a property binding whenever possible
+- when you don't have an element property to bind - use attribute binding (ex: ARIA, SVG)
+```HTML
+<button type="button" [attr.aria-label]="Bookmark"></button>
+<table>
+  <tr>
+    <!-- but property is colSpan -->
+    <td [attr.colspan]="1 + 2">One plus two</td>
+  </tr>
+</table>
+```
+
+</details>
+
+<details>
+<summary>How to bind to a single or multiple classes?</summary>
+
+```HTML
+<!-- single: boolean -->
+<p [class.current]="isCurrent">Item</p>
+<!-- multiple: class expression -->
+<!-- class string: 'class-1 class-2 class-3' -->
+<!-- object: {one: true, two: false} -->
+<!-- array: ['one', 'two'] -->
+<p [class]="classExpression">Some text here</p>
+```
+
+</details>
+
+<details>
+<summary>How to bind to a single or multiple style attributes?</summary>
+
+```HTML
+<!-- single -->
+<p [style.background-color]="colorValue">Some text here</p>
+<p [style.backgroundColor]="colorValue">Some text here</p>
+<!-- string: 100px -->
+<p [style.width]="widthValue"></p>
+<!-- number: 100 -->
+<p [style.width.px]="widthValue"></p>
+<!-- multiple: style expression -->
+<!-- string: 'width: 100px; height: 100px;' -->
+<!-- object: {width: '100px', backgroundColor: 'blue'} -->
+<!-- in case of an object, have to change the link to the object -->
+<!-- otherwise Angular won't update the styles (change detection) -->
+<p [style]="styleExpression">Some text</p>
+```
+
+</details>
+
+<details>
+<summary>How does the style precedence work?</summary>
+
+- the more specific a class or style binding is, the higher its precedence
+- `[class.foo]` is higher that `[class]`, the same for the `[style]`
+
+</details>
+
+<details>
 <summary>Learn more</summary>
 
 - [Docs: Templates](https://angular.io/guide/template-syntax)
@@ -1313,7 +1374,7 @@ export class FetchDataPipe implements PipeTransform {
 - doesn't change DOM
 - event and data bindings are possible
 - multiple on one element
-- `[ngStyle]="{ 'background-color': 'prop' }"` or `[ngStyle]="{ backgroundColor: 'prop' }"`
+- `[ngStyle]="{ 'background-color': 'prop' }"` or `[ngStyle]="{ backgroundColor: 'prop' }"` (better to use `[style]` binding, in the future `ngStyle` might be removed)
 - `[ngClass]="{ 'class-name': boolean }"` or `[ngClass]="{ className: boolean }"`
 - `ngSwitch` directive is also attribute, but cases are structural
 

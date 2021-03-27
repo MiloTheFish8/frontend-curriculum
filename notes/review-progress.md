@@ -109,7 +109,7 @@ console.log('Hello!');
 
 </details>
 
-## 03, ..., 20 Mar 2021 (27, 03 Apr)
+## 03, ..., 27 Mar 2021 (03 Apr)
 ### JavaScript
 <details>
 <summary>How to create an Array?</summary>
@@ -466,7 +466,7 @@ addAsyncListener(() => console.log(5));
 
 </details>
 
-## 10, ..., 20 Mar 2021 (27, 03, 10 Apr)
+## 10, ..., 27 Mar 2021 (03, 10 Apr)
 ### JavaScript
 <details>
 <summary>Why a Map, not just an Object?</summary>
@@ -677,4 +677,4 @@ sayHello(); // error (not defined)
 
 </details>
 
-## 26 Mar 2021 (27, 28, 30, 01, 05, 12, 19, 26 Apr)
+## 27 Mar 2021 (28, 29, 31, 02, 06, 13, 20, 27 Apr)
