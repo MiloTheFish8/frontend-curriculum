@@ -629,7 +629,7 @@ for (const key in character) {
 
 </details>
 
-## 18, ..., 24 Mar 2021 (28, 04, 11, 18 Apr)
+## 18, ..., 28 Mar 2021 (04, 11, 18 Apr)
 ### JavaScript
 <details>
 <summary>How to set up the parameter validation with default parameters?</summary>
@@ -677,4 +677,4 @@ sayHello(); // error (not defined)
 
 </details>
 
-## 27 Mar 2021 (28, 29, 31, 02, 06, 13, 20, 27 Apr)
+## 28 Mar 2021 (29, 30, 01, 03, 07, 14, 21, 28 Apr)
