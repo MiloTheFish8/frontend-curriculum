@@ -685,6 +685,24 @@ console.log(text[0].toUpperCase());
 </details>
 
 <details>
+<summary>How to remove spaces from the beginning and the end of a string?</summary>
+
+```JavaScript
+str.trim();
+```
+
+</details>
+
+<details>
+<summary>How to repeat a string?</summary>
+
+```JavaScript
+str.repeat(2);
+```
+
+</details>
+
+<details>
 <summary>How to check if a string contains, starts, ends with some text?</summary>
 
 ```JavaScript
@@ -783,9 +801,116 @@ const str2 = text.substr(-6, 4);
 </details>
 
 <details>
+<summary>How to shorten the -1 check (mostly in the old code)?</summary>
+
+```JavaScript
+// bitwise NOT operator ~ converts number to a 32-bit integer
+// removes decimal part if exists
+// and then reverses all bits in it's binary representation
+// in practice: ~n === -(n + 1), so that ~-1 => -(-1 + 1) => 0
+// but this method has a downside
+// ~4294967295 === 0 so don't use for larger numbers
+const text = 'Some text here';
+
+if (~text.indexOf('text')) {
+  console.log('Found!');
+}
+```
+
+</details>
+
+<details>
 <summary>How to remove duplicates?</summary>
 
 - easy way is to convert into an array and use `Set`
+
+</details>
+
+<details>
+<summary>How are strings compared?</summary>
+
+- in alphabetical order (UTF-16 codes)
+- the lowercase letter is always `>` than the uppercase
+- letters with diacritical marks are out of order (comes after letters and some symbols)
+```JavaScript
+// true
+console.log('a' > 'Z');
+console.log('Österreich' > 'Zealand');
+
+// for correct comparison in different languages
+// negative if str < (str2)
+// positive if str > (str2)
+// 0 if equal
+console.log('Österreich'.localeCompare('Zealand')); // => -1
+```
+
+</details>
+
+<details>
+<summary>How to get the UTF-16 code of the letter and backwards?</summary>
+
+```JavaScript
+// code for the character at the given position
+console.log('z'.codePointAt(0)); // => 122
+console.log('Z'.codePointAt(0)); // => 90
+// character from code
+console.log(String.fromCodePoint(90)); // => Z
+// 90 === 5a in hexadecimal system
+console.log('\u005a'); // Z
+```
+
+</details>
+
+<details>
+<summary>What are paired letters?</summary>
+
+- all frequently used characters have 2-byte codes (letters in most european languages, numbers, and even most hieroglyphs, have a 2-byte representation)
+- 2 bytes only allow 65536 combinations and that’s not enough for every possible symbol
+- rare symbols are encoded with a pair of 2-byte characters
+```JavaScript
+// the length of all those characters is 2
+console.log('𝒳'.length);
+console.log('😂'.length);
+console.log('𩷶'.length);
+// pairs did not exist at the time when JS was created
+// thus are not correctly processed by the language
+// String.fromCodePoint and str.codePointAt are new (work right)
+
+// getting a symbol can be tricky, because pairs are treated as two chars
+// strange symbols - pieces of the pair have no meaning without each other
+// this actually displays garbage
+console.log('𝒳'[0]);
+console.log('𝒳'[1]);
+
+// technically, pairs are also detectable by their codes
+// code in the interval of 0xd800..0xdbff - first part of the pair
+// next character (second part) must have the code in interval 0xdc00..0xdfff
+// these intervals are reserved exclusively for pairs by the standard
+console.log('𝒳'.charCodeAt(0).toString(16)); // d835 (between 0xd800 and 0xdbff)
+console.log('𝒳'.charCodeAt(1).toString(16)); // dcb3, between 0xdc00 and 0xdfff
+```
+
+</details>
+
+<details>
+<summary>What are diacritical marks and normalization?</summary>
+
+- symbols that are composed of the base char with a mark above or(and) under it (`a` and `àáâäãåā`)
+- most common have their own UTF-16 code (but not all as there are too many combinations)
+- there are UTF-16 codes to add (decorate) marks to a letter
+```JavaScript
+console.log('S\u0307'); // => Ṡ
+
+const s1 = 'S\u0307\u0323'; // => Ṩ
+const s2 = 'S\u0323\u0307'; // => Ṩ
+// but there is a problem
+console.log(s1 == s2); // => false
+// unicode normalization => true
+console.log('S\u0307\u0323'.normalize() == 'S\u0323\u0307'.normalize());
+// brings to one character (but not always as Ṩ has own UTF-16 code)
+console.log('S\u0307\u0323'.normalize().length); // => 1
+console.log('S\u0307\u0323'.normalize() == '\u1e68'); // => true
+```
 
 </details>
 

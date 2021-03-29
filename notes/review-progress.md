@@ -1,47 +1,4 @@
-# Review progress and questions I have to review
-## 26, ..., 22 Mar 2021 (29 Mar)
-### JavaScript
-<details>
-<summary>When do you need to use meta-programming?</summary>
-
-- advanced concepts used mostly when you create libraries
-
-</details>
-
-<details>
-<summary>What are Symbols and how to use them?</summary>
-
-- primitive values
-- used as keys in objects
-- built-in symbols and creatable symbols
-- uniqueness is guaranteed
-```JavaScript
-const userId = Symbol(); // => Symbol()
-const playerId = Symbol('id'); // => Symbol(id)
-
-const player = {
-  [playerId]: 1, // can't access this property out of library
-  name: 'Harry',
-  level: 11
-};
-
-// can use inside the library
-player[playerId] = 2;
-
-console.log(playerId === Symbol('id')); // => false
-
-// built-in symbol
-const user = {
-  name: 'Ron',
-  level: 9,
-  [Symbol.toStringTag]: 'User'
-};
-
-console.log(user.toString()); // => [object User]
-```
-
-</details>
-
+# Review progress
 ## 01, ..., 25 Mar 2021 (01 Apr)
 ### JavaScript
 <details>
@@ -677,4 +634,4 @@ sayHello(); // error (not defined)
 
 </details>
 
-## 28 Mar 2021 (29, 30, 01, 03, 07, 14, 21, 28 Apr)
+## 29 Mar 2021 (30, 31, 02, 04, 08, 15, 22, 29 Apr)
