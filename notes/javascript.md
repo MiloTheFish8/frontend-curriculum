@@ -625,7 +625,7 @@ const text = 'Hello\nWorld!';
 console.log(text.length);
 ```
 
-</summary>
+</details>
 
 <details>
 <summary>How to access the characters?</summary>

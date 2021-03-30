@@ -466,7 +466,7 @@ const newPlayer = Object.fromEntries(playerMap.entries());
 
 </details>
 
-## 12, ..., 22 Mar 2021 (29, 05, 12 Apr)
+## 12, ..., 29 Mar 2021 (05, 12 Apr)
 ### JavaScript
 <details>
 <summary>What data structures could be used as a key in an Object?</summary>
