@@ -1476,6 +1476,41 @@ numbers[5] = 23;
 </details>
 
 <details>
+<summary>What are the ways to misuse an array? (bad for performance)</summary>
+
+```JavaScript
+// array optimizations stop working if we use an array like that
+const arr = [];
+// add a non-numeric property
+arr.name = 'John';
+// make holes
+arr[0] = 8;
+arr[990] = 10;
+// fill the array in the reverse order
+arr[1000] = 90;
+arr[999] = 7;
+```
+
+</details>
+
+<details>
+<summary>What if we change the length property of an Array manually?</summary>
+
+- if we increase it manually, nothing interesting happens
+- if we decrease it, the array is truncated (irreversible)
+```JavaScript
+const arr = [1, 2, 3, 4, 5];
+// => [1, 2]
+arr.length = 2;
+// => [1, 2, undefined]
+arr.length = 3;
+// the simplest way to clear the array
+arr.length = 0;
+```
+
+</details>
+
+<details>
 <summary>How to make an Array of a string?</summary>
 
 ```JavaScript
@@ -1495,6 +1530,40 @@ const words = ['one', 'two', 'three'];
 // by default separates with ,
 const text = words.join();
 const text2 = words.join(' ');
+```
+
+</details>
+
+<details>
+<summary>How does conversion to a primitive work on an array?</summary>
+
+```JavaScript
+const arr = [1, 2, 3, 4];
+console.log(String(arr) === '1,2,3,4'); // => true
+// array doesn't have Symbol.toPrimitive or valueOf
+// only toString that's why:
+console.log([] + ''); // ''
+console.log([] + 1); // '1'
+console.log([1] + 1); // '11;
+console.log([1, 2] + 1); // '1,21'
+```
+
+</details>
+
+<details>
+<summary>How to compare different arrays?</summary>
+
+- don't use `==` to compare arrays (as well as `>`, `<` and others)
+- two objects are equal `==` only if they’re references to the same object
+- if one of the arguments of `==` is an object, and the other one is a primitive, then the object gets converted to primitive
+- exception of `null` and `undefined` that equal `==` each other and nothing else
+- <b>compare arrays item-by-item in a loop or using iteration methods</b>
+```JavaScript
+console.log([] == []); // => false
+console.log([1] == [1]); // => false
+// to primitive (to string as it has no other methods to convert to a primitive)
+console.log(0 == []); // 0 == '' => 0 == 0 => true
+console.log('0' == []); // '0' == '' => false
 ```
 
 </details>
