@@ -1,27 +1,58 @@
 # JavaScript
+<details>
+<summary>Fundamentals</summary>
+
 - [Basic definitions](#basic-definitions)
 - [Good practices](#good-practices)
 - [Code quality](#code-quality)
 - [Constants and variables](#constants-and-variables)
+- [Expressions, Control structures and Operators](#expressions-control-structures-and-operators)
+
+</details>
+
+<details>
+<summary>Data types and structures</summary>
+
 - [Data types and structures](#data-types-and-structures)
-  - [Numbers](#numbers)
-  - [Strings](#strings)
-  - [Objects](#objects)
-  - [Iterables](#iterables)
-    - [Arrays](#iterables-arrays)
-    - [Sets and WeakSets](#iterables-sets-and-weaksets)
-    - [Maps and WeakMaps](#iterables-maps-and-weakmaps)
+- [Numbers](#numbers)
+- [Strings](#strings)
+- [Objects](#objects)
+- [Iterables](#iterables)
+- [Arrays](#iterables-arrays)
+- [Sets and WeakSets](#iterables-sets-and-weaksets)
+- [Maps and WeakMaps](#iterables-maps-and-weakmaps)
+
+</details>
+
+<details>
+<summary>Functions</summary>
+
 - [Functions](#functions)
 - [Scope](#scope)
+
+</details>
+
+<details>
+<summary>Prototypes and inheritance</summary>
+
 - [Constructors and prototypes](#constructors-and-prototypes)
 - [Classes](#classes)
-- [Expressions, Control structures and Operators](#expressions-control-structures-and-operators)
+
+</details>
+
+<details>
+<summary>Modules</summary>
+  
 - [Modules](#modules)
+
+</details>
+
+<details>
+<summary>Browser</summary>
+
 - [Window Object](#window-object)
 - [DOM](#dom)
 - [Events](#events)
-- [Timers and intervals](#timers-and-intervals)
-- [Async JavaScript](#async-javascript-promises-and-callbacks-asyncawait-http-requests)
 - [Forms](#forms)
 - [Authorization](#authorization)
 - [Working with data](#working-with-data)
@@ -31,6 +62,20 @@
 - [Navigator API](#navigator-api)
 - [Browser storage](#browser-storage)
 - [Service Workers, Web Workers and Worklets](service-workers-web-workers-and-worklets)
+
+</details>
+
+<details>
+<summary>Async JS</summary>
+
+- [Timers and intervals](#timers-and-intervals)
+- [Async JavaScript](#async-javascript-promises-and-callbacks-asyncawait-http-requests)
+
+</details>
+
+<details>
+<summary>Performance, security, advances concepts, other info</summary>
+
 - [Meta-programming](#meta-programming)
 - [Performance and optimizations](#performance-and-optimizations)
 - [Security](#security)
@@ -43,6 +88,8 @@
 - [Libraries](#libraries) - refactor
 - [Frameworks](#frameworks) - refactor
 - [Resources](#resources) - refactor
+
+</summary>
 
 ## Basic definitions
 <details>
@@ -236,6 +283,609 @@ const arr = [1, 2, 3, 4];
 
 - [Let on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/let)
 - [Const on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/const)
+
+</details>
+
+## Expressions, Control structures and Operators
+<details>
+<summary>What are the basic math operators?</summary>
+
+- `=`
+ ```JavaScript
+// assignment returns a value
+// x = value writes the value into x and then returns it
+let a = 1;
+let b = 2;
+let c = 3 - (a = b + 1);
+
+console.log(a); // 3
+console.log(c); // 0
+
+// chaining assignment
+// evaluate from right to left
+// 1. the rightmost expression 2 + 2 is evaluated 
+// 2. and then assigned to the variables on the left: c, b and a
+let a, b, c;
+
+a = b = c = 2 + 2;
+console.log(a); // => 4
+console.log(b); // => 4
+console.log(c); // => 4
+ ```
+- `+` or `+=`
+- `-` or `-=`
+- `*` or `*=`
+- `/` or `/=`
+- `%`
+- `**` exponentiation operator (not supported in IE)
+```JavaScript
+console.log(2 ** 2); // => 4 (2 pow 2)
+console.log(4 ** (1 / 2)); // => square root
+console.log(8 ** (1 / 3)); // => cubic root
+```
+
+</details>
+
+<details>
+<summary>How increment and decrement operators can be applied?</summary>
+
+- only to variables, `5++` will cause an error
+
+</details>
+
+<details>
+<summary>What is the difference between postfix and prefix increment and decrement?</summary>
+
+- `return result++;` returns first the result and then increments
+- `return --result;` decrements and then returns the changed value
+```JavaScript
+let initialNumber = 1;
+let counter = initialNumber++;
+let counter2 = ++initialNumber;
+console.log(counter); // => 1
+console.log(counter2); // => 2
+```
+
+</details>
+
+<details>
+<summary>How to use increment and decrement inside the expression?</summary>
+
+```JavaScript
+let counter = 1;
+console.log(2 * ++counter); // => 4
+
+let counter = 1;
+console.log(2 * counter++); // => 2
+// if you need multiply and then increase, more readable
+console.log(2 * counter);
+counter++;
+```
+
+</details>
+
+<details>
+<summary>What are bitwise operators?</summary>
+
+- treat arguments as 32-bit integer numbers and work on the level of their binary representation
+- used very rarely, when we need to fiddle with numbers on the very lowest (bitwise) level
+- in some special areas, such as cryptography, they are useful
+- AND `&`
+- OR `|`
+- XOR `^`
+- NOT `~`
+- LEFT SHIFT `<<`
+- RIGHT SHIFT `>>`
+- ZERO-FILL RIGHT SHIFT `>>>`
+
+</details>
+
+<details>
+<summary>What does comma operator do?</summary>
+
+- allows to evaluate several expressions, dividing them with `,`
+- each of them is evaluated but only the result of the last one is returned
+```JavaScript
+// the first expression 1 + 2 is evaluated and its result is thrown away
+// then, 3 + 4 is evaluated and returned as the result
+let a = (1 + 2, 3 + 4);
+console.log(a); // => 7
+
+// comma operator has very low precedence, lower than =
+// so parentheses are important in the example above
+// evaluates + first, summing the numbers into b = 3, 7
+// then the assignment operator assigns b = 3
+// and the rest is ignored
+let b = 1 + 2, 3 + 4;
+console.log(b); // => 3
+
+// why do we need an operator that throws away everything except the last expr?
+// sometimes it is used to put several actions in one line
+for (a = 1, b = 2, c = a * b; a < 10; a++) {}
+```
+
+</details>
+
+<details>
+<summary>What is the difference between `if ... else` and ternary operator?</summary>
+
+- `if ... else` - returns no value
+- `? :` - always returns a value
+
+</details>
+
+<details>
+<summary>How to use `switch` operator and how does it compare?</summary>
+
+- always uses `===` to compare
+```JavaScript
+switch (+expression) {
+  case value + 1: 
+    console.log(value);
+    break;
+  // grouping cases
+  case value2:
+  case value3:
+    console.log(value2, value3);
+    break;
+  default:
+    // default is optional
+    console.log('default');
+}
+```
+
+</details>
+
+<details>
+<summary>What are the 'falsy' values?</summary>
+
+- `0`
+- `''`
+- `NaN`
+- `null`
+- `undefined`
+
+</details>
+
+<details>
+<summary>What are the 'truthy' values?</summary>
+
+- numbers `!== 0`
+- not empty strings (even `'   '` and `'0'`)
+- `[]`, `{}` and all other objects and arrays
+
+</details>
+
+<details>
+<summary>What are the comparison operators?</summary>
+
+- `==` and `===`
+- `!=` and `!==`
+- `>` and `<`
+- `>=` and `<=`
+
+</details>
+
+<details>
+<summary>How does JS compare strings?</summary>
+
+```JavaScript
+// JS compares strings based on standard lexicographical ordering (Unicode)
+console.log('b' > 'a'); // => true
+
+// JS always looks at the first char and only considers other chars if the 1st
+// chars are the same
+console.log('ab' > 'aa'); // => true
+
+// uppercase chars are smaller than lowercase
+console.log('a' > 'B'); // => true
+```
+
+</details>
+
+<details>
+<summary>How does JS compare different types (except === and !==)?</summary>
+
+- converts the values to numbers
+```JavaScript
+console.log('3' > 1); // true
+console.log('04' == 4); // true
+console.log(true == 1); // true
+console.log(false == 0); // true
+
+// the strange thing because of this conversion
+const a = 0;
+const b = '0';
+
+console.log(Boolean(a)); // false
+console.log(Boolean(b)); // true
+console.log(a == b); // true
+```
+
+</details>
+
+<details>
+<summary>How does JS compare with === and !==?</summary>
+
+- compares without type conversion
+```JavaScript
+console.log(0 === false); // false
+```
+
+</details>
+
+<details>
+<summary>How to compare with null or undefined?</summary>
+
+```JavaScript
+console.log(null === undefined); // false
+// special rule for == equal to each other but not to any other value
+console.log(null == undefined); // true
+// for other math and comparison operator
+// null => 0
+// undefined => null
+
+// null vs 0 works strange
+console.log(null > 0); // false
+console.log(null == 0); // false
+console.log(null >= 0); // true
+
+// undefined shouldn't be compared to other values
+// converted to NaN which returns false for all comparisons
+console.log(undefined > 0); // false
+console.log(undefined < 0); // false
+console.log(undefined == 0); // false
+```
+
+</details>
+
+<details>
+<summary>What are logical operators?</summary>
+
+- `||` or
+- `&&` and
+- `!` not (precedence is the highest of all logical)
+- `??` nullish coalescing
+- can be applied to values of any type
+- the result can be of any type
+
+</details>
+
+<details>
+<summary>What is `not` operator and how to convert into boolean?</summary>
+
+- `!`
+- `!!userName` converts into a boolean
+
+</details>
+
+<details>
+<summary>How to use OR and AND, which one is higher?</summary>
+
+- `a && b` if both are true
+- `a || b` if at least one is true
+- `&&` precedence is higher than `||`
+- do not convert value into a boolean
+```JavaScript
+// returns the 1st falsy value
+const userName1 = null && 'Mary'; // => null
+// use value if the condition is true
+const isLoggedIn = true; // if false => false
+const userName0 = isLoggedIn && 'Mary'; // => 'Mary'
+// if all are truthy, the last one is returned
+const userName2 = 'Lily' && 'Max' && 'Mary'; // => 'Mary'
+```
+```JavaScript
+// default value assignment
+// getting the first truthy value from a list of variables or expressions
+// returns 1st truthy value
+const userName1 = '' || 'Mary' || 'Maya'; // => 'Mary'
+const userName2 = 'Max' || 'Mary' || ''; // => 'Max'
+// if all falsy, the last value is returned
+const userName3 = null || 0 || ''; // => ''
+
+// short-circuit evaluation
+true || console.log('Will not be logged!');
+false || console.log('Logged!');
+```
+
+</details>
+
+<details>
+<summary>How does nullish coalescing work and the cases?</summary>
+
+- to provide a default value
+```JavaScript
+// returns the first argument if it's not `null` or `undefined`
+// otherwise the second
+const result = user ?? 'Unknown';
+// is the same
+const result = (user !== null && user !== undefined) ? user : 'Unknown';
+// can be used in a sequence
+const first = null;
+const second = null;
+const third = 'Third';
+console.log(first ?? second ?? third ?? 'Unknown'); // => Third
+// is the same (but for all falsy values)
+console.log(first || second || third || 'Unknown');
+```
+
+</details>
+
+<details>
+<summary>How to use `??` with `&&` or `||`?</summary>
+
+- due to safety reasons, JS forbids using `??` with `&&` and `||` operators unless the precedence is explicitly specified with `()`
+```JavaScript
+// Syntax error
+let text = 'one' && 'two' ?? 'three';
+// Works just fine
+let text = ('one' && 'two') ?? 'three';
+```
+
+</details>
+
+<details>
+<summary>How to check if the value is `NaN`?</summary>
+
+- `isNaN()` to check if NaN or not
+- `isNaN(value) || value <= 0` if the first part is `true`, JS doesn't go further
+
+</details>
+
+<details>
+<summary>How to use destructuring with iterables?</summary>
+
+- for iterable structures only (doesn't work on strings!)
+- all the elements go in an order, can't address the last one
+```JavaScript
+const numbers = [1, 2, 3, 4, 5];
+// before 
+const first = numbers[0];
+const third = numbers[2];
+// with destructuring
+const [first, , third] = numbers;
+// when there is no value, can use defaults
+const [first, , , , , sixth = 45] = numbers;
+// when we want specific values and an array of the rest
+const [first, ...otherNumbers] = numbers;
+// good for swapping the values
+let first = 'Harry';
+let second = 'Ron';
+[first, second] = [second, first];
+// can destruct the function result
+const [first, , third] = getNumbers();
+// or function parameters
+const printValues = ([first = 4, , third = 7]) => {
+  console.log(`${first} ${third}`);
+};
+printValues(document.querySelectorAll('li'));
+printValues([1, 2]);
+printValues([]);
+printValues(); // error: undefined is not iterable
+```
+
+</details>
+
+<details>
+<summary>How to use destructuring with Object?</summary>
+
+```JavaScript
+const cat = {
+  name: 'Mini',
+  location: 'London',
+  color: 'Auburn',
+  address: {
+    street: 'Some street'
+  },
+  'home city': 'London'
+};
+// propOfAnObject: varName = default
+const {name: catName, color: catColor = 'White'} = cat;
+// with folded objects
+const {address: {street: catStreet}} = cat;
+// for combined prop use quotes
+const {'home city': catCity} = cat;
+// creates name and object of remained properties
+const {name, ...otherProperties} = cat;
+
+// great to use for DOM nodes
+const elements = document.querySelectorAll('li');
+for (let i = 0; i < elements.length; i++) {
+  const {textContent: text} = elements[i];
+  console.log(text);
+}
+
+// can combine [] and {} destructuring
+const [, {textContent: text}] = document.querySelectorAll('li');
+```
+
+</details>
+
+<details>
+<summary>What is better: loop or recursion?</summary>
+
+- in most cases loop is more efficient than a recursion (call stack overflow)
+- any recursion could be rewritten into a loop
+
+</details>
+
+<details>
+<summary>What are the general loops?</summary>
+
+- `for (let i = 0; i < 5; i++) {}`
+- `for (const item of items) {}`
+  - almost the same as `for` loop
+  - can use `break` and `continue`
+  - could be used with every iterable (not only `Array`)
+- `for (const key in someObject) {}`
+  - requires additional check, otherwise can go through the whole prototype chain
+- `while (isEdit) {}` as long as the condition is true
+- `do { ... } while (isEdit);` runs at least once
+
+</details>
+
+<details>
+<summary>What do `break` and `continue` do?</summary>
+
+- `break;` stops the loop execution
+  - if inside the nested loop - stops only the nested one, outer continues
+- `continue;` skips only the current iteration and moves to the next
+
+</details>
+
+<details>
+<summary>How and why to use a labeled statement?</summary>
+
+- labeled statements could be used with any expression but mostly used with loops
+- to break or continue the outer loop from inner
+```JavaScript
+outerLoop: for (const item of items) {
+  console.log('Outer', item);
+
+  innerLoop: for (let i = 0; i < 5; i++) {
+    if (i === 2) {
+      break outerLoop;
+      // or
+      continue outerLoop;
+    }
+
+    console.log('Inner', i);
+  }
+}
+
+// could also break from somewhere else in the code
+const button = document.querySelector('.button');
+
+button.addEventListener('click', () => {
+  break outerLoop;
+  // or
+  continue outerLoop;
+});
+```
+
+</details>
+
+<details>
+<summary>How to use rest and spread operators?</summary>
+
+- rest collects several values into one iterable structure
+- rest must be last parameter in the function (or error)
+```JavaScript
+// before
+function doSomething() {
+  return Array.from(arguments);
+}
+// with rest
+const doSomething = (...values) => {
+  return values;
+};
+// destructuring + rest = first and an array of others
+const [first, ...others] = doSomething();
+```
+
+```JavaScript
+// spread - any iterable into separate values
+// before
+const values = [1, 2, 40, 73, 5];
+// find max
+Math.max.apply(null, values);
+// merge arrays
+const newValues = [];
+newValues.concat(values);
+
+// with spread
+// find max
+Math.max(...values);
+// merge arrays
+const newValues = [...values];
+const filteredValues = [...values].filter();
+```
+
+</details>
+
+<details>
+<summary>What can be used with the `throw` operator?</summary>
+
+- `throw { message: 'some message' };` can throw anything as an error, not only `new Error()`
+
+</details>
+
+<details>
+<summary>When is it good to use `try catch finally`?</summary>
+
+- use `try {} catch (error) {}` only for the code you can't control (ex: server errors, user input)
+
+</details>
+
+<details>
+<summary>In what variations can we use `try catch finally`?</summary>
+
+- `try ... catch` or `try ... finally` but never `catch ... finally`
+
+</details>
+
+<details>
+<summary>When does `catch` get executed?</summary>
+
+- if `try` doesn't throw an error, `catch` won't be executed
+
+</details>
+
+<details>
+<summary>Why to use and when does `finally` run?</summary>
+
+- when we want to throw the error from inside the `catch` block to send to some statistics etc
+- some cleanup work (release data, clear the variables, etc)
+- if the error is thrown from `catch`, only finally executes, code after `try ... catch ... finally` block won't be executed
+- `finally` always runs
+
+</details>
+
+<details>
+<summary>How does `try catch finally` work in details?</summary>
+
+```JavaScript
+function doSomething() {
+  try {
+    console.log(0); // => 0
+    throw 'error ocurred';
+  } catch(error) {
+    // error => 'error ocurred' (what was used with 'throw')
+    console.log(1); // => 1
+    // this return statement is suspended till finally block completes
+    return true;
+    // not reachable
+    console.log(2);
+  } finally {
+    console.log(3); // => 3
+    // overwrites the return from catch block
+    // function returns this value
+    return false;
+    // not reachable
+    console.log(4);
+  }
+  // the function returns false from finally block
+  // not reachable 
+  console.log(5);
+}
+
+console.log(doSomething()); // => 0, 1, 3, false
+```
+
+</details>
+
+<details>
+<summary>Learn more</summary>
+
+- [Operator precedence](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Operator_Precedence)
+- [Control flow and error handling](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Control_flow_and_error_handling)
+- [Loops and iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Loops_and_iteration)
+- [For ... of on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for...of)
+- [Rest on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/rest_parameters)
+- [Spread on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax)
+- [Destructuring on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment)
+- [Bitwise on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Expressions_and_Operators#bitwise_operators)
 
 </details>
 
@@ -3033,609 +3683,6 @@ for (const prop in player) {
 
 </details>
 
-## Expressions, Control structures and Operators
-<details>
-<summary>What are the basic math operators?</summary>
-
-- `=`
- ```JavaScript
-// assignment returns a value
-// x = value writes the value into x and then returns it
-let a = 1;
-let b = 2;
-let c = 3 - (a = b + 1);
-
-console.log(a); // 3
-console.log(c); // 0
-
-// chaining assignment
-// evaluate from right to left
-// 1. the rightmost expression 2 + 2 is evaluated 
-// 2. and then assigned to the variables on the left: c, b and a
-let a, b, c;
-
-a = b = c = 2 + 2;
-console.log(a); // => 4
-console.log(b); // => 4
-console.log(c); // => 4
- ```
-- `+` or `+=`
-- `-` or `-=`
-- `*` or `*=`
-- `/` or `/=`
-- `%`
-- `**` exponentiation operator (not supported in IE)
-```JavaScript
-console.log(2 ** 2); // => 4 (2 pow 2)
-console.log(4 ** (1 / 2)); // => square root
-console.log(8 ** (1 / 3)); // => cubic root
-```
-
-</details>
-
-<details>
-<summary>How increment and decrement operators can be applied?</summary>
-
-- only to variables, `5++` will cause an error
-
-</details>
-
-<details>
-<summary>What is the difference between postfix and prefix increment and decrement?</summary>
-
-- `return result++;` returns first the result and then increments
-- `return --result;` decrements and then returns the changed value
-```JavaScript
-let initialNumber = 1;
-let counter = initialNumber++;
-let counter2 = ++initialNumber;
-console.log(counter); // => 1
-console.log(counter2); // => 2
-```
-
-</details>
-
-<details>
-<summary>How to use increment and decrement inside the expression?</summary>
-
-```JavaScript
-let counter = 1;
-console.log(2 * ++counter); // => 4
-
-let counter = 1;
-console.log(2 * counter++); // => 2
-// if you need multiply and then increase, more readable
-console.log(2 * counter);
-counter++;
-```
-
-</details>
-
-<details>
-<summary>What are bitwise operators?</summary>
-
-- treat arguments as 32-bit integer numbers and work on the level of their binary representation
-- used very rarely, when we need to fiddle with numbers on the very lowest (bitwise) level
-- in some special areas, such as cryptography, they are useful
-- AND `&`
-- OR `|`
-- XOR `^`
-- NOT `~`
-- LEFT SHIFT `<<`
-- RIGHT SHIFT `>>`
-- ZERO-FILL RIGHT SHIFT `>>>`
-
-</details>
-
-<details>
-<summary>What does comma operator do?</summary>
-
-- allows to evaluate several expressions, dividing them with `,`
-- each of them is evaluated but only the result of the last one is returned
-```JavaScript
-// the first expression 1 + 2 is evaluated and its result is thrown away
-// then, 3 + 4 is evaluated and returned as the result
-let a = (1 + 2, 3 + 4);
-console.log(a); // => 7
-
-// comma operator has very low precedence, lower than =
-// so parentheses are important in the example above
-// evaluates + first, summing the numbers into b = 3, 7
-// then the assignment operator assigns b = 3
-// and the rest is ignored
-let b = 1 + 2, 3 + 4;
-console.log(b); // => 3
-
-// why do we need an operator that throws away everything except the last expr?
-// sometimes it is used to put several actions in one line
-for (a = 1, b = 2, c = a * b; a < 10; a++) {}
-```
-
-</details>
-
-<details>
-<summary>What is the difference between `if ... else` and ternary operator?</summary>
-
-- `if ... else` - returns no value
-- `? :` - always returns a value
-
-</details>
-
-<details>
-<summary>How to use `switch` operator and how does it compare?</summary>
-
-- always uses `===` to compare
-```JavaScript
-switch (+expression) {
-  case value + 1: 
-    console.log(value);
-    break;
-  // grouping cases
-  case value2:
-  case value3:
-    console.log(value2, value3);
-    break;
-  default:
-    // default is optional
-    console.log('default');
-}
-```
-
-</details>
-
-<details>
-<summary>What are the 'falsy' values?</summary>
-
-- `0`
-- `''`
-- `NaN`
-- `null`
-- `undefined`
-
-</details>
-
-<details>
-<summary>What are the 'truthy' values?</summary>
-
-- numbers `!== 0`
-- not empty strings (even `'   '` and `'0'`)
-- `[]`, `{}` and all other objects and arrays
-
-</details>
-
-<details>
-<summary>What are the comparison operators?</summary>
-
-- `==` and `===`
-- `!=` and `!==`
-- `>` and `<`
-- `>=` and `<=`
-
-</details>
-
-<details>
-<summary>How does JS compare strings?</summary>
-
-```JavaScript
-// JS compares strings based on standard lexicographical ordering (Unicode)
-console.log('b' > 'a'); // => true
-
-// JS always looks at the first char and only considers other chars if the 1st
-// chars are the same
-console.log('ab' > 'aa'); // => true
-
-// uppercase chars are smaller than lowercase
-console.log('a' > 'B'); // => true
-```
-
-</details>
-
-<details>
-<summary>How does JS compare different types (except === and !==)?</summary>
-
-- converts the values to numbers
-```JavaScript
-console.log('3' > 1); // true
-console.log('04' == 4); // true
-console.log(true == 1); // true
-console.log(false == 0); // true
-
-// the strange thing because of this conversion
-const a = 0;
-const b = '0';
-
-console.log(Boolean(a)); // false
-console.log(Boolean(b)); // true
-console.log(a == b); // true
-```
-
-</details>
-
-<details>
-<summary>How does JS compare with === and !==?</summary>
-
-- compares without type conversion
-```JavaScript
-console.log(0 === false); // false
-```
-
-</details>
-
-<details>
-<summary>How to compare with null or undefined?</summary>
-
-```JavaScript
-console.log(null === undefined); // false
-// special rule for == equal to each other but not to any other value
-console.log(null == undefined); // true
-// for other math and comparison operator
-// null => 0
-// undefined => null
-
-// null vs 0 works strange
-console.log(null > 0); // false
-console.log(null == 0); // false
-console.log(null >= 0); // true
-
-// undefined shouldn't be compared to other values
-// converted to NaN which returns false for all comparisons
-console.log(undefined > 0); // false
-console.log(undefined < 0); // false
-console.log(undefined == 0); // false
-```
-
-</details>
-
-<details>
-<summary>What are logical operators?</summary>
-
-- `||` or
-- `&&` and
-- `!` not (precedence is the highest of all logical)
-- `??` nullish coalescing
-- can be applied to values of any type
-- the result can be of any type
-
-</details>
-
-<details>
-<summary>What is `not` operator and how to convert into boolean?</summary>
-
-- `!`
-- `!!userName` converts into a boolean
-
-</details>
-
-<details>
-<summary>How to use OR and AND, which one is higher?</summary>
-
-- `a && b` if both are true
-- `a || b` if at least one is true
-- `&&` precedence is higher than `||`
-- do not convert value into a boolean
-```JavaScript
-// returns the 1st falsy value
-const userName1 = null && 'Mary'; // => null
-// use value if the condition is true
-const isLoggedIn = true; // if false => false
-const userName0 = isLoggedIn && 'Mary'; // => 'Mary'
-// if all are truthy, the last one is returned
-const userName2 = 'Lily' && 'Max' && 'Mary'; // => 'Mary'
-```
-```JavaScript
-// default value assignment
-// getting the first truthy value from a list of variables or expressions
-// returns 1st truthy value
-const userName1 = '' || 'Mary' || 'Maya'; // => 'Mary'
-const userName2 = 'Max' || 'Mary' || ''; // => 'Max'
-// if all falsy, the last value is returned
-const userName3 = null || 0 || ''; // => ''
-
-// short-circuit evaluation
-true || console.log('Will not be logged!');
-false || console.log('Logged!');
-```
-
-</details>
-
-<details>
-<summary>How does nullish coalescing work and the cases?</summary>
-
-- to provide a default value
-```JavaScript
-// returns the first argument if it's not `null` or `undefined`
-// otherwise the second
-const result = user ?? 'Unknown';
-// is the same
-const result = (user !== null && user !== undefined) ? user : 'Unknown';
-// can be used in a sequence
-const first = null;
-const second = null;
-const third = 'Third';
-console.log(first ?? second ?? third ?? 'Unknown'); // => Third
-// is the same (but for all falsy values)
-console.log(first || second || third || 'Unknown');
-```
-
-</details>
-
-<details>
-<summary>How to use `??` with `&&` or `||`?</summary>
-
-- due to safety reasons, JS forbids using `??` with `&&` and `||` operators unless the precedence is explicitly specified with `()`
-```JavaScript
-// Syntax error
-let text = 'one' && 'two' ?? 'three';
-// Works just fine
-let text = ('one' && 'two') ?? 'three';
-```
-
-</details>
-
-<details>
-<summary>How to check if the value is `NaN`?</summary>
-
-- `isNaN()` to check if NaN or not
-- `isNaN(value) || value <= 0` if the first part is `true`, JS doesn't go further
-
-</details>
-
-<details>
-<summary>How to use destructuring with iterables?</summary>
-
-- for iterable structures only (doesn't work on strings!)
-- all the elements go in an order, can't address the last one
-```JavaScript
-const numbers = [1, 2, 3, 4, 5];
-// before 
-const first = numbers[0];
-const third = numbers[2];
-// with destructuring
-const [first, , third] = numbers;
-// when there is no value, can use defaults
-const [first, , , , , sixth = 45] = numbers;
-// when we want specific values and an array of the rest
-const [first, ...otherNumbers] = numbers;
-// good for swapping the values
-let first = 'Harry';
-let second = 'Ron';
-[first, second] = [second, first];
-// can destruct the function result
-const [first, , third] = getNumbers();
-// or function parameters
-const printValues = ([first = 4, , third = 7]) => {
-  console.log(`${first} ${third}`);
-};
-printValues(document.querySelectorAll('li'));
-printValues([1, 2]);
-printValues([]);
-printValues(); // error: undefined is not iterable
-```
-
-</details>
-
-<details>
-<summary>How to use destructuring with Object?</summary>
-
-```JavaScript
-const cat = {
-  name: 'Mini',
-  location: 'London',
-  color: 'Auburn',
-  address: {
-    street: 'Some street'
-  },
-  'home city': 'London'
-};
-// propOfAnObject: varName = default
-const {name: catName, color: catColor = 'White'} = cat;
-// with folded objects
-const {address: {street: catStreet}} = cat;
-// for combined prop use quotes
-const {'home city': catCity} = cat;
-// creates name and object of remained properties
-const {name, ...otherProperties} = cat;
-
-// great to use for DOM nodes
-const elements = document.querySelectorAll('li');
-for (let i = 0; i < elements.length; i++) {
-  const {textContent: text} = elements[i];
-  console.log(text);
-}
-
-// can combine [] and {} destructuring
-const [, {textContent: text}] = document.querySelectorAll('li');
-```
-
-</details>
-
-<details>
-<summary>What is better: loop or recursion?</summary>
-
-- in most cases loop is more efficient than a recursion (call stack overflow)
-- any recursion could be rewritten into a loop
-
-</details>
-
-<details>
-<summary>What are the general loops?</summary>
-
-- `for (let i = 0; i < 5; i++) {}`
-- `for (const item of items) {}`
-  - almost the same as `for` loop
-  - can use `break` and `continue`
-  - could be used with every iterable (not only `Array`)
-- `for (const key in someObject) {}`
-  - requires additional check, otherwise can go through the whole prototype chain
-- `while (isEdit) {}` as long as the condition is true
-- `do { ... } while (isEdit);` runs at least once
-
-</details>
-
-<details>
-<summary>What do `break` and `continue` do?</summary>
-
-- `break;` stops the loop execution
-  - if inside the nested loop - stops only the nested one, outer continues
-- `continue;` skips only the current iteration and moves to the next
-
-</details>
-
-<details>
-<summary>How and why to use a labeled statement?</summary>
-
-- labeled statements could be used with any expression but mostly used with loops
-- to break or continue the outer loop from inner
-```JavaScript
-outerLoop: for (const item of items) {
-  console.log('Outer', item);
-
-  innerLoop: for (let i = 0; i < 5; i++) {
-    if (i === 2) {
-      break outerLoop;
-      // or
-      continue outerLoop;
-    }
-
-    console.log('Inner', i);
-  }
-}
-
-// could also break from somewhere else in the code
-const button = document.querySelector('.button');
-
-button.addEventListener('click', () => {
-  break outerLoop;
-  // or
-  continue outerLoop;
-});
-```
-
-</details>
-
-<details>
-<summary>How to use rest and spread operators?</summary>
-
-- rest collects several values into one iterable structure
-- rest must be last parameter in the function (or error)
-```JavaScript
-// before
-function doSomething() {
-  return Array.from(arguments);
-}
-// with rest
-const doSomething = (...values) => {
-  return values;
-};
-// destructuring + rest = first and an array of others
-const [first, ...others] = doSomething();
-```
-
-```JavaScript
-// spread - any iterable into separate values
-// before
-const values = [1, 2, 40, 73, 5];
-// find max
-Math.max.apply(null, values);
-// merge arrays
-const newValues = [];
-newValues.concat(values);
-
-// with spread
-// find max
-Math.max(...values);
-// merge arrays
-const newValues = [...values];
-const filteredValues = [...values].filter();
-```
-
-</details>
-
-<details>
-<summary>What can be used with the `throw` operator?</summary>
-
-- `throw { message: 'some message' };` can throw anything as an error, not only `new Error()`
-
-</details>
-
-<details>
-<summary>When is it good to use `try catch finally`?</summary>
-
-- use `try {} catch (error) {}` only for the code you can't control (ex: server errors, user input)
-
-</details>
-
-<details>
-<summary>In what variations can we use `try catch finally`?</summary>
-
-- `try ... catch` or `try ... finally` but never `catch ... finally`
-
-</details>
-
-<details>
-<summary>When does `catch` get executed?</summary>
-
-- if `try` doesn't throw an error, `catch` won't be executed
-
-</details>
-
-<details>
-<summary>Why to use and when does `finally` run?</summary>
-
-- when we want to throw the error from inside the `catch` block to send to some statistics etc
-- some cleanup work (release data, clear the variables, etc)
-- if the error is thrown from `catch`, only finally executes, code after `try ... catch ... finally` block won't be executed
-- `finally` always runs
-
-</details>
-
-<details>
-<summary>How does `try catch finally` work in details?</summary>
-
-```JavaScript
-function doSomething() {
-  try {
-    console.log(0); // => 0
-    throw 'error ocurred';
-  } catch(error) {
-    // error => 'error ocurred' (what was used with 'throw')
-    console.log(1); // => 1
-    // this return statement is suspended till finally block completes
-    return true;
-    // not reachable
-    console.log(2);
-  } finally {
-    console.log(3); // => 3
-    // overwrites the return from catch block
-    // function returns this value
-    return false;
-    // not reachable
-    console.log(4);
-  }
-  // the function returns false from finally block
-  // not reachable 
-  console.log(5);
-}
-
-console.log(doSomething()); // => 0, 1, 3, false
-```
-
-</details>
-
-<details>
-<summary>Learn more</summary>
-
-- [Operator precedence](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Operator_Precedence)
-- [Control flow and error handling](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Control_flow_and_error_handling)
-- [Loops and iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Loops_and_iteration)
-- [For ... of on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for...of)
-- [Rest on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/rest_parameters)
-- [Spread on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax)
-- [Destructuring on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment)
-- [Bitwise on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Expressions_and_Operators#bitwise_operators)
-
-</details>
-
 ## Modules
 <details>
 <summary>What problems do modules solve?</summary>
@@ -4406,6 +4453,372 @@ elementToDrag.addEventListener('dragend', evt => {
 
 </details>
 
+## Forms
+<details>
+<summary>What is the basic implementation of show password case?</summary>
+
+- change type of input from `password` to `text`
+
+</details>
+
+<details>
+<summary>Learn more</summary>
+
+- [How to Build and Validate Beautiful Forms with Vanilla HTML, CSS, & JS](https://www.freecodecamp.org/news/build-and-validate-beautiful-forms-with-vanilla-html-css-js/)
+
+</details>
+
+## Authorization
+<details>
+<summary>What is the purpose of the authorization?</summary>
+
+- restricts the access for different users
+
+</details>
+
+<details>
+<summary>What are the ways to identify the user?</summary>
+
+- Identification - tell the site who you are
+- Authentication - (authentic - true, genuine) the confirmation that you are who you state you are
+- Authorization - check if you are allowed to get access to some parts of the website or webapp
+
+</details>
+
+<details>
+<summary>What is the authorization order?</summary>
+
+1. Identification - user enters login and password
+2. Authentication - server checks if the login and password are correct and gives a token (access to the web app, often holds the rules and never stores open)
+3. Authorization - you give the token to the server and the server decides whether to give you an access or not
+  - 200 - success, allowed
+  - 401 - unauthorized
+  - 403 - not enough rights
+
+</details>
+
+## Working with data
+<details>
+<summary>What are the main problems when working with data?</summary>
+
+- user input - user can enter unsafe data for the view and UI has to be ready for it
+- storing and passing data formats could be different to the format needed on the UI, so we need to convert data in our app
+  - some ES6 objects (Date, Sets, Maps) could not be converted to JSON, so have to convert into standard data types (primitives, arrays, objects)
+
+</details>
+
+<details>
+<summary>What is JSON (and the restrictions)?</summary>
+
+- JavaScript Object Notation
+- can't use functions here
+- for keys only `" "`
+- for values `"string"` (double quotes only), `10`, `true`, `{...}`, `[...]`, `null`
+
+</details>
+
+<details>
+<summary>How to get the parameters from the link?</summary>
+
+```JavaScript
+const url = new Url(location.href);
+const queryParams = url.searchParams;
+const data = queryParams.get('data');
+```
+
+</details>
+
+<details>
+<summary>How to convert into a link?</summary>
+
+- `encodeURI('some text');`
+
+</details>
+
+<details>
+<summary>Learn more</summary>
+
+- [ ] [Why Mutation Can Be Scary](https://alistapart.com/article/why-mutation-can-be-scary/)
+
+</details>
+
+## Loading scripts to the page
+<details>
+<summary>How to load script files from JS dynamically?</summary>
+
+- basically generate html and add it to the page
+
+</details>
+
+## Location API
+<details>
+<summary>What is the location API used for?</summary>
+
+- for the app url and navigation
+
+</details>
+
+<details>
+<summary>Learn more</summary>
+
+- [ ] [Location on MDN](https://developer.mozilla.org/en-US/docs/Web/API/Location)
+
+</details>
+
+## History API
+<details>
+<summary>What is history API used for?</summary>
+
+- works with location
+- can use `history.back()` to navigate back (ex different cases with questions like age)
+
+</details>
+
+## Navigator API
+<details>
+<summary>Why do we use the navigator API?</summary>
+
+- don't use for defining browser version
+- could be useful when we need
+  - geolocation
+
+</details>
+
+<details>
+<summary>Learn more</summary>
+
+- [ ] [Navigator on MDN](https://developer.mozilla.org/en-US/docs/Web/API/Navigator)
+
+</details>
+
+## Browser storage
+<details>
+<summary>What are local and session storages and what is the difference?</summary>
+
+- simple key-value store
+- local storage lives till either user or browser (when ran out of space) clears it
+- session storage lives in the browser while you don't close the tab
+
+</details>
+
+<details>
+<summary>What are local and session storages good for?</summary>
+
+- manage user preferences or basic user data
+- simple, easy to use, but bad for complex data
+
+</details>
+
+<details>
+<summary>How are local and session storages being cleared?</summary>
+
+- can be cleared by the user and via JS
+
+</details>
+
+<details>
+<summary>How to work with the local storage?</summary>
+
+```JavaScript
+// local storage works sync
+const userId = '775';
+const user = {
+  name: 'Harry',
+  age: 33
+};
+
+// JS converts data into a string
+localStorage.setItem('userId', userId);
+localStorage.setItem('user', user); // => [object Object]
+localStorage.setItem('user', JSON.stringify(user));
+
+// to get item
+localStorage.getItem('user');
+```
+
+</details>
+
+<details>
+<summary>How to work with the session storage?</summary>
+
+```JavaScript
+// session storage works sync
+
+// JS converts data into a string
+sessionStorage.setItem('userId', userId);
+sessionStorage.setItem('user', JSON.stringify(user));
+
+// to get item
+sessionStorage.getItem('user');
+```
+
+</details>
+
+<details>
+<summary>What are cookies and the difference from local/session storage?</summary>
+
+- cookie stored to server
+- simple key-value store with some config options
+- not as easy to use
+- the advantage is that you can set it to expire or send to a server
+- available only if your app is served on a running server
+
+</details>
+
+<details>
+<summary>What are cookies good for?</summary>
+
+- manage user preferences or basic user data
+- bad for complex data
+
+</details>
+
+<details>
+<summary>How to clear the cookies?</summary>
+
+- can be cleared by the user and via JS
+
+</details>
+
+<details>
+<summary>How to use cookies?</summary>
+
+```JavaScript
+// cookies work sync
+const userId = 'fd3928';
+const user = {
+  name: 'Harry',
+  age: 33
+};
+// data stored as a string
+// under the hood uses a setter
+// so adds new cookie, not overrides
+document.cookie = `userId=${userId}; max-age=360`; // => seconds
+document.cookie = `user=${JSON.stringify(user)}; expires=date`; // => date
+
+// to get info
+// returns all the cookies stored in one string
+document.cookie;
+```
+
+</details>
+
+<details>
+<summary>What is IndexedDB?</summary>
+
+- client-side database
+
+</details>
+
+<details>
+<summary>What is IndexedDB good for?</summary>
+
+- manage complex data your app needs
+- not as easy to use, great for complex (non-critical) data, good performance (good for usage like google sheets)
+
+</details>
+
+<details>
+<summary>How to clean the IndexedDB?</summary>
+
+- can be cleared by the user and via JS
+
+</details>
+
+<details>
+<summary>How to use IndexedDB?</summary>
+
+```JavaScript
+// indexedDB works sync
+// 1. open a database
+// pass name and version
+// creates or opens an existed DB
+const dbRequest = indexedDB.open('Name', 1);
+let db;
+
+// to be able to change the data from a button too
+dbRequest.onsuccess = function(evt) {
+  // access to the created database
+  db = evt.target.result;
+};
+
+// for better browser support not .addEventListener, but:
+// this event runs when the db is created or the version is upgraded
+dbRequest.onupgradeneeded = function(evt) {
+  db = evt.target.result;
+
+  // 2. create an object store
+  const objStore = db.createObjectStore('products', {keyPath: 'id'});
+
+  // 3. start a transaction and make a request to do some db operation
+  // 4. wait for the operation to complete
+  // 5. do something with the results
+  // oncomplete triggers when createObjectStore is finished
+  objStore.transaction.oncomplete = function(evt) {
+    // connecting to the data base
+    // name of the store + mode (readonly, readwrite, etc)
+    const productsStore = db.transaction('products', 'readwrite')
+      .objectStore('products');
+    // adding a new item, has to have the property from keyPath
+    productsStore.add({
+      id: 'pr1',
+      name: 'Product 1',
+      price: 1.22,
+      tags: ['Vegetarian', 'No-Sugar']
+    });
+  };
+};
+
+dbRequest.onerror = function() {};
+
+addButton.addEventListener('click', () => {
+  if (!db) {
+    return;
+  }
+
+  const productsStore = db.transaction('products', 'readwrite')
+    .objectStore('products');
+
+  productsStore.add({
+    id: 'pr2',
+    name: 'Product 2',
+    price: 1.42,
+    tags: ['Vegetarian', 'No-Sugar']
+  });
+});
+
+// to retrieve the data
+getButton.addEventListener('click', () => {
+  const productsStore = db.transaction('products', 'readwrite')
+    .objectStore('products');
+
+  const request = productsStore.get('pr1');
+
+  request.onsuccess = function() {
+    console.log(request.result);
+  };
+});
+```
+
+</details>
+
+<details>
+<summary>Learn more</summary>
+
+- [ ] [localStorage on MDN](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage)
+- [ ] [cookie on MDN](https://developer.mozilla.org/en-US/docs/Web/API/Document/cookie)
+- [ ] [Using IndexedDB on MDN](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB)
+
+</details>
+
+## Service Workers, Web Workers and Worklets
+<details>
+<summary>Learn more</summary>
+
+- [ ] [Web workers vs Service workers vs Worklets](https://bitsofco.de/web-workers-vs-service-workers-vs-worklets/)
+
+</details>
+
 ## Timers and intervals
 
 ## Async JavaScript (promises and callbacks, async/await), http requests
@@ -4819,372 +5232,6 @@ const sendHttpRequest = (method, url, data) => {
 - [ ] [Using XMLHttpRequest on MDN](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/Using_XMLHttpRequest)
 - [ ] [Fetch API on MDN](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)
 - [ ] [Using files from web applications on MDN](https://developer.mozilla.org/en-US/docs/Web/API/File/Using_files_from_web_applications)
-
-</details>
-
-## Forms
-<details>
-<summary>What is the basic implementation of show password case?</summary>
-
-- change type of input from `password` to `text`
-
-</details>
-
-<details>
-<summary>Learn more</summary>
-
-- [How to Build and Validate Beautiful Forms with Vanilla HTML, CSS, & JS](https://www.freecodecamp.org/news/build-and-validate-beautiful-forms-with-vanilla-html-css-js/)
-
-</details>
-
-## Authorization
-<details>
-<summary>What is the purpose of the authorization?</summary>
-
-- restricts the access for different users
-
-</details>
-
-<details>
-<summary>What are the ways to identify the user?</summary>
-
-- Identification - tell the site who you are
-- Authentication - (authentic - true, genuine) the confirmation that you are who you state you are
-- Authorization - check if you are allowed to get access to some parts of the website or webapp
-
-</details>
-
-<details>
-<summary>What is the authorization order?</summary>
-
-1. Identification - user enters login and password
-2. Authentication - server checks if the login and password are correct and gives a token (access to the web app, often holds the rules and never stores open)
-3. Authorization - you give the token to the server and the server decides whether to give you an access or not
-  - 200 - success, allowed
-  - 401 - unauthorized
-  - 403 - not enough rights
-
-</details>
-
-## Working with data
-<details>
-<summary>What are the main problems when working with data?</summary>
-
-- user input - user can enter unsafe data for the view and UI has to be ready for it
-- storing and passing data formats could be different to the format needed on the UI, so we need to convert data in our app
-  - some ES6 objects (Date, Sets, Maps) could not be converted to JSON, so have to convert into standard data types (primitives, arrays, objects)
-
-</details>
-
-<details>
-<summary>What is JSON (and the restrictions)?</summary>
-
-- JavaScript Object Notation
-- can't use functions here
-- for keys only `" "`
-- for values `"string"` (double quotes only), `10`, `true`, `{...}`, `[...]`, `null`
-
-</details>
-
-<details>
-<summary>How to get the parameters from the link?</summary>
-
-```JavaScript
-const url = new Url(location.href);
-const queryParams = url.searchParams;
-const data = queryParams.get('data');
-```
-
-</details>
-
-<details>
-<summary>How to convert into a link?</summary>
-
-- `encodeURI('some text');`
-
-</details>
-
-<details>
-<summary>Learn more</summary>
-
-- [ ] [Why Mutation Can Be Scary](https://alistapart.com/article/why-mutation-can-be-scary/)
-
-</details>
-
-## Loading scripts to the page
-<details>
-<summary>How to load script files from JS dynamically?</summary>
-
-- basically generate html and add it to the page
-
-</details>
-
-## Location API
-<details>
-<summary>What is the location API used for?</summary>
-
-- for the app url and navigation
-
-</details>
-
-<details>
-<summary>Learn more</summary>
-
-- [ ] [Location on MDN](https://developer.mozilla.org/en-US/docs/Web/API/Location)
-
-</details>
-
-## History API
-<details>
-<summary>What is history API used for?</summary>
-
-- works with location
-- can use `history.back()` to navigate back (ex different cases with questions like age)
-
-</details>
-
-## Navigator API
-<details>
-<summary>Why do we use the navigator API?</summary>
-
-- don't use for defining browser version
-- could be useful when we need
-  - geolocation
-
-</details>
-
-<details>
-<summary>Learn more</summary>
-
-- [ ] [Navigator on MDN](https://developer.mozilla.org/en-US/docs/Web/API/Navigator)
-
-</details>
-
-## Browser storage
-<details>
-<summary>What are local and session storages and what is the difference?</summary>
-
-- simple key-value store
-- local storage lives till either user or browser (when ran out of space) clears it
-- session storage lives in the browser while you don't close the tab
-
-</details>
-
-<details>
-<summary>What are local and session storages good for?</summary>
-
-- manage user preferences or basic user data
-- simple, easy to use, but bad for complex data
-
-</details>
-
-<details>
-<summary>How are local and session storages being cleared?</summary>
-
-- can be cleared by the user and via JS
-
-</details>
-
-<details>
-<summary>How to work with the local storage?</summary>
-
-```JavaScript
-// local storage works sync
-const userId = '775';
-const user = {
-  name: 'Harry',
-  age: 33
-};
-
-// JS converts data into a string
-localStorage.setItem('userId', userId);
-localStorage.setItem('user', user); // => [object Object]
-localStorage.setItem('user', JSON.stringify(user));
-
-// to get item
-localStorage.getItem('user');
-```
-
-</details>
-
-<details>
-<summary>How to work with the session storage?</summary>
-
-```JavaScript
-// session storage works sync
-
-// JS converts data into a string
-sessionStorage.setItem('userId', userId);
-sessionStorage.setItem('user', JSON.stringify(user));
-
-// to get item
-sessionStorage.getItem('user');
-```
-
-</details>
-
-<details>
-<summary>What are cookies and the difference from local/session storage?</summary>
-
-- cookie stored to server
-- simple key-value store with some config options
-- not as easy to use
-- the advantage is that you can set it to expire or send to a server
-- available only if your app is served on a running server
-
-</details>
-
-<details>
-<summary>What are cookies good for?</summary>
-
-- manage user preferences or basic user data
-- bad for complex data
-
-</details>
-
-<details>
-<summary>How to clear the cookies?</summary>
-
-- can be cleared by the user and via JS
-
-</details>
-
-<details>
-<summary>How to use cookies?</summary>
-
-```JavaScript
-// cookies work sync
-const userId = 'fd3928';
-const user = {
-  name: 'Harry',
-  age: 33
-};
-// data stored as a string
-// under the hood uses a setter
-// so adds new cookie, not overrides
-document.cookie = `userId=${userId}; max-age=360`; // => seconds
-document.cookie = `user=${JSON.stringify(user)}; expires=date`; // => date
-
-// to get info
-// returns all the cookies stored in one string
-document.cookie;
-```
-
-</details>
-
-<details>
-<summary>What is IndexedDB?</summary>
-
-- client-side database
-
-</details>
-
-<details>
-<summary>What is IndexedDB good for?</summary>
-
-- manage complex data your app needs
-- not as easy to use, great for complex (non-critical) data, good performance (good for usage like google sheets)
-
-</details>
-
-<details>
-<summary>How to clean the IndexedDB?</summary>
-
-- can be cleared by the user and via JS
-
-</details>
-
-<details>
-<summary>How to use IndexedDB?</summary>
-
-```JavaScript
-// indexedDB works sync
-// 1. open a database
-// pass name and version
-// creates or opens an existed DB
-const dbRequest = indexedDB.open('Name', 1);
-let db;
-
-// to be able to change the data from a button too
-dbRequest.onsuccess = function(evt) {
-  // access to the created database
-  db = evt.target.result;
-};
-
-// for better browser support not .addEventListener, but:
-// this event runs when the db is created or the version is upgraded
-dbRequest.onupgradeneeded = function(evt) {
-  db = evt.target.result;
-
-  // 2. create an object store
-  const objStore = db.createObjectStore('products', {keyPath: 'id'});
-
-  // 3. start a transaction and make a request to do some db operation
-  // 4. wait for the operation to complete
-  // 5. do something with the results
-  // oncomplete triggers when createObjectStore is finished
-  objStore.transaction.oncomplete = function(evt) {
-    // connecting to the data base
-    // name of the store + mode (readonly, readwrite, etc)
-    const productsStore = db.transaction('products', 'readwrite')
-      .objectStore('products');
-    // adding a new item, has to have the property from keyPath
-    productsStore.add({
-      id: 'pr1',
-      name: 'Product 1',
-      price: 1.22,
-      tags: ['Vegetarian', 'No-Sugar']
-    });
-  };
-};
-
-dbRequest.onerror = function() {};
-
-addButton.addEventListener('click', () => {
-  if (!db) {
-    return;
-  }
-
-  const productsStore = db.transaction('products', 'readwrite')
-    .objectStore('products');
-
-  productsStore.add({
-    id: 'pr2',
-    name: 'Product 2',
-    price: 1.42,
-    tags: ['Vegetarian', 'No-Sugar']
-  });
-});
-
-// to retrieve the data
-getButton.addEventListener('click', () => {
-  const productsStore = db.transaction('products', 'readwrite')
-    .objectStore('products');
-
-  const request = productsStore.get('pr1');
-
-  request.onsuccess = function() {
-    console.log(request.result);
-  };
-});
-```
-
-</details>
-
-<details>
-<summary>Learn more</summary>
-
-- [ ] [localStorage on MDN](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage)
-- [ ] [cookie on MDN](https://developer.mozilla.org/en-US/docs/Web/API/Document/cookie)
-- [ ] [Using IndexedDB on MDN](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB)
-
-</details>
-
-## Service Workers, Web Workers and Worklets
-<details>
-<summary>Learn more</summary>
-
-- [ ] [Web workers vs Service workers vs Worklets](https://bitsofco.de/web-workers-vs-service-workers-vs-worklets/)
 
 </details>
 
