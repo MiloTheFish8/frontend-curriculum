@@ -89,7 +89,7 @@
 - [Frameworks](#frameworks) - refactor
 - [Resources](#resources) - refactor
 
-</summary>
+</details>
 
 ## Basic definitions
 <details>
