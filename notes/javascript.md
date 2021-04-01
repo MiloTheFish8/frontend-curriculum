@@ -19,6 +19,11 @@
 - [Objects](#objects)
 - [Iterables](#iterables)
 - [Arrays](#iterables-arrays)
+- [Arrays: Add or remove items](#arrays-add-or-remove-items)
+- [Arrays: Iterate](#arrays-iterate)
+- [Arrays: Search](#arrays-search)
+- [Arrays: Transform](#arrays-transform)
+- [Arrays: Implementing Stack and Queue](#arrays-implementing-stack-and-queue)
 - [Sets and WeakSets](#iterables-sets-and-weaksets)
 - [Maps and WeakMaps](#iterables-maps-and-weakmaps)
 
@@ -2161,11 +2166,25 @@ arr.length = 0;
 </details>
 
 <details>
+<summary>How to fill an array with the same values?</summary>
+
+```JavaScript
+const arr = new Array(7);
+// value, start, end
+arr.fill('text'); // the whole array
+arr.fill('text', 1, 3);
+```
+
+</details>
+
+<details>
 <summary>How to make an Array of a string?</summary>
 
 ```JavaScript
 const text = 'One two three';
 const words = text.split(' '); // => ['One', 'two', 'three']
+// also has the second arg - length (other items are ignored)
+const words2 = text.split(' ', 2); // => ['One', 'two']
 const symbols1 = Array.from(text); // => ['O', ..., ' ', 't', ...]
 const symbols2 = [...text]; // => ['O', ..., ' ', 't', ...]
 ```
@@ -2219,27 +2238,30 @@ console.log('0' == []); // '0' == '' => false
 </details>
 
 <details>
-<summary>How to check if the Array includes some item?</summary>
+<summary>How to check if the data structure is an Array?</summary>
 
 ```JavaScript
-const numbers = [1, 2, 5];
-// the same numbers.indexOf(5) !== -1
-const isNumberInNumbers = numbers.includes(5);
+console.log(Array.isArray([]));
 ```
 
 </details>
 
 <details>
-<summary>How to get the index of an item in an Array?</summary>
+<summary>How to pass `this` to be used inside the iterator function for some array methods?</summary>
 
 ```JavaScript
-// if several same values => returns the index of the first
-const index = numbers.indexOf(5);
-// if several same values => returns the index of the last
-const lastIndex = numbers.lastIndexOf(5);
+const arr = [1, 2, 3];
+// but not with sort
+arr.find(f, thisArg);
+arr.filter(f, thisArg);
+arr.map(f, thisArg);
+// better to use an arrow function
+arr.map(() => {});
 ```
 
 </details>
+
+## Arrays: Add or remove items
 
 <details>
 <summary>How to delete or add an element from (to) an Array at the start or the end?</summary>
@@ -2265,60 +2287,14 @@ const removedItem2 = numbers.shift();
 - change the initial array
 ```JavaScript
 const numbers = [1, 2, 5];
+// works but leaves an empty space
+delete numbers[1]; // => [1, , 5]
 // start index, delete count, value to add (or more 10, 15)
 const removedElements = numbers.splice(1, 0, 10); // => [1, 10, 2, 5]
 // removes from the end
 const removedElements2 = numbers.splice(-1, 1); // => [1, 2]
 // will delete all items starting with the provided index
 const removedElements3 = numbers.splice(0);
-```
-
-</details>
-
-<details>
-<summary>How reverse items in an Array?</summary>
-
-- change the initial array
-```JavaScript
-const numbers = [1, 2, 5];
-const reversedNumbers = numbers.reverse();
-```
-
-</details>
-
-<details>
-<summary>What iteration method do we use to iterate over the whole Array and don't need to create something of the Array?</summary>
-
-- doesn't change the initial array
-```JavaScript
-const numbers = [1, 2, 5];
-numbers.forEach();
-```
-
-</details>
-
-<details>
-<summary>How to sort items in an Array?</summary>
-
-- changes the initial array
-```JavaScript
-const numbers = [1, 2, 5];
-// by default converts to a string and sorts characters
-const sortedDefault = numbers.sort();
-const sortedNumbers = numbers.sort((a, b) => {
-  if (a > b) {
-    // or any positive value
-    return 1;
-  } else if (a === b) {
-    return 0;
-  } else {
-    // or any negative value
-    return -1;
-  }
-
-  // or
-  return a - b;
-});
 ```
 
 </details>
@@ -2350,8 +2326,113 @@ const clonedPartOfNumbers = numbers.slice(-3, -1); // => [1, 2]
 - returns a new array
 ```JavaScript
 const numbers = [1, 2, 5];
-// clones array and adds values from another array
+// clones array and adds values from another array or just values
 const newNumbers = numbers.concat([8, 5, 2]);
+const newNumbers2 = numbers.concat([7, 8], [9, 10]);
+const newNumbers3 = numbers.concat([7, 8], 9, 10);
+const newNumbers3 = numbers.concat(7, 8, 9, 10);
+// normally copies elements from arrays, not objects arrays-like
+const arrLike = {
+  0: 1,
+  1: 2,
+  length: 2
+};
+// => [1, 2, 5, {whole object}]
+console.log(numbers.concat(arrLike));
+// but with Symbol.isConcatSpreadable copies like an array
+const arrLike = {
+  0: 1,
+  1: 2,
+  [Symbol.isConcatSpreadable]: true,
+  length: 2
+};
+// => [1, 2, 5, 1, 2]
+console.log(numbers.concat(arrLike));
+```
+
+</details>
+
+<details>
+<summary>How to copy values in an array into itself?</summary>
+
+```JavaScript
+const arr = [1, 2, 3];
+// target, start, end
+arr.copyWithin(1, 0, 2);
+```
+
+</details>
+
+<details>
+<summary>How to create a flat array of a multidimensional array?</summary>
+
+```JavaScript
+// depth
+const arrFlat = arr.flat(depth);
+// function
+const arrFlat2 = arr.flatMap(fn);
+```
+
+</details>
+
+## Arrays: Iterate
+
+<details>
+<summary>What iteration method do we use to iterate over the whole Array and don't need to create something of the Array?</summary>
+
+- doesn't change the initial array
+```JavaScript
+const numbers = [1, 2, 5];
+numbers.forEach((item, index, array) => {});
+```
+
+</details>
+
+## Arrays: Search
+<details>
+<summary>How to check if the Array includes some item?</summary>
+
+```JavaScript
+const numbers = [1, 2, 5, NaN];
+// preferred over indexOf if we only need to check the inclusion
+// the same numbers.indexOf(5) !== -1
+// has the 2nd argument (from)
+// uses === to compare
+const isNumberInNumbers = numbers.includes(5);
+// works correctly with NaN (unlike indexOf)
+console.log(numbers.includes(NaN)); // => true
+console.log(numbers.indexOf(NaN)); // -1
+```
+
+</details>
+
+<details>
+<summary>How to get the index of an item in an Array?</summary>
+
+```JavaScript
+// both methods have the 2nd argument (from)
+// use === to compare
+// if several same values => returns the index of the first
+const index = numbers.indexOf(5);
+// if several same values => returns the index of the last
+const lastIndex = numbers.lastIndexOf(5);
+```
+
+</details>
+
+<details>
+<summary>How to find an item or an index in an Array?</summary>
+
+```JavaScript
+const numbers = [1, 2, 5];
+// first element in the array or undefined => 2
+const number = numbers.find((number, index, array) => {
+  return number > 1;
+});
+// index of the first element or -1 => 1
+const numberIndex = numbers.findIndex((number, index, array) => {
+  return number > 1;
+});
 ```
 
 </details>
@@ -2362,7 +2443,8 @@ const newNumbers = numbers.concat([8, 5, 2]);
 - returns a new array
 ```JavaScript
 const numbers = [1, 2, 5];
-const filteredNumbers = numbers.filter();
+// [] if nothing is found
+const filteredNumbers = numbers.filter((item, idx, arr) => {});
 ```
 
 </details>
@@ -2378,25 +2460,69 @@ const noFalsyArr = arr.filter(Boolean);
 </details>
 
 <details>
-<summary>How to create a new changed Array based on the given Array?</summary>
+<summary>How to check the array for some or every values?</summary>
 
-- returns a new array
+```JavaScript
+// if any results are true, immediately returns true and stops
+// otherwise false (like ||)
+const isInArray = arr.some((item) => item === 20);
+// if all are true => true, if any false => false and stops
+const checkArrEqual = (arr1, arr2) => {
+  if (arr1.length !== arr2.length) {
+    return false;
+  }
+
+  return arr1.every((item, index) => item === arr2[index]);
+};
+```
+
+</details>
+
+## Arrays: Transform
+<details>
+<summary>How to reverse items in an Array?</summary>
+
+- changes the initial array
 ```JavaScript
 const numbers = [1, 2, 5];
-const newTransformedNumbers = numbers.map();
+const reversedNumbers = numbers.reverse();
 ```
 
 </details>
 
 <details>
-<summary>How to find an item or an index in an Array?</summary>
+<summary>How to sort items in an Array?</summary>
 
+- changes the initial array
 ```JavaScript
 const numbers = [1, 2, 5];
-// first element in the array
-const number = numbers.find(number => number > 1); // => 2
-// index of the first element or -1
-const numberIndex = numbers.findIndex(number => number > 1); // => 1
+// by default converts to a string and sorts characters
+const sortedDefault = numbers.sort();
+const sortedNumbers = numbers.sort((a, b) => {
+  if (a > b) {
+    // or any positive value
+    return 1;
+  } else if (a === b) {
+    return 0;
+  } else {
+    // or any negative value
+    return -1;
+  }
+
+  // or
+  return a - b;
+});
+```
+
+</details>
+
+<details>
+<summary>How to create a new changed Array based on the given Array?</summary>
+
+- returns a new array
+```JavaScript
+const numbers = [1, 2, 5];
+const newTransformedNumbers = numbers.map((item, ids, arr) => {});
 ```
 
 </details>
@@ -2406,13 +2532,21 @@ const numberIndex = numbers.findIndex(number => number > 1); // => 1
 
 ```JavaScript
 const numbers = [1, 2, 5];
-const sum = numbers.reduce((prevValue, number, index, numbers) => {
-  return prevValue + number;
+
+// if there is no initial value, takes the 1st item as accumulator
+// and starts the loop from the 2nd (but if the arr is empty => error)
+const sum = numbers.reduce((accumulator, number, index, numbers) => {
+  return accumulator + number;
+}, 0);
+
+const sum2 = numbers.reduceRight((accumulator, number, index, numbers) => {
+  return accumulator + number;
 }, 0);
 ```
 
 </details>
 
+## Arrays: Implementing Stack and Queue
 <details>
 <summary>How and why to create a stack using an Array (LIFO)?</summary>
 
