@@ -1,48 +1,4 @@
 # Review progress
-## 01, ..., 25 Mar 2021 (01 Apr)
-### JavaScript
-<details>
-<summary>What are Iterators and how to use them?</summary>
-
-- create your own iterable values
-- iterables use it internally
-- iterator is an object which has `next()` method
-```JavaScript
-const player = {
-  currentFriend: 0,
-  name: 'Harry',
-  friends: ['Ron', 'Hermione', 'Luna'],
-  next() {
-    if (this.currentFriend >= this.friends.length) {
-      return {value: this.currentFriend, done: true};
-    }
-
-    const result = {
-      value: this.friends[this.currentFriend],
-      done: false
-    };
-
-    this.currentFriend++;
-    return result;
-  }
-};
-
-console.log(player.next());
-console.log(player.next());
-console.log(player.next());
-console.log(player.next());
-
-// still can't use for loop, but while is ok
-let friend = player.next();
-
-while(!friend.done) {
-  console.log(friend.value);
-  friend = player.next();
-}
-```
-
-</details>
-
 ## 02, ..., 26 Mar 2021 (02 Apr)
 ### JavaScript
 <details>
@@ -183,7 +139,7 @@ const clonedPartOfNumbers = numbers.slice(-3, -1); // => [1, 2]
 
 </details>
 
-## 06, ..., 23 Mar 2021 (30, 06 Apr)
+## 06, ..., 30 Mar 2021 (06 Apr)
 ### Angular
 <details>
 <summary>How to intercept input property changes with a setter?</summary>
@@ -634,4 +590,4 @@ sayHello(); // error (not defined)
 
 </details>
 
-## 29 Mar 2021 (30, 31, 02, 04, 08, 15, 22, 29 Apr)
+## 01 Apr 2021 (02, 03, 05, 07, 11, 18, 25, 02 May)
