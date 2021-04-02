@@ -3994,6 +3994,9 @@ export * from './module-2.js';
 
 // module-target.js
 import { nameOne, nameTwo } from './module-3.js';
+
+// if the proxy is named index.js
+import { nameOne, nameTwo } from './folder';
 ```
 
 </details>

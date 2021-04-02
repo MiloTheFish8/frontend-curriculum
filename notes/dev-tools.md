@@ -42,7 +42,7 @@
 
 ## Git and GitHub
 <details>
-<summary>Setup git</summary>
+<summary>How to setup git on mac or win</summary>
 
 - download git (both mac and win)
 - download terminal
@@ -59,9 +59,8 @@
 
 </details>
 
-
 <details>
-<summary>Config git</summary>
+<summary>How to config git?</summary>
 
 ```bash
 git config --global user.name "<name>"
@@ -69,7 +68,15 @@ git config -g user.email "<email>"
 
 # stored in the user's dir .gitconfig file path: ~/.gitconfig
 git config --list
+cat ~/.gitconfig
+```
 
+</details>
+
+<details>
+<summary>How to init repository with git?</summary>
+
+```bash
 # to add git to current folder
 git init
 ```
@@ -77,16 +84,39 @@ git init
 </details>
 
 <details>
-<summary>Git commands (general)</summary>
+<summary>How to use help in git?</summary>
 
 ```bash
 git help <command>
-git status
+```
 
+</details>
+
+<details>
+<summary>How to check status?</summary>
+
+```bash
+git status
+```
+
+</details>
+
+<details>
+<summary>How to stage files for commit (index)?</summary>
+
+```bash
 # dir current add to index files for commit
 git add .
 # add particular file(s)
 git add <path-to-file>
+```
+
+</details>
+
+<details>
+<summary>How to add, rename, checkout, show a commit?</summary>
+
+```bash
 # creates a save
 git commit -m "<message>"
 # to correct the last commits message (amend changes hash)
@@ -95,13 +125,32 @@ git commit --amend -m "<message>"
 git checkout <commit hash>
 # shows commit file content -p readable format
 git cat-file -p <commit hash>
+# to show the changes of the commit
+git show <commit hash>
+```
 
+</details>
+
+<details>
+<summary>How to get what changed?</summary>
+
+```bash
+# not staged
 git diff
-# indexed files
+# staged
 git diff --staged
 # compare the file to another branch (same file)
 git diff <branch name> -- <file name>
+# to show the changes of the commit
+git show <commit hash>
+```
 
+</details>
+
+<details>
+<summary>How to work with commits log?</summary>
+
+```bash
 # history
 git log
 git log --oneline
@@ -110,9 +159,57 @@ git log --all
 git log --graph
 # shows only 1/2/3/4/... last commits
 git log -1<2/3/4...>
-# to show the content of the commit
-git show <commit hash>
+```
 
+</details>
+
+<details>
+<summary>How to restore some file to some commit if all the changes are already commited?</summary>
+
+```bash
+# returns and stages
+git checkout <commit-hash> path/to/file.js
+git commit -m "<message>"
+```
+
+</details>
+
+<details>
+<summary>How to unstage staged file (not yet commited)?</summary>
+
+```bash
+git reset HEAD path/to/file.js
+```
+
+</details>
+
+<details>
+<summary>How to delete file and remove from git?</summary>
+
+```bash
+# these 2 commands remove file from commit and delete from folder
+git rm <file>
+git commit --amend --no-edit
+```
+
+</details>
+
+<details>
+<summary>How to remove file from git but save the changes?</summary>
+
+```bash
+# these 2 commands remove file from commit and keep unstaged in folder
+# file will be both delete (staged) and untracked
+git rm --cached <file>
+git commit --amend --no-edit
+```
+
+</details>
+
+<details>
+<summary>Git commands (general)</summary>
+
+```bash
 # unstage a file but leave its actual changed untouched
 git restore --staged <file name>
 # for not commited, reset file to last commit, 
@@ -125,18 +222,10 @@ git restore .
 # resets file to the state in the commit
 git checkout <commit hash> <file>
 git restore --source <commit hash> <file name>
-# to unstage indexed, but not yet commited file
-git reset HEAD <file>
 # to undo the last commit with getting changes back to unstaged
 # --mixed changes are not being discarded
 # HEAD~1 the commit before the last one
 git reset --mixed HEAD~1
-# these 2 commands remove file from commit and delete from folder
-git rm <file>
-git commit --amend --no-edit
-# these 2 commands remove file from commit and keep unstaged in folder
-git rm --cached <file>
-git commit --amend --no-edit
 ```
 
 </details>
@@ -242,6 +331,7 @@ ls <path/to>
 ls -1
 # +hidden
 ls -a
+ls -1 -a
 # or instead of . add path to open dir or file
 open .
 start .

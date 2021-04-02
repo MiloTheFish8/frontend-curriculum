@@ -1,27 +1,4 @@
 # Review progress
-## 02, ..., 26 Mar 2021 (02 Apr)
-### JavaScript
-<details>
-<summary>What is API?</summary>
-
-- API (Application Public Interface)
-  - a set of available properties and methods to solve a particular task
-  - frequent implementation - objects
-
-</details>
-
-<details>
-<summary>What are statements?</summary>
-
-- syntax constructs and commands that perform actions
-- can be separated with `;`
-- usually written on separate lines
-```JavaScript
-console.log('Hello!');
-```
-
-</details>
-
 ## 03, ..., 27 Mar 2021 (03 Apr)
 ### JavaScript
 <details>
@@ -333,7 +310,7 @@ export class ChildComponent {
 
 </details>
 
-## 09, ..., 26 Mar 2021 (02, 09 Apr)
+## 09, ..., 02 Apr 2021 (09 Apr)
 ### JavaScript
 <details>
 <summary>How and why to create a queue using an Array (FIFO)?</summary>
