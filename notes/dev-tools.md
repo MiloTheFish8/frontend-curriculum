@@ -42,7 +42,7 @@
 
 ## Git and GitHub
 <details>
-<summary>How to setup git on mac or win</summary>
+<summary>How to setup git on mac or win?</summary>
 
 - download git (both mac and win)
 - download terminal
@@ -51,7 +51,7 @@
 </details>
 
 <details>
-<summary>Git line endings</summary>
+<summary>What are git line endings (and how to setup)?</summary>
 
 - set inside `.gitattributes` file
 - `*.md text` for text file to be converted `CRLF` (win) => `LF` (macOS, linux)
@@ -123,9 +123,11 @@ git commit -m "<message>"
 git commit --amend -m "<message>"
 # switches to commit, shows log till this commit
 git checkout <commit hash>
-# shows commit file content -p readable format
+# to get back to the last commit in the branch
+git checkout master
+# shows commit file content (info about commit) -p readable format
 git cat-file -p <commit hash>
-# to show the changes of the commit
+# to show the changes in the commit
 git show <commit hash>
 ```
 
@@ -154,7 +156,7 @@ git show <commit hash>
 # history
 git log
 git log --oneline
-# shows the whole log
+# shows the whole log (all the branches)
 git log --all
 git log --graph
 # shows only 1/2/3/4/... last commits
@@ -231,29 +233,99 @@ git reset --mixed HEAD~1
 </details>
 
 <details>
-<summary>Git branches</summary>
+<summary>How to create a branch?</summary>
 
 - `HEAD` indicates current state (where we currently are)
 - when we create a new commit in a branch, the pointer jumps to the last commit
 ```bash
+# or without hash for current commit, creates a pointer to commit
+git checkout -b <branch name> [<commit hash>]
+```
+
+</details>
+
+<details>
+<summary>How to switch to another branch and back?</summary>
+
+```bash
 # to switch branch
 git checkout <branch name>
+# new command to replace the checkout
 git switch <branch name>
 # switch back to previously active branch
 git switch -
-# or without hash for current commit, creates a pointer to commit
-git checkout -b <pointer name> <commit hash>
+```
+
+</details>
+
+<details>
+<summary>How to merge branches?</summary>
+
+```bash
 # creates a merge commit, the pointer will be current branch
-git merge <pointer-to-merge> -m "<message>"
-git push origin <what-to-push>:<where-to-push>
-# to remove branch
+git merge <branch to merge> -m "<message>"
+```
+
+</details>
+
+<details>
+<summary>How to add a remote repository (and push and check added)?</summary>
+
+```bash
+# to link remote and local repos
+git remote add origin <git@github.com:mary/repo-name.git>
+# shows remote repos
+git remote -v
+git push -u origin master
+```
+
+</details>
+
+<details>
+<summary>How to push from one to another branch (also to change the branch name)?</summary>
+
+```bash
+git push origin <local-branch-to-push>:<where-to-push>
+# to rename current local branch
+git branch -m <new-branch-name>
+```
+
+</details>
+
+<details>
+<summary>How to delete the branch from the remote repository?</summary>
+
+```bash
+# to remove branch (nothing to branch to delete)
 git push :<where-to-push>
-# to rename current branch
-git branch -m <name>
+```
+
+</details>
+
+<details>
+<summary>How to get all the changes in all branches from the remote repository?</summary>
+
+```bash
 # to get all branches from repo
 git fetch origin
+```
+
+</details>
+
+<details>
+<summary>How to create a new branch from an existing one?</summary>
+
+```bash
 # to create a new branch from existing pointer
-git checkout -b <new-pointer-name> origin/<branch-name>
+git checkout -b <new-branch-name> origin/<branch-name>
+```
+
+</details>
+
+<details>
+<summary>How to link the current branch to another one (and show the existing links)?</summary>
+
+```bash
 # to link current branch to repo branch
 git branch --set-upstream-to=origin/<name>
 # to show links between branches
@@ -263,21 +335,20 @@ git branch -vv
 </details>
 
 <details>
-<summary>Set SSH and integrations</summary>
+<summary>How to create a new SSH-key?</summary>
 
 - store private key only on your computer
 - load public key to repo
 ```bash
-# to link remote and local repos
-git remote add origin <git@github.com...>
-# shows remote repos
-git remote -v
-git push -u origin master
-
 # creates a folder in user's folder, create an SSH key in this folder
 mkdir ~/.ssh
-# where -t rsa sets key type and -b 4096 sets key length (bit)
+# switch to folder
+cd ~/.ssh
+# -t rsa - key type
+# -b 4096 - key length (bit)
 ssh-keygen -t rsa -b 4096 -C "<email@email.com>"
+# enter the key name
+# enter password
 # copy content to github
 cat <key>.pub
 # to check if the key works
@@ -301,6 +372,8 @@ Host github.com
 - [Основные команды для работы с Git и GitHub через консоль](https://github.com/ivan1kazantsev/dev-helper/tree/master/cmdline/git)
 - [gitignore](https://docs.github.com/en/github/using-git/ignoring-files)
 - [gitattributes](https://git-scm.com/docs/gitattributes)
+- [Шпаргалка по Git. Решение основных проблем](https://htmlacademy.ru/blog/boost/frontend/first-aid-git)
+- [Работа с Git через консоль](https://htmlacademy.ru/blog/boost/frontend/git-console)
 
 </details>
 

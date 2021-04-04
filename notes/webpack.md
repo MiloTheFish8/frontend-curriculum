@@ -89,5 +89,6 @@ import "./src/style.css";
 - [Guides](https://webpack.js.org/guides/)
 - [HtmlWebpackPlugin](https://webpack.js.org/plugins/html-webpack-plugin/)
 - [HtmlWebpackPlugin usage](https://github.com/jantimon/html-webpack-plugin)
+- [webpack-dev-server](https://github.com/webpack/webpack-dev-server#readme)
 
 </details>
