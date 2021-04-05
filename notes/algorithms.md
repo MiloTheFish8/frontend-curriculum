@@ -166,6 +166,14 @@ const num = number.find(num => num === 3); // best: O(1), worst, av: O(n)
 
 ## Data Structures
 <details>
+<summary>What is the difference between data structure and data type?</summary>
+
+- data types: `boolean`, `number`, `string`, `object`, `null`, `undefined`, `symbol`, `bigint`, `Array`, `Map`, `Set`, `WeakMap`, ...
+- data structure (a way to organize the data): stack, queue, list, linked list, set, map, ...
+
+</details>
+
+<details>
 <summary>Sets</summary>
 
 - order doesn't matter

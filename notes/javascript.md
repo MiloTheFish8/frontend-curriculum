@@ -1851,6 +1851,10 @@ const character = {
     }
     this._level = value;
   }
+  // can create of some complex data
+  get [`other ${this._level}`]() {
+    return this._level;
+  }
 };
 
 // addressing the getter or setter
@@ -2097,6 +2101,8 @@ console.log(user.ref().name);
 // ES5
 // 1
 var numbers = new Array(3, 5); // => [3, 5]
+// not === [undefined, undefined, undefined]
+// has no indexes, only the length property
 var emptyArray = new Array(3); // => [] with length === 3
 // 2
 var numbers2 = Array(3, 5);
@@ -2114,6 +2120,18 @@ const letters = Array.from('string');
 const values = Array.of(1, 2, 3);
 // 7
 const items = [...elements, ...values];
+```
+
+</details>
+
+<details>
+<summary>How to fill an empty array (when created with length only)?</summary>
+
+```JavaScript
+const arr = new Array(5).fill();
+// if used like this, calls the function only once
+// and fills other items with the same value
+const arr = new Array(5).fill(getTaskTemplate());
 ```
 
 </details>
