@@ -3653,8 +3653,9 @@ console.log(harryPotter instanceof Player); // => true
 - `class` better than `const` when creating a class
 ```JavaScript
 class Player {
-  // is optional
+  // is optional (only one or none)
   // helps to create an instance of a class
+  // is called when creating an instance with a new keyword
   constructor() {}
 
   // for every instance
@@ -3817,6 +3818,7 @@ const juniorPlayer = Player.createJuniorPlayer();
 <summary>What are the differences between a class and a constructor function?</summary>
 
 - `class` can't be used without `new` (could be imitated inside the constructor function with `new.target`)
+- different log to console (function and class)
 - class methods are not iterable
 ```JavaScript
 for (const prop in player) {
