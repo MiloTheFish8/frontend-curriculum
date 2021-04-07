@@ -71,10 +71,10 @@
 </details>
 
 <details>
-<summary>Async JS</summary>
+<summary>Asynchronous JS</summary>
 
 - [Timers and intervals](#timers-and-intervals)
-- [Async JavaScript](#async-javascript-promises-and-callbacks-asyncawait-http-requests)
+- [Asynchronous JavaScript](#asynchronous-javascript-http-requests)
 
 </details>
 
@@ -4976,9 +4976,46 @@ getButton.addEventListener('click', () => {
 
 ## Timers and intervals
 
-## Async JavaScript (promises and callbacks, async/await), http requests
+## Asynchronous JavaScript, Http requests
 <details>
-<summary>What is sync data loading?</summary>
+<summary>What is async in JS?</summary>
+
+- async in JS is about two activities, where one activity triggers another, which will be completed in future
+- async - run the operation without blocking the main script process
+
+</details>
+
+<details>
+<summary>What is AJAX?</summary>
+
+- Asynchronous JavaScript And XML
+- is used to communicate between client and server
+
+</details>
+
+<details>
+<summary>What is the event loop and how it works?</summary>
+
+- JS is single threaded
+- browser is multi threaded
+- all kind of async tasks (like timers, event listeners, etc) are going to browser (message queue)
+- micro - promises (run first), macro - timeouts (run second)
+- when the call stack is empty, event loop goes through message queue and executes the functions from there
+
+</details>
+
+<details>
+<summary>What are the main method types of an http request?</summary>
+
+- GET
+- POST
+- PUT
+- DELETE
+
+</details>
+
+<details>
+<summary>How to implement synchronous data loading using AJAX?</summary>
 
 ```JavaScript
 const getResponse = (url) => {
@@ -4995,25 +5032,24 @@ const data = getResponse('https://data.com/users');
 </details>
 
 <details>
-<summary>What is the event loop and how it works?</summary>
+<summary>When is the xhr.onreadystatechange called?</summary>
 
-- JS is single threaded
-- browser is multi threaded
-- all kind of async tasks (like timers, event listeners, etc) are going to browser (message queue)
-- micro - promises (run first), macro - timeouts (run second)
-- when the call stack is empty, event loop goes through message queue and executes the functions from there
+- whenever there is a change in the HttpConnection
 
 </details>
 
 <details>
-<summary>What is async?</summary>
+<summary>What is the xhr.readyState?</summary>
 
-- async - run the operation without blocking the main script process
+- tells about the state of the HttpConnection
+- changes its value (0-4) whenever there is any change in the connection and request
+- 3 - data starts coming from the server
+- 4 - all the data has come, server has processed the request completely, the connection is closed, at this moment we can check if our request was processed successfully or if there was an error
 
 </details>
-  
+
 <details>
-<summary>How was async implemented in ES5 and what are the issues?</summary>
+<summary>How was async request implemented in ES5 and what are the issues?</summary>
 
 - complex interface, have to add all possible callbacks, difficult to make optional manipulation for some cases
 - difficult to read the code, recreate the methods sequence is quite hard
@@ -5038,11 +5074,16 @@ getResponse('data.json',
 <details>
 <summary>How is async implemented in ES6?</summary>
 
-- promise is a way to work with an async function as if it's sync 
+- promise is a way to work with an async function as if it's sync
+- can be resolved or rejecter only one time
 - different states of a promise object
 <img src="../images/promise.jpg" alt="promises" width="400">
 
 ```JavaScript
+// inside async function:
+// 1 - Promise object is created
+// 2 - async function returns this Promise
+// 3 - calls the resolve/reject callbacks
 const getResponse = (url) => new Promise(
   (resolve, reject) => {
     // Object => Pending...
@@ -5059,6 +5100,9 @@ const getResponse = (url) => new Promise(
   }
 );
 
+// outside async function:
+// 1 - call the function and get the Promise object
+// 2 - attach the success and error handlers using then and catch
 getResponse('data.json')
   // callback on success
   // could work with several promises
@@ -5362,6 +5406,34 @@ const sendHttpRequest = (method, url, data) => {
     });
 };
 ```
+
+</details>
+
+<details>
+<summary>How to send the cross domain request?</summary>
+
+- both require some server changes
+- using CORS
+- using JSONP
+
+</details>
+
+<details>
+<summary>What is CORS?</summary>
+
+- CORS is the new way to deal with cross origin AJAX request
+- to enable CORS response should contain Access-Control-Allow-Origin header with the domain value or `*` to work with any domain
+
+</details>
+
+<details>
+<summary>What is JSONP and when do we use it?</summary>
+
+- if CORS can't be enabled by server or for old browsers
+- uses script tag to get the data from the server
+- script is allowed to be fetched from any domain, so we need to create a script with the url as src and the server has to wrap the response in a callback function
+- response sent by server is actually a JS code which contains data inside a wrapper function
+- <b>there is no ajax call being made</b>
 
 </details>
 

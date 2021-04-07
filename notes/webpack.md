@@ -84,6 +84,7 @@ import "./src/style.css";
 <summary>Learn more</summary>
 
 - [Webpack official](https://webpack.js.org/)
+- [Webpack: A gentle introduction](https://ui.dev/webpack/)
 - [Code Splitting](https://webpack.js.org/guides/code-splitting/)
 - [Entry](https://webpack.js.org/concepts/#entry)
 - [Guides](https://webpack.js.org/guides/)
