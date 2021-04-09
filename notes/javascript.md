@@ -1303,6 +1303,7 @@ console.log(text.charAt(10));
 <details>
 <summary>How to iterate over a string?</summary>
 
+- for pairs (like smiles) also works correct
 ```JavaScript
 const text = 'Hello';
 
@@ -1543,6 +1544,10 @@ console.log('𝒳'[1]);
 // these intervals are reserved exclusively for pairs by the standard
 console.log('𝒳'.charCodeAt(0).toString(16)); // d835 (between 0xd800 and 0xdbff)
 console.log('𝒳'.charCodeAt(1).toString(16)); // dcb3, between 0xdc00 and 0xdfff
+
+// can use conversion to and array or for...of loop to work with pairs
+const text = '𝒳😂𩷶';
+const letters = Array.from(text);
 ```
 
 </details>
@@ -2051,6 +2056,27 @@ console.log(user.ref().name);
 </details>
 
 <details>
+<summary>What is the difference between an iterable and an array-like?</summary>
+
+- iterables are objects that implement the `Symbol.iterator` method
+- array-like is an object that have indexes and length (looks like an array)
+- an iterable may be not array-like and vice versa
+- in JS there are iterables, array-likes or both (strings)
+```JavaScript
+// array-like
+const arrayLike = {
+  0: 'game',
+  1: 'code',
+  length: 2
+};
+
+// error (no Symbol.iterator)
+for (let item of arrayLike) {}
+```
+
+</details>
+
+<details>
 <summary>What are the characteristics of an array?</summary>
 
 - store data of any kind and length
@@ -2113,9 +2139,14 @@ var letters = ['a', 'r']; // => ['a', 'r']
 const newNumbers = numbers.concat([8, 5, 2]);
 
 // ES6+
-// 5 makes an array of any iterable (collection, separate values)
+// 5 makes an array of any iterable or array-like
+// takes the object, examines for being an iterable or array-like
+// makes a new array and copies items to it
+// Array.from(iterable[, mapFunction, thisArg]);
 const elements = Array.from(document.querySelectorAll('li'));
 const letters = Array.from('string');
+// [ss, ts, rs, ...]
+const lettersWithS = Array.from('string', (l) => l + 's');
 // 6 of separate values
 const values = Array.of(1, 2, 3);
 // 7
@@ -5532,16 +5563,15 @@ console.log(idNotGlobal.description);
 </details>
 
 <details>
-<summary>What are Iterators and how to use them?</summary>
+<summary>What is an Iterator and how to use it?</summary>
 
-- create your own iterable values
-- iterables use it internally
 - iterator is an object which has `next()` method
 ```JavaScript
 const player = {
   currentFriend: 0,
   name: 'Harry',
   friends: ['Ron', 'Hermione', 'Luna'],
+  // we can have a next method without iterator function
   next() {
     if (this.currentFriend >= this.friends.length) {
       return {value: this.currentFriend, done: true};
@@ -5568,6 +5598,105 @@ let friend = player.next();
 while(!friend.done) {
   console.log(friend.value);
   friend = player.next();
+}
+```
+
+</details>
+
+<details>
+<summary>How to create an iterable and why?</summary>
+
+- to work with `for ... of` loop
+- iterables use it internally
+- infinite iterable is also possible, can use `break` to stop
+```JavaScript
+// the core feature of iterables is the separation of concerns
+// the player itself doesn't have the next()
+// instead another object (iterator) is created player[Symbol.iterator]()
+// and next() generates the values for the iteration
+const player = {
+  name: 'Harry',
+  friends: ['Ron', 'Hermione', 'Luna'],
+  // 1. when for...of starts, it calls this once
+  // must return an iterator (an object with method next)
+  [Symbol.iterator]: function() {
+    // 2. onward for...of works only with this iterator object
+    // asking it for the next values
+    return {
+      currentFriend: 0,
+      friendList: this.friends,
+      // 3. next() is called on each iteration of the for...of loop
+      next() {
+        // 4. should return an object of type
+        // {done: Boolean, value: any}
+        if (this.currentFriend >= this.friendList.length) {
+          return {done: true, value: this.currentFriend};
+        }
+
+        const result = {
+          done: false,
+          value: this.friendList[this.currentFriend]
+        };
+
+        this.currentFriend++;
+        return result;
+      }
+    };
+  }
+};
+
+// we can merge iterator and player to make the code simpler
+// the downside - impossible to have two for...of loops
+// running over the object simultaneously: they’ll share the iteration state
+// because there’s only one iterator – the object itself
+// but two parallel for-ofs is a rare thing, even in async scenarios
+const player2 = {
+  name: 'Harry',
+  friends: ['Ron', 'Hermione', 'Luna'],
+
+  next() {
+    if (this.currentFriend >= this.friends.length) {
+      return {done: true, value: this.currentFriend};
+    }
+
+    const result = {
+      done: false,
+      value: this.friends[this.currentFriend]
+    };
+
+    this.currentFriend++;
+    return result;
+  },
+  
+  [Symbol.iterator]() {
+    this.currentFriend = 0;
+    return this;
+  }
+};
+
+for (let friend of player) {
+  console.log(friend);
+}
+```
+
+</details>
+
+<details>
+<summary>How to call an iterator explicitly?</summary>
+
+```JavaScript
+const text = 'Hello';
+// the same as for...of
+const iterator = text[Symbol.iterator]();
+
+while (true) {
+  const result = iterator.next();
+
+  if (result.done) {
+    break;
+  }
+
+  console.log(result.value);
 }
 ```
 
