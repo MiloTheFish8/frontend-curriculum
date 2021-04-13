@@ -3296,6 +3296,21 @@ console.log(getTeamMemberNames(player));
 <summary>How does `use strict` affect `this` keyword?</summary>
 
 - no `use strict`, `this` = `window`, with `this` = `undefined` (for global this inside the function)
+```JavaScript
+const doWithoutStrict = function() {
+  console.log(this);
+};
+
+const doWithStrict = function() {
+  'use strict';
+  console.log(this);
+};
+
+// => window
+doWithoutStrict();
+// => undefined
+doWithStrict();
+```
 
 </details>
 
@@ -3310,19 +3325,19 @@ console.log(getTeamMemberNames(player));
 <summary>What will be `this` in case of outer function (call on object and in global scope)?</summary>
 
 ```JavaScript
-const walk = function() {
-  console.log(this + 'walk!');
+const greet = function() {
+  console.log(`My name is ${this.firstName}`);
 };
 
 const player = {
-  name: 'Ron',
-  walk
+  firstName: 'Ron',
+  greet
 };
 
-// this links to player object
-player.walk();
-// TypeError: Cannot read property '...' of undefined
-walk();
+// => My name is Ron
+player.greet();
+// => My name is undefined
+greet();
 ```
 
 </details>
@@ -3332,15 +3347,15 @@ walk();
 
 ```JavaScript
 const player = {
-  name: 'Harry',
+  firstName: 'Harry',
   age: 28,
   run() {
-    console.log(this + ' runs!');
+    console.log(`${this.firstName} runs!`);
   }
 };
 
-const { run } = player;
-// TypeError: Cannot read property '...' of undefined
+const {run} = player;
+// => undefined runs!
 run();
 ```
 
@@ -3501,6 +3516,60 @@ const players = {
 
 players.getMembers();
 ```
+
+</details>
+
+<details>
+<summary>Practical questions</summary>
+
+  ### What will be logged to the console?
+  ```JavaScript
+  const guitarStore = function() {
+    this.guitarCount = 2;
+
+    (function() {
+      this.guitarCount = 1;
+    })();
+
+    console.log(this.guitarCount);
+  };
+
+  const guitarShop = {
+    guitarCount: 3,
+    showMeAnswer: function () {
+      console.log(this.guitarCount);
+    },
+  };
+
+  guitarStore();
+  new guitarStore();
+  guitarShop.showMeAnswer();
+  new guitarShop.showMeAnswer();
+  guitarStore.apply(guitarStore);
+  guitarShop.showMeAnswer.apply(guitarStore);
+  guitarStore.bind({})();
+  ```
+
+  <details>
+  <summary>Answer</summary>
+
+  Код работает в нестрогом режиме. Значением this будет ссылка на объект Window. Поэтому, в Window будет создано свойство guitarCount и изменено дважды: внутри guitarStore() и во вложенной IIFE. Поэтому в консоли получим значение 1.
+
+  Мы вызываем функцию с new, то есть внутри this будет новый объект. По факту мы создаём экземпляр guitarStore. Таким образом, в объект (this) запишется значение 2. Дальше будет вызов IIFE. Она будет вызвана без new, код работает в нестрогом режиме. Следовательно, внутри IIFE, this будет ссылаться на Window. Будет создано свойство guitarCount со значением 1. То есть мы работаем с другим объектом, а не с тем, в который записали 1. Поэтому значением будет 2;
+
+  Метод вызван в контексте объекта. Следовательно, this будет содержать ссылку на объект. Поэтому значение 3 (у объекта есть одноимённое свойство).
+
+  Здесь пытаемся вызвать метод showMeAnswer как функцию-конструктор. Поэтому в this будет новый объект. У него нет свойства guitarCount, поэтому в консоль выводится undefined.
+
+  Вызов функции происходит с помощью apply. Мы принудительно устанавливаем в виде контекста саму функцию guitarStore. Функции — это объекты, поэтому внутри функции мы просто добавляем ей (функции) свойство guitarCount со значением 2. IIFE будет вызвана как обычная функция, следовательно контекстом для неё будет Window (код работает в нестрогом режиме). Поэтому она не изменит содержимое guitarCount. Здесь важно понять, что мы фактически добавили для функции новое свойство. Вы можете в этом убедиться так:
+
+  guitarStore.apply(guitarStore); // Первый вызов
+  console.log(guitarStore.guitarCount); // 2
+  Мы вызываем метод showMeAnswer с помощью метода apply. Контекстом устанавливаем функцию guitarStore. Следовательно, если внутри метода showMeAnswer мы обратимся к this.guitarCount, то получим undefined (у функции нет такого свойства). НО! Если мы раскомментируем предыдущий вызов функции (guitarStore.apply(guitarStore);), то в консоли увидим вместо undefined значение 2. Почему? Предыдущий код добавит функции одноимённое свойство, которое мы сможем считать в showMeAnswer. Чтобы лучше визуализировать, перечитайте предыдущий пункт.
+
+  Значением будет 2, так как мы биндим в качества контекста пустой объект. Следовательно, значением this внутри guitarCount будет пустой объект, к которому мы добавим свойство guitarCount со значением 2. IIFE будет вызвана как обычная функция и её контекстом будет Window. Поэтому она просто добавит в Window новое свойство guitarCount со значением 1.
+
+  </details>
 
 </details>
 

@@ -51,6 +51,7 @@ parseInt: function(number, number): number;
 <summary>Encapsulation</summary>
 
 - in capsulo, interfaces, closed realization details
+- setters and getters
 
 </details>
 
