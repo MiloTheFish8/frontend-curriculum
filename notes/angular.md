@@ -1087,7 +1087,7 @@ ngOnDestroy() {
 </details>
 
 <details>
-<summary>What us attribute binding and why do we need it?</summary>
+<summary>What is attribute binding and why do we need it?</summary>
 
 - recommended that you set an element property with a property binding whenever possible
 - when you don't have an element property to bind - use attribute binding (ex: ARIA, SVG)
@@ -1143,7 +1143,58 @@ ngOnDestroy() {
 <summary>How does the style precedence work?</summary>
 
 - the more specific a class or style binding is, the higher its precedence
-- `[class.foo]` is higher that `[class]`, the same for the `[style]`
+- `[class.foo]` is higher than `[class]`, the same for the `[style]`
+- template bindings are the most specific because they apply to the element directly and exclusively
+- directive host bindings are less specific because directives can be used in multiple locations, so they have a lower precedence than template bindings
+- directives often augment component behavior, so host bindings from components have the lowest precedence
+- bindings take precedence over static attributes `[class]` is higher than `class` just because it's dynamic
+```HTML
+<!-- `class.special` template binding -->
+<!-- overrides any host binding to the `special` class  -->
+<!-- set by `appDir` or `app-child`-->
+<app-child [class.special]="isSpecial" appDir>Text here</app-child>
+<!-- same here but with the property -->
+<app-child [style.color]="color" appDir>Text here</app-child>
+```
+- it is possible for higher precedence styles to "delegate" to lower precedence styles using undefined values (setting a style property to null ensures the style is removed, setting to undefined will cause Angular to fall back to the next-highest precedence binding to that style)
+```HTML
+<!-- if both app-child and appDir have [style.width] host binding -->
+<!-- if appDir sets it to undefined - fallback to width set in app-child -->
+<!-- if appDir sets to null - width prop will be removed -->
+<app-child appDir></app-child>
+```
+
+</details>
+
+<details>
+<summary>How to pass the value of an HTML attribute to a component or directive constructor?</summary>
+
+```TypeScript
+// the injected value captures 
+// the value of the specified HTML attribute at that moment
+// future updates to the attribute value 
+// are not reflected in the injected value
+import {Attribute, Component} from '@angular/core';
+
+@Component({
+  selector: 'app-button',
+  template: '<button></button>'
+})
+export class ButtonComponent {
+  constructor(@Attribute('type') public type: string) {}
+}
+```
+```HTML
+<app-button type="submit"></app-button>
+```
+
+</details>
+
+<details>
+<summary>What is the difference in usage between @Input and @Attribute?</summary>
+
+- use `@Input()` when you want to keep track of the attribute value and update the associated property
+- use `@Attribute()` when you want to inject the value of an HTML attribute to a component or directive constructor
 
 </details>
 

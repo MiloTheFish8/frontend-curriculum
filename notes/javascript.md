@@ -2104,7 +2104,7 @@ for (let item of arrayLike) {}
 - store key-value data of any kind and length
 - any key values are allowed
 - has own special methods
-- order is guaranteed
+- order is guaranteed (as the values were inserted)
 - duplicate keys are not allowed
 - key-based access
 
@@ -2715,7 +2715,9 @@ addAsyncListener(() => console.log(5));
 
 ```JavaScript
 const data = new Set();
-// add items
+// add items, returns the set itself, can chain
+data.add(1);
+// does nothing if value exists
 data.add(1);
 
 // based on array or any other iterable
@@ -2728,7 +2730,9 @@ const data = new Set([1, 4, 8]);
 <summary>How to check if the item is in the Set?</summary>
 
 ```JavaScript
-const isElementInData = data2.has(1); // => true
+const data = new Set([1, 4, 8]);
+// => true
+console.log(data.has(1));
 ```
 
 </details>
@@ -2738,8 +2742,28 @@ const isElementInData = data2.has(1); // => true
 
 ```JavaScript
 const data = new Set([1, 4, 8]);
-// delete not existed item does nothing
+// => true
 data.delete(1);
+// => false
+data.delete(15);
+```
+
+</details>
+
+<details>
+<summary>How to delete all the items from a Set?</summary>
+
+```JavaScript
+data.clear();
+```
+
+</details>
+
+<details>
+<summary>How to get the items count of a Set?</summary>
+
+```JavaScript
+data.size;
 ```
 
 </details>
@@ -2751,6 +2775,7 @@ data.delete(1);
 const data = new Set([1, 4, 8]);
 // iterable
 for (const item of data) {
+  // => 1 => 4 => 8
   console.log(item);
 }
 ```
@@ -2758,15 +2783,33 @@ for (const item of data) {
 </details>
 
 <details>
-<summary>What are the entries of a Set?</summary>
+<summary>What are the entries, keys and values of a Set?</summary>
 
 ```JavaScript
 const data = new Set([1, 4, 8]);
 const entries = data.entries();
 
 for (const entry of entries) {
-  console.log(entry); // => [1, 1] => [4, 4] => [8, 8]
+  // => [1, 1] => [4, 4] => [8, 8]
+  console.log(entry);
 }
+// those are the same (for compatibility with Map)
+const values = data.values();
+const keys = data.keys();
+```
+
+</details>
+
+<details>
+<summary>How to iterate over a Set with forEach?</summary>
+
+```JavaScript
+const data = new Set([1, 4, 8]);
+
+data.forEach((value, valueSame, set) => {
+  // => 1 => 4 => 8
+  console.log(value);
+});
 ```
 
 </details>
@@ -2805,7 +2848,8 @@ user = null;
 <details>
 <summary>Why a Map, not just an Object?</summary>
 
-- any keys possible
+- any keys possible (even objects, if we use an object as a key in the Object, it would be converted to the string `[object Object]`)
+- compares the keys `===` except `NaN` (here `NaN` is equal to `NaN` so that it could be used as a key)
 - iterable
 - pairs are objects
 - better performance (than object) for large quantities of data
@@ -2821,6 +2865,8 @@ const pairs = new Map();
 // add items
 pairs.set('John', 'May');
 pairs.set('Ichigo', 'Rukiya');
+// every .set call returns a map itself, so we can chain the calls
+pairs.set('Mary', 'Kay').set('Lily', 'James');
 
 // or with iterable
 const pairs = new Map([['John', 'May'], ['Ichigo', 'Rukiya']]);
@@ -2834,8 +2880,49 @@ const pairs = new Map([['John', 'May'], ['Ichigo', 'Rukiya']]);
 ```JavaScript
 const pairs = new Map([['John', 'May'], ['Ichigo', 'Rukiya']]);
 
-// get the value
+// get the value (undefined if no such key)
 const pair = pairs.get('John');
+```
+
+</details>
+
+<details>
+<summary>How to check if the item is in the Map?</summary>
+
+```JavaScript
+const pairs = new Map([['John', 'May'], ['Ichigo', 'Rukiya']]);
+
+// => true
+console.log(pairs.has('John'));
+// => false
+console.log(pairs.has('Mary'));
+```
+
+</details>
+
+<details>
+<summary>How to remove an item from the Map?</summary>
+
+```JavaScript
+map.delete('key');
+```
+
+</details>
+
+<details>
+<summary>How to remove all the items from the Map?</summary>
+
+```JavaScript
+map.clear();
+```
+
+</details>
+
+<details>
+<summary>How to get the elements count in the Map?</summary>
+
+```JavaScript
+map.size;
 ```
 
 </details>
@@ -2845,7 +2932,7 @@ const pair = pairs.get('John');
 
 ```JavaScript
 const pairs = new Map([['John', 'May'], ['Ichigo', 'Rukiya']]);
-
+// pairs.entries() is used by default
 for (const pair of pairs) {
   console.log(pair); // => ['John', 'May'] => ['Ichigo', 'Rukiya']
 }
@@ -2881,19 +2968,63 @@ for (const value of pairs.values()) {
 </details>
 
 <details>
+<summary>Is there a forEach method for Map?</summary>
+
+```JavaScript
+const pairs = new Map([['John', 'May'], ['Ichigo', 'Rukiya']]);
+
+pairs.forEach((value, key, map) => {
+  // => 'John' - 'May' => 'Ichigo' - 'Rukiya'
+  console.log(`${key} - ${value}`);
+});
+```
+
+</details>
+
+<details>
 <summary>What is a WeakMap and how is it different from a Map?</summary>
 
-- less methods available
 ```JavaScript
-let user = {name: 'Harry'};
 const users = new WeakMap();
+const john = {name: 'John'}
+let harry = {name: 'Harry'};
 
-users.set(user, 'Some info');
+// keys must be objects, not primitives
+users.set(john, 'Info');
+users.set(harry, 'Some info');
+// Error: 'string' is not an object
+users.set('string', 'error');
 
-// do some operations with user
-// still need the map, but not the user
-// JS garbage collector will remove the object
-user = null;
+// doesn’t prevent garbage-collection of key objects
+// will be removed from memory (and from the WeakMap)
+// by garbage collector automatically
+harry = null;
+
+// less methods available
+// doesn't support iteration
+// has no .keys() .values() .entries()
+users.get(john);
+users.delete(john);
+users.has(john);
+```
+
+</details>
+
+<details>
+<summary>Why is there a limitation of the available methods in a WeakMap?</summary>
+
+- for technical reasons: if a reference type has lost all other references, it is to be garbage-collected automatically, but technically it’s not exactly specified when the cleanup happens
+- the JS engine decides that (immediately or waits and do it later when more deletions happen) 
+- so, technically, the current element count of a WeakMap is not known (the engine may have cleaned it up or not, or did it partially) 
+- so methods that access all keys/values are not supported
+
+</details>
+
+<details>
+<summary>What are the use cases for a WeakMap?</summary>
+
+```JavaScript
+// additional data
 ```
 
 </details>
@@ -2909,6 +3040,8 @@ const player = {
 
 const playerMap = new Map(Object.entries(player));
 const newPlayer = Object.fromEntries(playerMap.entries());
+// also works
+const newPlayer = Object.fromEntries(playerMap);
 ```
 
 </details>
@@ -3522,7 +3655,7 @@ players.getMembers();
 <details>
 <summary>Practical questions</summary>
 
-  ### What will be logged to the console?
+  ### 1. What will be logged to the console?
   ```JavaScript
   const guitarStore = function() {
     this.guitarCount = 2;
@@ -5938,6 +6071,20 @@ console.log(proxyPlayer.age); // => NOT FOUND
   - no need to manually manage in most cases
 - V8 garbage collector
   - periodically checks the heap for unused objects (objects without references) and removes them
+  -  if we put a reference type into an array (or other structure), then while the array is alive, the object will be alive as well
+```JavaScript
+let player = {name: 'John'};
+const map = new Map();
+
+map.set(player, 1);
+
+// even if we set the value of player to null
+player = null;
+// the object will be accessible
+map.keys();
+// but works different with WeakMap 
+// (the object is removed when it is set to null)
+```
 - memory leaks (due to unused objects you still hold the reference to)
 ```JavaScript
 function printMsg() { ... }
