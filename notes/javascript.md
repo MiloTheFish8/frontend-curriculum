@@ -1873,6 +1873,7 @@ character.level = 100;
 <details>
 <summary>How to iterate (entries, values, keys) over an Object?</summary>
 
+- those methods ignore the symbolic properties as keys (like the `for ... in` loop)
 ```JavaScript
 // ES5
 // for ... in - deprecated (additional check)
@@ -1889,6 +1890,27 @@ const playerEntries = Object.entries(player);
 const playerValues = Object.values(player);
 // ['name', 'level']
 const playerKeys = Object.keys(player);
+```
+
+</details>
+
+<details>
+<summary>How to transform/filter etc. objects?</summary>
+
+- `Object.entries(obj)` to get an array
+- use array method to do the required operation
+- `Object.fromEntries(array)` to turn the resulting array back into an object
+
+</details>
+
+<details>
+<summary>How to get all keys or only symbolic keys of an Object?</summary>
+
+```JavaScript
+// only symbolic
+Object.getOwnPropertySymbols(obj);
+// all keys
+Reflect.ownKeys(obj);
 ```
 
 </details>
@@ -2801,6 +2823,14 @@ const keys = data.keys();
 </details>
 
 <details>
+<summary>What is the difference between Object.entries(obj) and set.entries()?</summary>
+
+- different syntax (for compatibility - created object may have it's custom `.values` method)
+- `.entries()` returns an iterable, `Object.entries(obj)` returns an actual array
+
+</details>
+
+<details>
 <summary>How to iterate over a Set with forEach?</summary>
 
 ```JavaScript
@@ -2818,21 +2848,36 @@ data.forEach((value, valueSame, set) => {
 <summary>What is a WeakSet and how is it different from a Set?</summary>
 
 - less methods available
-- have to store objects, not primitives
-- that's because JS clears those objects (releases to garbage collection) if you don't work with the certain piece of data anymore
 ```JavaScript
-let user = {name: 'Harry'};
 const users = new WeakSet();
+const john = {name: 'John'};
+let harry = {name: 'Harry'};
 
-users.add(user);
+// values must be objects, not primitives
+users.add(john);
+users.add(harry);
+// Error: 'string' is not an object
+users.add('string');
 
-// do some operations with user
-// still need the set, but not the user
-// JS garbage collector will remove the object
-// but if we use the Set(), the object (reference type) will not be removed
-// from the Set
-user = null;
+// object exists in the WeakSet while it is reachable from somewhere else
+// doesn’t prevent garbage-collection of values
+// will be removed from memory (and from the WeakSet)
+// by garbage collector automatically
+harry = null;
+
+// less methods available
+// doesn't support iteration
+// has no .size .keys() .values() .entries()
+users.has(john);
+users.delete(john);
 ```
+
+</details>
+
+<details>
+<summary>What are the use cases for a WeakSet?</summary>
+
+- additional storage for yes/no facts (ex: if `.has()` returns `true` - user visited, if `false` - not)
 
 </details>
 
@@ -3002,7 +3047,7 @@ harry = null;
 
 // less methods available
 // doesn't support iteration
-// has no .keys() .values() .entries()
+// has no .size .keys() .values() .entries()
 users.get(john);
 users.delete(john);
 users.has(john);
@@ -3023,9 +3068,8 @@ users.has(john);
 <details>
 <summary>What are the use cases for a WeakMap?</summary>
 
-```JavaScript
-// additional data
-```
+- additional data storage (ex: user object as a key and visit counts as a value)
+- caching (ex: store the results from a function so that future calls on the same object can reuse it)
 
 </details>
 
