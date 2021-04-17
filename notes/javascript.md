@@ -642,6 +642,7 @@ let text = ('one' && 'two') ?? 'three';
 <summary>How to use destructuring with iterables?</summary>
 
 - for iterable structures only (doesn't work on strings!)
+- works like `for ... of`
 - all the elements go in an order, can't address the last one
 ```JavaScript
 const numbers = [1, 2, 3, 4, 5];
@@ -650,6 +651,9 @@ const first = numbers[0];
 const third = numbers[2];
 // with destructuring
 const [first, , third] = numbers;
+// can use any 'assignables'
+const user = {};
+const [user.firstName, user.lastName] = numbers;
 // when there is no value, can use defaults
 const [first, , , , , sixth = 45] = numbers;
 // when we want specific values and an array of the rest

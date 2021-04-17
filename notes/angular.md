@@ -509,6 +509,52 @@ export class ChildComponent implements OnChanges {
 </details>
 
 <details>
+<summary>How to update values from parent to child and otherwise with 2-way data binding?</summary>
+
+```TypeScript
+// parent.component.ts
+@Component({...})
+export class ParentComponent {
+  // sets the initial value of ChildComponent.size
+  fontSizePx = 18;
+}
+
+// child.component.ts
+@Component({...})
+export class ChildComponent {
+  // for 2-way binding to work
+  // @Output() property must use inputChange pattern
+  @Input() size: number;
+  @Output() sizeChange = new EventEmitter<number>();
+
+  dec() {
+    this.size--;
+    this.sizeChange.emit(this.size);
+  }
+
+  inc() {
+    this.size++;
+    this.sizeChange.emit(this.size);
+  }
+}
+```
+```HTML
+<!-- parent.component.html -->
+<!-- use a combination of [] and () bindings -->
+<app-child [(size)]="fontSizePx"></app-child>
+<!-- it's a shorthand of bindings -->
+<app-child [size]="fontSizePx" (sizeChange)="fontSizePx=$event"></app-child>
+<p [style.font-size.px]="fontSizePx">Resizable text</p>
+
+<!-- child.component.html -->
+<button type="button" (click)="dec()">Smaller</button>
+<button type="button" (click)="inc()">Bigger</button>
+<p>Font Size: {{ size }}px</p>
+```
+
+</details>
+
+<details>
 <summary>How to use a local reference (inside one component) and what is the limitation?</summary>
 
 - can be used only in the template, not in the component (.ts file)
@@ -1195,6 +1241,155 @@ export class ButtonComponent {
 
 - use `@Input()` when you want to keep track of the attribute value and update the associated property
 - use `@Attribute()` when you want to inject the value of an HTML attribute to a component or directive constructor
+
+</details>
+
+<details>
+<summary>What is a template variable (local reference in the component section) and to what can it refer?</summary>
+
+- helps to use data from one part of a template in another part of the template
+- can refer to the following:
+  - a DOM element within a template
+  - a directive
+  - an element
+  - TemplateRef
+  - a web component
+
+</details>
+
+<details>
+<summary>How does Angular assign the value to the template variable?</summary>
+
+- based on where you declare the variable:
+  - if on a component - refers to the component instance
+  - if on a standard HTML tag - refers to the element
+  - if on an `<ng-template>` element - refers to a `TemplateRef` instance, which represents the template
+  - if the variable specifies a name on the right-hand side, such as `#var="ngModel"` - refers to the directive or component on the element with a matching `exportAs` name (there is a difference between a `Component` and a `Directive`: Angular references a `Component` without specifying the attribute value, and a `Directive` does not change the implicit reference, or the element)
+
+</details>
+
+<details>
+<summary>How to use NgForm with template variables (and why not just the reference to the html element)?</summary>
+
+```HTML
+<!-- the NgForm directive reference as exportAs name -->
+<!-- have to specify the directive (unlike Component) -->
+<form #subForm="ngForm" (nfSubmit)="onSubmit(subForm)">
+  <label for="name">Name:</label>
+  <input id="name" name="name" type="text" ngModel>
+  <button type="submit">Submit</button>
+</form>
+<!-- with NgForm, subForm is a reference to the NgForm directive -->
+<!-- available to track the value and validity of every control -->
+<!-- unlike the native <form> element, -->
+<!-- the NgForm directive has a form property -->
+<!-- allows to react when the form is not valid -->
+<p [hidden]="!subForm.form.valid">{{ errorMessage }}</p>
+```
+
+</details>
+
+<details>
+<summary>What is the template variable scope?</summary>
+
+- can refer to a template variable anywhere within its surrounding template
+- structural directives, such as `*ngIf` and `*ngFor`, or `<ng-template>` act as a template boundary
+- cannot access template variables outside of these boundaries
+```HTML
+<!-- inner template can access outer variables -->
+<input type="text" #locRef>
+<p *ngIf="isFilled">{{ locRef.value }}</p>
+<!-- here there is an implied <ng-template> around the <p> -->
+<!-- and the definition of the variable is outside of it -->
+<!-- accessing a template variable from the parent template works -->
+<!-- because the child template inherits the context from the parent template -->
+<ng-template [ngIf]="isFilled">
+  <p>{{ locRef.value }}</p>
+</ng-template>
+
+<!-- but outer template can't access the inner -->
+<input *ngIf="isFilled" type="text" #locRef>
+<!-- doesn't work -->
+<p>{{ locRef.value }}</p>
+<!-- because if we rewrite it -->
+<ng-template [ngIf]="isFilled">
+  <!-- the ref is defined inside a template -->
+  <input type="text" #locRef>
+</ng-template>
+
+<!-- the same is true for ngFor -->
+<ng-container *ngFor="let item of [1, 2, 3]">
+  <input type="text" #locRef>
+</ng-container>
+<!-- the structural directive *ngFor instantiates the template n times -->
+<!-- it is impossible to define what the locRef.value is -->
+<!-- doesn't work -->
+<p>{{ locRef.value }}</p>
+
+<!-- with structural directives, such as *ngFor or *ngIf, -->
+<!-- there is no way for Angular to know -->
+<!-- if a template is ever instantiated -->
+<!-- Angular isn't able to access the value and returns an error -->
+```
+
+</details>
+
+<details>
+<summary>How to access a template variable within <ng-template> (and get the TemplateRef?</summary>
+
+```HTML
+<ng-template #templateRef></ng-template>
+<button (click)="log(templateRef)">Log the #templateRef</button>
+<!-- the value output is TemplateRef function -->
+<!-- f TemplateRef() -->
+<!-- name: 'TemplateRef' -->
+<!-- __proto__: Function -->
+```
+
+</details>
+
+<details>
+<summary>What is a template input variable and how is it different to template variable?</summary>
+
+- you can reference it within a single instance of the template, declared using `let` keyword `let item`
+- scope is limited to a single instance of the repeated template (can use the same variable name again in the definition of other structural directives)
+- in contrast, you declare a template variable by prefixing the variable name with `#` - `#var`, a template variable refers to its attached element, component, or directive
+- template input variables and template variables names have their own namespaces (`let item` is not the same variable as `#item`)
+
+</details>
+
+<details>
+<summary>How to use SVG as a template?</summary>
+
+- the same as HTML templates
+- able to use directives and bindings just like with HTML templates
+- can create dynamic interactive graphics
+```TypeScript
+// rectangle-svg.component.ts
+import {Component} from '@angular/core';
+
+@Component({
+  selector: 'app-rectangle-svg',
+  templateUrl: './rectangle-svg.component.svg',
+  styleUrls: ['./']
+})
+export class RectangleSvgComponent {
+  fillColor = 'green';
+
+  changeColor() {}
+}
+```
+```HTML
+<!-- rectangle-svg.component.svg -->
+<svg>
+  <rect 
+    x="0" y="0" 
+    width="100" height="100" 
+    [attr.fill]="fillColor" 
+    (click)="changeColor()"
+  />
+</svg>
+```
 
 </details>
 
