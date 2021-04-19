@@ -722,9 +722,77 @@ export class ParentComponent implements AfterViewInit {
 </details>
 
 <details>
-<summary>ContentChild and ng-content</summary>
+<summary>How to use @ContentChild and why?</summary>
 
-- `<ng-content></ng-content>` hook to project html content from parent to child
+- to get the first element or the directive matching the selector from the content DOM
+- if the content DOM changes, and a new child matches the selector, the property will be updated
+- content queries are set before the `ngAfterContentInit` callback is called
+- does not retrieve elements or directives that are in other components' templates, since a component's template is always a black box to its ancestors
+- `static` metadata property is used to configure how we resolve the query results: `true` - before the change detection runs, `false` - default, after the change detection runs
+```TypeScript
+// basic example
+import {AfterContentInit, ContentChild, Directive} from '@angular/core';
+
+@Directive({
+  selector: '[childDirective]'
+})
+export class ChildDirective {}
+
+@Directive({
+  selector: '[parentDirective]'
+})
+export class ParentDirective implements AfterContentInit {
+  @ContentChild(ChildDirective) contentChild: ChildDirective;
+
+  ngAfterContentInit() {
+    // here the contentChild is set
+  }
+}
+```
+```TypeScript
+// usage
+import {Component, ContentChild, Directive, Input} from '@angular/core';
+
+@Directive({
+  selector: 'app-tab-item'
+})
+export class TabItem {
+  @Input() label: string;
+}
+
+@Component({
+  selector: 'app-tab',
+  template: `<p>{{ tabItem.label }}</p>`
+})
+export class Tab {
+  @ContentChild(TabItem) tabItem: TabItem;
+}
+
+@Component({
+  selector: 'app-simple',
+  template: `
+    <app-tab>
+      <app-tab-item *ngIf="isFirst" label="First"></app-tab-item>
+      <app-tab-item *ngIf="!isFirst" label="Second"></app-tab-item>
+    </app-tab>
+    <button type="button" (click)="toggleTabs()">Switch Tabs</button>
+  `
+})
+export class SimpleComponent {
+  isFirst = true;
+
+  toggleTabs() {
+    this.isFirst = !this.isFirst;
+  }
+}
+```
+
+</details>
+
+<details>
+<summary>How to use @ContentChild with ng-content and why?</summary>
+
+- use `<ng-content>` to project some HTML from parent into child
 - `<app-child>...</app-child>` without `ng-content` ... content is lost
 - `#locRef` add to a parent's html
 - `@ContentChild('locRef') element: ElementRef` from `@ang/core` to access `<ng-content>` from parent in child
