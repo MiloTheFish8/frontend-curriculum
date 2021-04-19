@@ -228,6 +228,7 @@ export class AppComponent {}
 <summary>What is a component?</summary>
 
 - a TypeScript class with `@Component()` decorator, HTML template and styles
+- `Component` is a type of a `Directive`
 
 </details>
 
@@ -1614,36 +1615,114 @@ export class FetchDataPipe implements PipeTransform {
 
 ## Directives
 <details>
-<summary>Attribute built-in</summary>
+<summary>What is a Directive?</summary>
 
-- looks like a normal HTML attribute
-- doesn't change DOM
-- event and data bindings are possible
-- multiple on one element
-- `[ngStyle]="{ 'background-color': 'prop' }"` or `[ngStyle]="{ backgroundColor: 'prop' }"` (better to use `[style]` binding, in the future `ngStyle` might be removed)
-- `[ngClass]="{ 'class-name': boolean }"` or `[ngClass]="{ className: boolean }"`
-- `ngSwitch` directive is also attribute, but cases are structural
+- class that adds additional behavior to the elements in the Angular app
 
 </details>
 
 <details>
-<summary>Structural built-in</summary>
+<summary>What are the types of directives?</summary>
 
+- `Component` - most common, directive with a template
+- `Attribute` - changes the appearance or behavior of an element, component, or another directive
+- `Structural` — changes the DOM layout by adding and removing DOM elements
+
+</details>
+
+<details>
+<summary>What are the built-in attribute directives?</summary>
+
+- listen to and modify the behavior of other HTML elements, attributes, properties, and components
+- look like a normal HTML attribute
+- doesn't change the DOM
+- event and data bindings are possible
+- multiple on one element
+- many NgModules (like `RouterModule` and `FormsModule`) define their own arrtibute directives
+- the most common are
+```TypeScript
+import {Component} from '@angular/core';
+
+@Component({
+  selector: 'app-child',
+  templateUrl: './'
+})
+export class ChildComponent {
+  currentClasses = {};
+  currentStyles = {};
+
+  setCurrentClasses() {
+    // sets initially ones and adda/removes classes
+    // when the props change
+    this.currentClasses = {
+      modified: this.isChanged,
+      special: this.isSpecial,
+      current: this.isCurrent
+    };
+  }
+
+  setCurrentStyles() {
+    this.currentStyles = {
+      'text-decoration': this.isCurrent ? 'underline overline' : 'none',
+      'background-color': this.isSpecial ? 'green' : 'transparent'
+    };
+  }
+}
+```
+```HTML
+<!-- NgClass adds and removes classes -->
+<!-- for a single class, better to use `[class]` binding -->
+<p [ngClass]="isCurrent ? 'current' : ''">Current active here</p>
+<p [ngClass]="{'class-name': boolean}">Some text here</p>
+<p [ngClass]="{className: boolean}">Some text here</p>
+<p [ngClass]="currentClasses">Some text here</p>
+<!-- NgStyle adds and removes styles -->
+<!-- better to use `[style]` binding, -->
+<!-- in the future `ngStyle` might be removed -->
+<p [ngStyle]="{'background-color': 'prop'}">Some text here</p>
+<p [ngStyle]="{backgroundColor: 'prop'}">Some text here</p>
+<p [ngStyle]="currentStyles">Some text here</p>
+```
+
+</details>
+
+<details>
+<summary>What are structural built-in directives?</summary>
+
+- responsible for HTML layout - shape or reshape the DOM's structure, typically by adding, removing, and manipulating the host elements to which they are attached
 - looks like a normal HTML attribute with a leading `*`
 - affects DOM (elements get added or removed)
 - can't use multiple on one element (error!)
-- if directive
-  - `*ngIf="boolean; else noServer"` else is optional
-  - `<ng-template #noServer>` to use else
-- for directive
-  - `*ngFor="let item of items; let i = index"` index is optional
-- `*ngSwitchCase`
+- the most common are
+```HTML
+<!-- NgIf - apply to a host element -->
+<!-- false - Angular removes the element from the DOM -->
+<!-- then disposes of the component to free up the memory -->
+<!-- and all the descendants and sub-components -->
+<app-child *ngIf="isLoading"></app-child>
+<!-- NgFor - repeat a node for each item in a list -->
+<!-- 1. stores each item in the local looping variable -->
+<!-- 2. makes each item available to the templated HTML for each iteration -->
+<!-- 3. 'let item of items' => <ng-template> around the host element -->
+<!-- 4. repeats <ng-template> for each item -->
+<!-- index is optional -->
+<p *ngFor="let item of items; let i = index">{{ item }}</p>
+<!-- NgSwitch - a set of 3 directives to switch among alternative views -->
+<div [ngSwitch]="hero.role">
+  <app-role-healer *ngSwitchCase="'healer'" [item]="hero"></app-role-healer>
+  <app-role-dd *ngSwitchCase="'dd'" [item]="hero"></app-role-dd>
+  <app-role-unknown *ngSwitchDefault [item]="hero"></app-role-unknown>
+</div>
+```
 
 </details>
 
 <details>
 <summary>How to use an *ngIf directive?</summary>
 
+- if directive
+  - `*ngIf="boolean; else noServer"` else is optional
+  - `<ng-template #noServer>` to use else
 ```TypeScript
 // app/components/example/example.component.ts
 import { Component } from '@angular/core';
@@ -1669,6 +1748,69 @@ export class ExampleComponent {
   <p>Click Edit to enable edit!</p>
 </ng-template>
 <p [contentEditable]="canEdit">Text to edit is here.</p>
+```
+
+</details>
+
+<details>
+<summary>How and why to track items with NgFor?</summary>
+
+- to reduce the number of calls your app makes to the server
+- with `trackBy` Angular can change and re-render only those items that have changed, rather than reloading the entire list of items
+```TypeScript
+import {Component} from '@angular/core';
+import {Item} from './';
+
+@Component({})
+export class ChildComponent {
+  // add a method to the component 
+  // that returns the value NgFor should track
+  // here the value to track is the item's id
+  // if the browser has already rendered id, 
+  // Angular keeps track of it 
+  // and doesn't re-query the server for the same id
+  trackByItems(index: number, item: Item): number {
+    return item.id;
+  }
+}
+```
+```HTML
+<p *ngFor="let item of items; trackBy: trackByItems">
+  {{ item.name }}
+</p>
+```
+
+</details>
+
+<details>
+<summary>How to use both NgIf and NgFor together?</summary>
+
+- add `*ngIf` on a container element that wraps an `*ngFor` element
+- one or both elements can be an `<ng-container>` not to add the extra level of HTML
+
+</details>
+
+<details>
+<summary>How to host a directive without a DOM element?</summary>
+
+- in Angular `<ng-container>` - grouping element that doesn't interfere with styles or layout because Angular doesn't put it in the DOM
+- use when you don't need an additional wrapping HTML
+```HTML
+<p>
+  The hero name is {{ name }}
+  <ng-container *ngIf="age">
+    and the age is {{ age }}
+  </ng-container>
+  .
+</p>
+<!-- or to conditionally exclude the option -->
+<select>
+  <ng-container *ngFor="let r of roles">
+    <ng-container *ngIf="r !== 'healer'">
+      <option [value]="r">{{ r }}</option>
+    </ng-container>
+  </ng-container>
+</select>
 ```
 
 </details>
@@ -2381,6 +2523,50 @@ Complex data (dynamic)
 ```
 - <b>template-driven</b> approach - angular infers the FormObject from the DOM
 - <b>reactive</b> approach - form is created programmatically and synchronized with DOM
+
+</details>
+
+<details>
+<summary>How to display and update properties with NgModel?</summary>
+
+```TypeScript
+// app.module.ts
+import {NgModule} from '@angular/core';
+import {FormsModule} from '@angular/forms';
+
+@NgModule({
+  imports: [
+    BrowserModule,
+    FormsModule
+  ]
+})
+export class AppModule {}
+```
+```HTML
+<!-- app.component.ts -->
+<label for="name">Name:</label>
+<!-- this syntax can only set a data-bound property -->
+<input id="name" type="text" [(ngModel)]="currentItem.name">
+<!-- to customize your configuration - can write the expanded form, -->
+<!-- which separates the property and event binding -->
+<!-- use property binding to set the property -->
+<!-- and event binding to respond to changes -->
+<input 
+  id="name-uppercase"
+  type="text"
+  [ngModel]="currentItem.name" 
+  (ngModelChange)="setUppercaseName($event)"
+>
+```
+
+</details>
+
+<details>
+<summary>For what HTML elements does NgModel directive work?</summary>
+
+- for elements supported by `ControlValueAccessor` (Angular provides value accessors for all of the basic HTML form elements)
+- to apply `[(ngModel)]` to a non-form native element or a third-party custom component, you have to write a value accessor
+- writing a component, you don't need a value accessor or `NgModel` if you name the value and event properties according to the two-way binding syntax (`x` and `xChange`)
 
 </details>
 
