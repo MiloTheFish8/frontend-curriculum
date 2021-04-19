@@ -1,7 +1,7 @@
 # Angular
 - [Essentials](#essentials)
 - [Angular CLI](#angular-cli)
-- Initial files (refactor)
+- [Initial files](#initial-files)
 - [Components](#components) (refactor)
 - [Component Styling](#component-styling)
 - [Component Lifecycle](#component-lifecycle)
@@ -146,24 +146,27 @@ ng lint
 
 </details>
 
-## 2 - Initial files
+## Initial files
 <details>
-<summary>Imports</summary>
+<summary>How to import .ts files?</summary>
 
 - don't import with `.ts` extensions, webpack adds it
 
 </details>
 
 <details>
-<summary>Entry file</summary>
+<summary>What is the entry file and how it works?</summary>
 
+- `main.ts` is the main entry point for your application
+- compiles the application with the JIT compiler (can also use the AOT compiler without changing any code by appending the `--aot` flag to the CLI build and serve commands)
+- bootstraps the application's root module (`AppModule`) to run in the browser
 ```TypeScript
 // main.ts
-import { enableProdMode } from '@angular/core';
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+import {enableProdMode} from '@angular/core';
+import {platformBrowserDynamic} from '@angular/platform-browser-dynamic';
 
-import { AppModule } from './app/app.module';
-import { environment } from './environments/environment';
+import {AppModule} from './app/app.module';
+import {environment} from './environments/environment';
 
 if (environment.production) {
   enableProdMode();
@@ -176,12 +179,13 @@ platformBrowserDynamic().bootstrapModule(AppModule)
 </details>
 
 <details>
-<summary>AppModule - the only required module</summary>
+<summary>What is the AppModule?</summary>
 
+- the root (and only required) module
 ```TypeScript
 // app/app.module.ts
-import { NgModule } from '@angular/core';
-import { AppComponent } from './app.component';
+import {NgModule} from '@angular/core';
+import {AppComponent} from './app.component';
 
 @NgModule({
   // should be known components when Angular analyses index.html
@@ -193,15 +197,16 @@ export class AppModule {}
 </details>
 
 <details>
-<summary>AppComponent - the only required component</summary>
+<summary>What is the AppComponent?</summary>
 
+- the bootstrap (and only required) component
 ```TypeScript
 // app/app.component.ts
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 
 @Component({
   selector: 'app-root',
-  templateUrl: '...'
+  templateUrl: './'
 })
 export class AppComponent {}
 ```
@@ -209,17 +214,27 @@ export class AppComponent {}
 </details>
 
 <details>
-<summary>Add the root component to html</summary>
+<summary>How to add the app to HTML?</summary>
 
 ```HTML
 <!-- index.html -->
 <!doctype html>
 <html>
-<head></head>
-<body>
-  <app-root></app-root>
+  <head>
+    <!-- ... -->
+  </head>
+  <body>
+    <app-root></app-root>
+  </body>
 </html>
 ```
+
+</details>
+
+<details>
+<summary>Learn more</summary>
+
+- [Docs: File structure](https://angular.io/guide/file-structure)
 
 </details>
 
