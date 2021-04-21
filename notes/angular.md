@@ -2,7 +2,7 @@
 - [Essentials](#essentials)
 - [Angular CLI](#angular-cli)
 - [Initial files](#initial-files)
-- [Components](#components) (refactor)
+- [Components](#components)
 - [Component Styling](#component-styling)
 - [Component Lifecycle](#component-lifecycle)
 - [Dynamic Components](#dynamic-components) (refactor)
@@ -793,12 +793,41 @@ export class SimpleComponent {
 <summary>How to use @ContentChild with ng-content and why?</summary>
 
 - use `<ng-content>` to project some HTML from parent into child
-- `<app-child>...</app-child>` without `ng-content` ... content is lost
-- `#locRef` add to a parent's html
-- `@ContentChild('locRef') element: ElementRef` from `@ang/core` to access `<ng-content>` from parent in child
-- `this.element.nativeElement` to access html element
-- `@ContentChild('locRef', { static: true })` < 9 ver `true` if we plan to access from `ngOnInit()`, `false` otherwise
 - don't change the value via this approach
+```TypeScript
+// child.component.ts
+import {Component, ContentChild, ElementRef} from '@angular/core';
+
+@Component({})
+export class ChildComponent {
+  // static true - before the change detection runs,
+  // false - default, after the change detection runs
+  // < 9 version required
+  @ContentChild('locRef', {static: true}) element: ElementRef;
+
+  doSomething() {
+    // to access the html element
+    this.element.nativeElement;
+  }
+}
+
+// parent.component.ts
+@Component({})
+export class ParentComponent {}
+```
+```HTML
+<!-- child.component.html -->
+<div class="child">
+  <!-- without ng-content the content from parent will be list -->
+  <ng-content></ng-content>
+</div>
+
+<!-- parent.component.html -->
+<app-child>
+  <!-- add local reference to access from @ContentChild -->
+  <p #locRef>Some text</p>
+</app-child>
+```
 
 </details>
 
@@ -1899,26 +1928,119 @@ export class ChildComponent {
 </details>
 
 <details>
-<summary>Attribute custom</summary>
+<summary>How to deactivate the Angular processing for some elements?</summary>
+
+- to prevent expression evaluation use `ngNonBindable` on the host element
+- deactivates interpolation, directives and binding in templates
+- stops binding for the element's child but still allows to work with the host element
+```HTML
+<p ngNonBindable>Will look as is: {{ 2 + 4 }}</p>
+<p ngNonBindable appHighlight="green"]>
+  Will look as is but green: {{ 2 + 4 }}
+</p>
+```
+
+</details>
+
+<details>
+<summary>How to build an attribute directive?</summary>
 
 ```TypeScript
 // highlight.directive.ts
-import { Directive, ElementRef, Renderer2 } from '@angular/core';
+import {Directive, ElementRef, Renderer2, OnInit} from '@angular/core';
+
+@Directive({
+  selector: '[appHighlight]'
+})
+export class HighlightDirective implements OnInit {
+  // ElementRef grants the direct access to the host DOM element
+  // to which we apply appHighlight directive
+  // inject the reference in the constructor
+  constructor(private element: ElementRef, private renderer: Renderer2) {}
+
+  ngOnInit() {
+    // to access directly, but in some cases could not yet get rendered
+    this.element.nativeElement.style.backgroundColor = 'green';
+  }
+
+  doSomething() {
+    // renderer is better (inject Renderer2)
+    // flags like !important, etc
+    this.renderer.setStyle(this.element.nativeElement, 'color', 'green', ~flags);
+  }
+}
+```
+```HTML
+<!-- any component -->
+<!-- Angular creates an instance of the HighlightDirective class -->
+<!-- and injects a reference to the <p> element  -->
+<!-- into the directive's constructor, which sets the <p> element's  -->
+<!-- background style to green -->
+<p appHighlight>Highlighted text</p>
+```
+
+</details>
+
+<details>
+<summary>How to handle user events in a directive?</summary>
+
+```TypeScript
+import {Directive, ElementRef, HostListener} from '@angular/core';
 
 @Directive({
   selector: '[appHighlight]'
 })
 export class HighlightDirective {
-  constructor(private element: ElementRef, private renderer: Renderer2) {} // to access the element
+  // add events to handle
+  // works like adding an event listener on the element with appHighlight
+  @HostListener('mouseenter') onMouseEnter(evt: Event) {
+    this.highlight('green');
+  }
 
-  doSomething() {
-    // to access directly, but in some cases could not yet get rendered
-    this.element.nativeElement;
+  @HostListener('mouseleave') onMouseLeave(evt: Event) {
+    this.highlight(null);
+  }
 
-    // renderer is better (inject Renderer2)
-    this.renderer.setStyle(this.element.nativeElement, 'color', 'green', ~flags); // like !important, etc
+  constructor(private element: ElementRef) {}
+
+  private highlight(color: string) {
+    this.element.nativeElement.style.backgroundColor = color;
   }
 }
+```
+```HTML
+<p appHighlight>Highlight on hover</p>
+```
+
+</details>
+
+<details>
+<summary>How to add the custom property binding to a directive?</summary>
+
+```TypeScript
+import {Directive, ElementRef, Input} from '@angular/core';
+
+@Directive({
+  selector: '[appHighlight]'
+})
+export class HighlightDirective {
+  // to use one prop with the same name
+  @Input() appHighlight: string;
+  @Input('appHighlight') defaultColor: string;
+  // or different name
+  @Input() color: string;
+
+  constructor(private element: ElementRef) {}
+}
+```
+```HTML
+<!-- when the name of the prop is the same -->
+<!-- applies the directive to the element -->
+<!-- sets the color with a prop binding -->
+<p [appHighlight]="'green'">Green text</p>
+<p appHighlight="green">Green text</p>
+<!-- when the name of the prop is not the same -->
+<p appHighlight="green" color="blue">Green text</p>
 ```
 
 </details>
@@ -1932,9 +2054,8 @@ export class HighlightDirective {
 <!-- when the name of the prop is the same -->
 <p [appDirName]="'blue'">
 ```
-
 ```TypeScript
-import { Renderer2, HostListener, HostBinding, OnInit } from '@angular/core';
+import {Renderer2, HostBinding, OnInit} from '@angular/core';
 
 @Directive({
   selector: '[appDirName]'
@@ -1948,12 +2069,7 @@ export class SomeDirective implements OnInit {
   @HostBinding('style.backgroundColor') backgroundColor: string = transparent;
   // won't work on init
   @HostBinding('style.backgroundColor') backgroundColor: string = this.defaultColor;
-  // works like adding an event listener on the tag, where the directive is used
-  @HostListener('mouseenter') hover(eventData: Event) {
-    this.renderer.setStyle(...);
-    // now can be used instead of renderer
-    this.backgroundColor = 'blue';
-  }
+  
 
   constructor(private renderer: Renderer2) {}
 
@@ -1965,45 +2081,88 @@ export class SomeDirective implements OnInit {
 </details>
 
 <details>
-<summary>Structural custom</summary>
+<summary>How does structural directive shorthand actually work?</summary>
 
-- `ng g d directive_name` to generate directive with Angular CLI
 ```HTML
-<div *ngIf="condition">
-  <p>Some content</p>
-</div>
+<p class="name" *ngIf="player">{{ player.name }}</p>
+<!-- Angular transforms * into an <ng-template> -->
+<!-- that wraps the host element and its children -->
+<ng-template [ngIf]="player">
+  <p class="name">{{ player.name }}</p>
+</ng-template>
+<!-- Angular doesn't create a real <ng-template> element -->
+<!-- instead rendering only the host and a comment node placeholder -->
+<!--bindings={
+  "ng-reflect-ng-if": "[object Object]"
+}-->
+<p class="name" _ngcontent-c1>Harry Potter</p>
 
-<!-- turns into -->
-<ng-template [ngIf]="condition">
-  <div>
-    <p>Some content</p>
-  </div>
+<!-- NgFor conversion -->
+<p
+  *ngFor="let p of players; let i = index; let odd = odd; trackBy: trackById"
+  [class.odd]="odd"
+>
+  {{ i }} - {{ p.name }}
+</p>
+<!-- converted into -->
+<!-- let declares a template input variable scoped within the template -->
+<!-- ex: p, i, odd - the parser translates let p, let i, let odd -->
+<!-- into variables named let-p let-i let-odd -->
+<!-- Angular sets i and odd to -->
+<!-- the current value of the context's index and odd properties -->
+<ng-template
+  ngFor let-p [ngForOf]="players" let-i="index" let-odd="odd"
+  [ngForTrackBy]="trackById"
+>
+  <p [class.odd]="odd">{{ i }} - {{ p.name }}</p>
 </ng-template>
 ```
 
+</details>
+
+<details>
+<summary>How to create a custom structural directive?</summary>
+
 ```TypeScript
 // unless.directive.ts
-import { Directive, Input, ViewContainerRef, TemplateRef } from '@angular/core';
+import {Directive, Input, ViewContainerRef, TemplateRef} from '@angular/core';
 
 @Directive({
-  selector: '[appUnless]' // any name
+  selector: '[appUnless]'
 })
 export class UnlessDirective {
-  @Input() set appUnless(condition: boolean) { // name === directory selector
-    if (!condition) {
+  hasView = false;
+  // name is the same as a selector
+  @Input() set appUnless(condition: boolean) {
+    if (!condition && !this.hasView) {
+      // if the condition is falsy and Angular hasn't created the view 
+      // the setter causes the view container 
+      // to create the embedded view from the template
       this.vcRef.createEmbeddedView(this.templateRef);
-    } else {
+      this.hasView = true;
+    } else if (condition && this.hasView) {
+      // if the condition is truthy and the view is currently displayed, 
+      // the setter clears the container, which disposes of the view
       this.vcRef.clear();
+      this.hasView = false;
     }
   }
 
+  // inject TemplateRef and ViewContainerRef
   constructor(
-    private vcRef: ViewContainerRef, 
-    private templateRef: TemplateRef<any>
+    // helps to get the <ng-template>
+    private templateRef: TemplateRef<any>,
+    // accesses the view container 
+    private vcRef: ViewContainerRef,
   ) {}
 }
 ```
-- `<div *appUnless="condition">...</div>` to use
+```HTML
+<!-- creates an embedded view from the Angular-generated <ng-template> -->
+<!-- and inserts the view in a view container -->
+<!-- adjacent to the directive's original host element (here p) -->
+<p *appUnless="condition">Show this text unless the condition is true</p>
+```
 
 </details>
 
