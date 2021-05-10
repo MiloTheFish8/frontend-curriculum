@@ -131,6 +131,15 @@ function getMinSorting(numbers) { // [3, 5, 10]
 
 </details>
 
+## Data general
+<details>
+<summary>What is the difference between Code On Write and Resource Sharing approaches to the immutability?</summary>
+
+- Code On Write - copy the whole data structure every time we need to change something (even 1 element of an array)
+- Resource Sharing - copy only the item we want to change
+
+</details>
+
 ## Data Structures (Lists)
 <details>
 <summary>General info</summary>

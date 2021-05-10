@@ -2110,6 +2110,15 @@ export class SomeDirective implements OnInit {
 <!-- into variables named let-p let-i let-odd -->
 <!-- Angular sets i and odd to -->
 <!-- the current value of the context's index and odd properties -->
+<!-- the parser applies PascalCase to all directives -->
+<!-- and prefixes them with directive's attribute name (here ngFor) -->
+<!-- of => ngForOf; trackBy => ngForTrackBy -->
+<!-- NgFor directive loops through the list -->
+<!-- sets and resets properties of its own context object -->
+<!-- these properties can include but not limited to -->
+<!-- index, odd and a special $implicit property -->
+<!-- Angular sets let-p to the value of the context's $implicit prop -->
+<!-- which NgFor has initialized with the p for the current iteration -->
 <ng-template
   ngFor let-p [ngForOf]="players" let-i="index" let-odd="odd"
   [ngForTrackBy]="trackById"
@@ -2167,6 +2176,16 @@ export class UnlessDirective {
 </details>
 
 <details>
+<summary>How to improve template type checking for custom directives?</summary>
+
+- by adding template guard properties to the directive definition
+- these properties help the Angular template type checker to find mistakes in the template at the compile time
+- a prop `ngTemplateGuard_(someInputProperty)` lets to specify a more accurate type for an input expression within the template
+- the `ngTemplateContextGuard` static prop declares the type of the template context
+
+</details>
+
+<details>
 <summary>Learn more</summary>
 
 - [Docs: Built-in directives](https://angular.io/guide/built-in-directives)
@@ -2192,28 +2211,129 @@ export class UnlessDirective {
 
 ## Dependency Injection
 <details>
-<summary>How does dependency injection work?</summary>
+<summary>What is a dependency?</summary>
+
+- services or objects that a class needs to perform its function
+
+</details>
+
+<details>
+<summary>What is a Dependency Injection?</summary>
+
+- a design pattern where a class requests dependencies from external sources rather than creating them
+
+</details>
+
+<details>
+<summary>How and why Angular uses DI?</summary>
+
+- provides the dependencies to a class upon instantiation
+- increases flexibility and modularity of the application
+
+</details>
+
+<details>
+<summary>What is a Dependency provider?</summary>
+
+- by configuring providers you can make services available to the parts of your application
+- configures an injector with a DI token which that injector uses to provide the runtime version of a dependency value
+
+</details>
+
+<details>
+<summary>How to specify a provider token?</summary>
+
+- if you specify the service class as the provider token, by default injector instantiates that class with `new`
+```TypeScript
+// the Logger class provides a Logger instance
+providers: [Logger]
+```
+
+</details>
+
+<details>
+<summary>What is a DI token?</summary>
+
+- when you configure an injector with a provider, you are associating that provider with a DI token
+- the injector allows Angular to create a map of any internal dependencies
+- the DI token acts as a key to that map
+- the dependency value is an instance and the class type serves as a lookup key
+```TypeScript
+// the injector uses the LoggerService type as the token
+// for looking up the loggerService
+loggerService: LoggerService;
+// when you define a constructor parameter with the LoggerService class type,
+// Angular knows to inject the service 
+// associated with that LoggerService class token
+constructor(loggerService: LoggerService) {}
+```
+
+</details>
+
+<details>
+<summary>How to define a provider?</summary>
+
+- the class provider syntax is a shorthand (expands into a provider config defined by the `Provider` interface)
+```TypeScript
+provides: [Logger]
+// expands into a full provider object
+// provide holds the token 
+// (for locating a dependency value and configuring the injector)
+// the second parameter is a provider definition object
+// tells the injector how to create the dependency value
+[{provide: Logger, useClass: Logger}]
+```
+
+</details>
+
+<details>
+<summary>How to specify a different class as a provider?</summary>
+
+```TypeScript
+provides: [Logger]
+// using the Logger token to create a BetterLogger instance
+[{provide: Logger, useClass: BetterLogger}]
+```
+
+</details>
+
+<details>
+<summary>What can you use to define the provider?</summary>
+
+- service class
+- substitute class
+- an object
+- a factory function
+
+</details>
+
+<details>
+<summary>How to create an injectable service?</summary>
 
 ```JavaScript
 // app/logger.service.ts
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 
+// specifies that Angular can use this class in the DI system
+// 'root' - visible throughout the application
 @Injectable({providedIn: 'root'})
-export class Logger {
+export class LoggerService {
   doSomething() {}
 }
 ```
 ```JavaScript
 // app/components/hello/hello.component.ts
-import { Component } from '@angular/core';
-import { Logger } from '../../../logger.service';
+import {Component} from '@angular/core';
+import {LoggerService} from '../../../logger.service';
 
 @Component({
   selector: 'app-hello',
   template: '<p>Hello!</p>'
 })
 export class HelloComponent {
-  constructor(private logger: Logger) {}
+  // injecting makes the service visible to a component
+  // specify the type and metadata - Angular can inject the correct service
+  constructor(private loggerService: LoggerService) {}
 
   onLog() {
     this.logger.doSomething();
