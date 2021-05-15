@@ -1,4 +1,4 @@
-# Browsers
+# Browsers and Client - Server Communication
 
 ## Standardization
 <details>
@@ -32,16 +32,18 @@
     - deploy the website to hosting
 2. Enter website name to the browser
 3. Transfer the name to IP via [DNS](#dns)
-4. Browser sends the HTTP request to the server (browserscope.org check the available amount of requests for different browsers)
+4. Browser tries to connect to a server using TCP protocol (by default connects to 80 port as by default web-server waits browser to connect this port)
+5. After the connection is settled browser forms an HTTP-request and sends it to the server (browserscope.org check the available amount of requests for different browsers)
   - [Transfer levels and protocols](#transfer-levels-and-protocols)
   - Doesn't know about server language
   - 1 file = 1 request (less weight and files = better)
   - contains of headers only
-5. Gets to the physical server via cables
-6. Looking for a program via port number (different for client and server): 80 or 443 (web server nginx, apache), on complete port closes
-7. Web server could have several virtual hosts, get our by site name (domain)
-8. Sending a response (headers and body: html, css, js, media, files)
-9. Browser parses the code (according to the specification native to browser)
+6. Gets to the physical server via cables
+7. Looking for a program via port number (different for client and server): 80 for HTTP or 443 for HTTPS (web server nginx, apache), on complete port closes
+  - the port can be changed by the server administrator `https://example.com:3000`
+8. Web server could have several virtual hosts, get our by site name (domain) (host header in the request)
+9. Sending a response (headers and body: html, css, js, media, files)
+10. Browser parses the code (according to the specification native to browser)
 
 </details>
 
@@ -65,6 +67,13 @@
 </details>
 
 ## Transfer levels and protocols
+<details>
+<summary>Where to look for information about a protocol?</summary>
+
+- in the RFC documentation (Request for Comments) 
+
+</details>
+
 <details>
 <summary>Link layer</summary>
 
@@ -94,7 +103,7 @@
 <details>
 <summary>Application layer</summary>
 
-- HTTP(S) - HyperText Transfer Protocol (Secure)
+- HTTP(S) - HyperText Transfer Protocol (Secure) RFC2616 for the HTTP 1.1
 - FTP - File Transfer Protocol
 - SMTP - Simple Mail Transfer Protocol
 - SSH - Secure Shell - for accessing remote servers (linux)

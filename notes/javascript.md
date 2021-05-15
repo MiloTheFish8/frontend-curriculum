@@ -690,8 +690,10 @@ const cat = {
   'home city': 'London'
 };
 // propOfAnObject: varName = default
+// what : goes where
 const {name: catName, color: catColor = 'White'} = cat;
 // with folded objects
+// no const for address, only for the content
 const {address: {street: catStreet}} = cat;
 // for combined prop use quotes
 const {'home city': catCity} = cat;
@@ -707,6 +709,19 @@ for (let i = 0; i < elements.length; i++) {
 
 // can combine [] and {} destructuring
 const [, {textContent: text}] = document.querySelectorAll('li');
+```
+
+</details>
+
+<details>
+<summary>What if we try to use destructuring without creating a variable at the same time?</summary>
+
+```JavaScript
+let one, two, three;
+// error (JS treats {} as a code block)
+{one, two, tree} = {one: 1, two: 2, three: 3};
+// will work if wrapped in ()
+({one, two, tree} = {one: 1, two: 2, three: 3});
 ```
 
 </details>
@@ -4935,6 +4950,33 @@ elementToDrag.addEventListener('dragend', evt => {
 
 </details>
 
+<details>
+<summary>What is the basic authentication (provided by HTTP protocol)?</summary>
+
+- used to restrict access to some pages for unauthorized users
+- browser shows a modal window to enter the login and password
+- if wrong = server returns 401 Unauthorized
+- browser gives you the opportunity to enter the login and password several times
+```JavaScript
+// request
+// when user enters the data, the browser sends
+// this request to the server
+GET /secret HTTP/1.1
+Host: example.com
+// Basic - for basic authentication
+// YWRtaW46MTIzNDU2 - encoded login and password (admin:123456)
+// base64 - standard encodes binary data with 64 ASCII symbols
+Authorization: Basic YWRtaW46MTIzNDU2
+
+// response
+// 401 and special header are required
+// for browser to show the modal
+HTTP/1.1 401 Unauthorized
+WWW-Authenticate: Basic realm="Protected server"
+```
+
+</details>
+
 ## Working with data
 <details>
 <summary>What are the main problems when working with data?</summary>
@@ -5290,10 +5332,15 @@ getButton.addEventListener('click', () => {
 <details>
 <summary>What are the main method types of an http request?</summary>
 
-- GET
-- POST
-- PUT
-- DELETE
+- read
+  - HEAD - get only headers (ex: to the check if the info has been updated or we can worked with cache)
+  - OPTIONS - to check which requests we can send to the resource (ex: img supports `GET` and `HEAD`, user-name also supports `POST` and `PUT`)
+  - GET - get the information from the server
+- write
+  - POST - create a new record (body is required)
+  - PUT - to fully rewrite the existing record
+  - PATCH - to partially update the existing record
+  - DELETE - to delete the record
 
 </details>
 
@@ -5516,16 +5563,50 @@ function setTimer() {
 - Data transfer protocol - the way computer uses to exchange the information (there are many different protocols, in the web we use http)
 - HTTP - hypertext transfer protocol - client exchanges data with the server
 - HTTP request is always text
-- request to the server = text
-```
-GET /index.html HTTP/1.1
+
+</details>
+
+<details>
+<summary>What is an HTTP-request?</summary>
+
+```JavaScript
+// request string - required
+// / - root and the page
+GET /contacts.html HTTP/1.1
+// headers - optional for ver 1.0 (earlier the proposal was 
+// that one IP is one website)
+// host is required for ver 1.1+ (when virtual hosts start to be supported)
+// to let server find the website we need
+// if you don't pass the host header 
+// - the website will be default to the server
 Host: example.com
 User-Agent: Mozilla/5.0
 Accept: text/html
+// type of the content inside the body
+Content-Type: application/json
+// size in bytes - tells server that there is body of the length
+// so that server doesn't break the connection on default \n\n
+Content-Length: 100
+// custom headers usually are named with X-
+X-Token: secret token
+// body - optional (contains the data to send)
+{
+  "title": "Harry Potter",
+  "rating": 5
+}
 ```
+
+</details>
+
+<details>
+<summary>What is an HTTP-response?</summary>
+
 - server response = text
-```
+```JavaScript
+// status line 2 - class, 00 - operation status
 HTTP/1.1 200 OK
+// headers - if client doesn't know about one of the headers
+// such header will be ignored
 Cache-Control: max-age=604800
 Content-Type: text/html
 Date: Tue, 24 Oct 2017 11:08:24 GMT
@@ -5534,15 +5615,35 @@ Expires: Tue, 30 Oct 2017 11:08:24 GMT
 Last-Modified: Fri, 09 Aug 2016 23:23:35 GMT
 Server: ECS (dcs/53DB)
 Vary: Accept-Encoding
+// custom headers start with X-
 X-Cache: HIT
 Content-Length: 1270
-
+// response body
 <!doctype html>
 <html>
   <head></head>
   <body></body>
 </html>
 ```
+
+</details>
+
+<details>
+<summary>What are the main 5 status classes of the HTTP-response?</summary>
+
+- 1 informational
+- 2 success (phrase reason: 200 OK, 201 Created)
+- 3 redirection
+- 4 client error
+- 5 server error
+
+</details>
+
+<details>
+<summary>What is the difference between HTTP and HTTPS</summary>
+
+- HTTPS (HyperText Transfer Protocol Secure) is an extension of the HTTP protocol
+- the connection established via the HTTPS supports the encoded traffic (the data is encoded, so there is no sense in interception)
 
 </details>
 
@@ -5733,6 +5834,7 @@ const sendHttpRequest = (method, url, data) => {
 <details>
 <summary>Learn more</summary>
 
+- [ ] [HTTPS on Wiki](https://en.wikipedia.org/wiki/HTTPS)
 - [ ] [JavaScript Promises: An introduction](https://web.dev/promises/)
 - [ ] [async function on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function)
 - [ ] [HTTP request methods on MDN](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods)
@@ -5742,6 +5844,9 @@ const sendHttpRequest = (method, url, data) => {
 - [ ] [Using XMLHttpRequest on MDN](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/Using_XMLHttpRequest)
 - [ ] [Fetch API on MDN](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)
 - [ ] [Using files from web applications on MDN](https://developer.mozilla.org/en-US/docs/Web/API/File/Using_files_from_web_applications)
+- [ ] [MDN: HTTP Caching](https://developer.mozilla.org/en-US/docs/Web/HTTP/Caching)
+- [REST client for VS Code](https://marketplace.visualstudio.com/items?itemName=humao.rest-client)
+- [Data prototyping service (mocks)](https://jsonplaceholder.typicode.com)
 
 </details>
 
