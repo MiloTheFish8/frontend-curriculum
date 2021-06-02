@@ -6,6 +6,7 @@
 - [HTML](./notes/html.md)
 - [CSS](./notes/css.md)
 - [JavaScript](./notes/javascript.md)
+- [JavaScript PQ](./notes/js-practical.md)
 - Canvas API
 - WebGl and animations
 - [Browsers](./notes/browsers.md)

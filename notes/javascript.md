@@ -295,7 +295,7 @@ const arr = [1, 2, 3, 4];
 <summary>What are the basic math operators?</summary>
 
 - `=`
- ```JavaScript
+```JavaScript
 // assignment returns a value
 // x = value writes the value into x and then returns it
 let a = 1;
