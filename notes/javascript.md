@@ -65,7 +65,7 @@
 - [History API](#history-api)
 - [Navigator API](#navigator-api)
 - [Browser storage](#browser-storage)
-- [Service Workers, Web Workers and Worklets](service-workers-web-workers-and-worklets)
+- [Service Workers, Web Workers and Worklets](#service-workers-web-workers-and-worklets)
 
 </details>
 
@@ -5226,6 +5226,36 @@ getButton.addEventListener('click', () => {
 </details>
 
 <details>
+<summary>How to work with cache?</summary>
+
+```JavaScript
+// create the cache name (could be any)
+const CACHE_PREFIX = 'app-cache';
+// add the version if you need to track versions
+const CACHE_VER = 'v1';
+const CACHE_NAME = `${CACHE_PREFIX}-${CACHE_VER}`;
+
+const HTTP_STATUS_OK = 200;
+const RESPONSE_SAFE_TYPE = 'basic';
+
+// add statics to cache
+caches.open(CACHE_NAME)
+  .then((cache) => {
+    // can't use folders, have to specify the path for each
+    return cache.addAll([
+      '/',
+      '/index.html',
+      'styles.css',
+      'scripts.js',
+      '/fonts/font-name-400.woff2',
+      '/img/pic.png',
+    ]);
+  });
+```
+
+</details>
+
+<details>
 <summary>Learn more</summary>
 
 - [ ] [localStorage on MDN](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage)
@@ -5236,13 +5266,309 @@ getButton.addEventListener('click', () => {
 
 ## Service Workers, Web Workers and Worklets
 <details>
+<summary>How to check if the internet is available?</summary>
+
+- ping the server
+- `window.navigator.onLine`
+- events `window`: `online`, `offline` - if there is a connection but the internet is off, won't work
+
+</details>
+
+<details>
+<summary>What is a proxy server?</summary>
+
+- the server between the browser and the server
+- accepts the client requests and sends them to the server
+- can cache the response
+- can modify the requests and the responses
+
+</details>
+
+<details>
+<summary>What is a Service Worker?</summary>
+
+- acts as proxy server that sit between web applications, the browser, and the network (when available)
+- runs on a different thread to the main JavaScript that powers your app, so it is non-blocking
+- no DOM access
+- sync API can't be used (XHR, LocalStorage, etc) but can work with IndexedDB
+- context is not `this` but `self`
+- enable the creation of effective offline experiences
+- intercept network requests and take appropriate action based on whether the network is available
+- update assets residing on the server
+- allow access to push notifications and background sync APIs
+- works only with https
+
+</details>
+
+<details>
+<summary>What is the Service Worker lifecycle?</summary>
+
+- registration
+- setting
+- activation
+- interception
+
+</details>
+
+<details>
+<summary>How to register the Service Worker?</summary>
+
+```JavaScript
+window.addEventListener('load', () => {
+  // path to service worker code
+  navigator.serviceWorker.register('/sw.js');
+});
+```
+
+</details>
+
+<details>
+<summary>How to set a service worker?</summary>
+
+```JavaScript
+// combined with cache API
+const CACHE_PREFIX = 'app-cache';
+const CACHE_VER = 'v1';
+const CACHE_NAME = `${CACHE_PREFIX}-${CACHE_VER}`;
+
+const HTTP_STATUS_OK = 200;
+const RESPONSE_SAFE_TYPE = 'basic';
+
+self.addEventListener('install', (evt) => {
+  // set the resources we want to cache
+  // waitUntil guarantees that the actions inside
+  // (waits till the promise if resolved)
+  // will be executed till the install event ends
+  // pass the async code
+  // if no waitUntil is used or
+  // if the promise inside will be rejected,
+  // the service worker won't be registered
+  evt.waitUntil(
+    caches.open(CACHE_NAME)
+      .then((cache) => {
+        // can't use folders, have to specify the path for each
+        return cache.addAll([
+          // to be able to navigate without index.html
+          '/',
+          '/index.html',
+          'styles.css',
+          'scripts.js',
+          '/fonts/font-name-400.woff2',
+          '/img/pic.png',
+        ]);
+      });
+  );
+});
+```
+
+</details>
+
+<details>
+<summary>How to activate a service worker?</summary>
+
+```JavaScript
+self.addEventListener('activate', (evt) => {
+  evt.waitUntil(
+    // get all the cache names
+    caches.keys()
+      .then((keys) => Promise.all(keys
+        .map((key) => {
+          // delete only our caches but the ver is different
+          // just to store only the actual ver and avoid conflicts
+          // and release the storage
+          if (key.startsWith(CACHE_PREFIX) && key !== CACHE_NAME) {
+            return caches.delete(key);
+          }
+
+          // skip the other
+          return null;
+        })
+        .filter((key) => key !== null)
+      ));
+  );
+});
+```
+
+</details>
+
+<details>
+<summary>How to intercept a request with a service worker?</summary>
+
+```JavaScript
+// fires every time when our app tries to send a request
+// (get files, get data, update data)
+self.addEventListener('fetch', (evt) => {
+  const {request} = evt;
+
+  // check the request with the cache registered resources
+  evt.respondWith(
+    caches.match(request)
+      .then(cacheResponse => {
+        // if the response is cached
+        // return cached instead of going to the server
+        if (cachedResponse) {
+          return cachedResponse;
+        }
+
+        // if no response, all fetch one more time
+        // with the same request
+        // and return it
+        return fetch(request)
+          .then((response) => {
+            // if no response or status !== 200 OK
+            // or the response is unsafe (not basic)
+            // just pass the response and do not intercept
+            if (!response 
+              || response.status !== HTTP_STATUS_OK
+              || response.type !== RESPONSE_SAFE_TYPE) {
+              return response;
+            }
+
+            // if the response is correct, clone it
+            const clonedResponse = response.clone();
+
+            // save to cache
+            caches.open(CACHE_NAME)
+              .then((cache) => cache.put(request, clonedResponse));
+
+            // and return the original response
+            return response;
+          });
+      });
+  );
+});
+```
+
+</details>
+
+<details>
 <summary>Learn more</summary>
 
 - [ ] [Web workers vs Service workers vs Worklets](https://bitsofco.de/web-workers-vs-service-workers-vs-worklets/)
+- [ ] [Chrome service worker inspector](chrome://inspect/#service-workers)
+- [ ] [Chrome service worker internals](chrome://serviceworker-internals)
+- [ ] [MDN: Using Service Workers](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers)
+- [ ] [Google: Service Workers: an Introduction](https://developers.google.com/web/fundamentals/primers/service-workers)
 
 </details>
 
 ## Timers and intervals
+<details>
+<summary>How to cook a dish using callbacks and timeouts?</summary>
+
+```JavaScript
+const Timeout = {
+  GET: 9000,
+  WASH: 3000,
+  CUT: 8000,
+  ADD_SPICES: 1000,
+  COOK: 5000
+};
+
+const makeTheDish = () => {
+  console.log('1. Getting the products');
+  const products = ['pumpkin', 'tomato', 'celery', 'spices', 'nuts'];
+
+  setTimeout(() => {
+    console.log('2. Washing the products');
+    setTimeout(() => {
+      console.log('3. Cutting the products');
+      setTimeout(() => {
+        console.log('4. Adding the spices');
+        setTimeout(() => {
+          console.log('5. Cooking the dish');
+          setTimeout(() => {
+            console.log('Ready to eat!');
+          }, Timeout.COOK);
+        }, Timeout.ADD_SPICES);
+      }, Timeout.CUT);
+    }, Timeout.WASH);
+  }, Timeout.GET);
+};
+
+makeTheDish();
+```
+
+</details>
+
+<details>
+<summary>How to cook a dish using promises and timeouts?</summary>
+
+- we have the promise to get a dinner (money to buy some food)
+- the fact that we have the money gives us an opportunity to get the dinner
+- but it happens not right away (we have to get the products and cook them)
+```JavaScript
+const Timeout = {
+  GET: 9000,
+  WASH: 3000,
+  CUT: 8000,
+  ADD_SPICES: 1000,
+  COOK: 5000
+};
+
+const getProducts = () => {
+  console.log('1. Getting the products');
+
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const products = ['pumpkin', 'tomato', 'celery', 'spices', 'nuts'];
+      resolve(products);
+    }, Timeout.GET);
+  });
+};
+
+const washProducts = (products) => {
+  console.log('2. Washing the products');
+
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(products);
+    }, Timeout.WASH);
+  });
+};
+
+const cutProducts = () => {
+  console.log('3. Cutting the products');
+
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(products);
+    }, Timeout.CUT);
+  });
+};
+
+const addSpices = () => {
+  console.log('4. Adding the spices');
+
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(products);
+    }, Timeout.ADD_SPICES);
+  });
+};
+
+const cookTheDish = () => {
+  console.log('5. Cooking the dish');
+
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      return Math.random() > 0.5
+        ? resolve('Ready to eat!')
+        : reject('Overcooked!');
+    }, Timeout.COOK);
+  });
+};
+
+getProducts()
+  .then(washProducts)
+  .then(cutProducts)
+  .then(addSpices)
+  .then(cookTheDish)
+  .then((result) => console.log(result))
+  .catch((error) => console.log(error));
+```
+
+</details>
 
 ## Asynchronous JavaScript, Http requests
 <details>
@@ -5311,7 +5637,7 @@ const data = getResponse('https://data.com/users');
 
 - complex interface, have to add all possible callbacks, difficult to make optional manipulation for some cases
 - difficult to read the code, recreate the methods sequence is quite hard
-- callback hell - several chained async methods turn into nested sequences of callbacks, too hard to support https://callbackhell.ru/
+- callback hell - several chained async methods turn into nested sequences of callbacks, too hard to support (ex: when we want to get several data structures from the server, depending on each one - users => articles => comments) https://callbackhell.ru/
 ```JavaScript
 const getResponse = (url, onload, onerror) => {
   const xhr = new XMLHttpRequest();
@@ -5343,7 +5669,19 @@ getResponse('data.json',
 // 2 - async function returns this Promise
 // 3 - calls the resolve/reject callbacks
 const getResponse = (url) => new Promise(
+  // the executor function runs immediately
   (resolve, reject) => {
+    console.log('Will be logged upon the promise creation.');
+    // the async code should be written inside the executor function
+    // it will be sent to the queue immediately
+
+    // the state of the promise is changed automatically
+    // depends on which callback we call (resolve or reject)
+    // we can't go back to the previous state (can't call both callbacks)
+    resolve('success');
+    // will be executed but won't affect the state (stays fulfilled)
+    reject('error');
+
     // Object => Pending...
     // neither then() or catch() executes at this moment
     const xhr = new XMLHttpRequest();
@@ -5362,22 +5700,25 @@ const getResponse = (url) => new Promise(
 // 1 - call the function and get the Promise object
 // 2 - attach the success and error handlers using then and catch
 getResponse('data.json')
-  // callback on success
+  // then method lets you to define a callback on success (fulfilled)
   // could work with several promises
   // returns new Promise()
   .then(
+    // pass the resolve callback
     (data) => console.log(data),
+    // pass the reject callback
     // but better to use catch
     (error) => console.warning(error)
   );
 
 getResponse('data.json')
-  // if there is anywhere in then chain throw new Error
-  // it's going to be caught in catch
+  // if there is anywhere in then chain reject is called
+  // it's going to be caught in catch and all thens in between skipped
   .then((data) => console.log(data))
   // catches all the errors before
   // the blocks before are skipped but
   // doesn't stop the chain (if there are some then after)
+  // returns new Promise()
   .catch((error) => console.warning(error))
   // if there are no more then() blocks left
   // promise enters the final mode: settled
@@ -5390,6 +5731,8 @@ getResponse('data.json')
 
 // you can work with promises chaining then
 // every then returns a promise, where we can also call then
+// every next then can get the result of the callback
+// from the previous then
 Promise.resolve('a') // 'a'
   .then((val) => val.concat('b')) // 'ab'
   // when we have another then() or catch()
@@ -5401,13 +5744,72 @@ Promise.resolve('a') // 'a'
 </details>
 
 <details>
+<summary>What are Promise.resolve and Promise.reject and why do you use them?</summary>
+
+- static methods let you immediately change the promise state to fulfilled or rejected
+```JavaScript
+// both return a promise
+const getData = () => Promise.resolve('Some data');
+// the same as
+const getData = () => new Promise((resolve) => resolve('Some data'));
+// and reject
+const getDataR = () => Promise.reject('Error!');
+// the same as
+const getDataR = () => new Promise((resolve, reject) => reject('Error!'));
+
+getData() 
+  .then((data) => console.log(data))
+  .then(getDataR)
+  .catch((error) => console.log(error));
+```
+
+</details>
+
+<details>
 <summary>What is Promise.race?</summary>
 
 ```JavaScript
-Promise.race([getPromise1(), getPromise2()])
-  .then(dataFromTheFastest => {});
-// the other promise is not canceled!
-// just ignored (the http request will still be sent)
+const getData = (number) => new Promise((resolve) => setTimeout(() => {
+  resolve(`Get data ${number}`);
+}, 5000));
+
+const getFirst = getData(1);
+const getSecond = getData(2);
+const getThird = getData(3);
+
+// returns a new promise which will be
+// fulfilled - after the fastest is fulfilled
+// the other promises are not canceled!
+// just ignored (in case of the http request will still be sent)
+Promise.race([getFirst, getSecond, getThird])
+  // => 'Get data 1'
+  .then(valueFastest => console.log(valueFastest));
+```
+
+</details>
+
+<details>
+<summary>What is Promise.all?</summary>
+
+```JavaScript
+// used when we first to wait for some async operations
+// to complete and then start working with the data
+const getData = (number) => new Promise((resolve) => setTimeout(() => {
+  resolve(`Get data ${number}`);
+}, 5000));
+
+const getFirst = getData(1);
+const getSecond = getData(2);
+const getThird = getData(3);
+
+// the only parameter - an array of promises
+// returns a new promise which will be
+// fulfilled - after all the promises in the array are fulfilled
+// rejected - if only one is rejected
+Promise.all([getFirst, getSecond, getThird])
+  // meets the order in the .all array
+  // => ['Get data 1', 'Get data 2', 'Get data 3']
+  .then((value) => console.log(value));
 ```
 
 </details>

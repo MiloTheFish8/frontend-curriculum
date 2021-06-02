@@ -17,24 +17,32 @@
 </details>
 
 ## Creational patterns
-- Factory method - create the same
-- Abstract factory
-- Singleton - unique
+1. Factory method - create the same
+2. Abstract factory
+3. Singleton - unique
+4. Builder
+5. Prototype
 
 ## Structural patterns
-- Decorator - decorate
-- Adapter - adaptation
-- Facade - adaptation
-- Composite - collections
-- Proxy - access
+1. Decorator - decorate
+2. Adapter - adaptation
+3. Facade - adaptation
+4. Composite - collections
+5. Proxy - access
+6. Bridge
+7. Flyweight
 
 ## Behavioral patterns
-- Observer - observe
-- Command - call encapsulation
-- Template method - algorithm encapsulation
-- Iterator - collections
-- State
-- Strategy
+1. Observer - observe
+2. Command - call encapsulation
+3. Template method - algorithm encapsulation
+4. Iterator - collections
+5. State
+6. Strategy
+7. Chain of Responsibility
+8. Mediator
+9. Memento
+10. Visitor
 
 ## Concurrency patterns
 
