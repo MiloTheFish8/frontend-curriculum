@@ -26,6 +26,7 @@
 - [Arrays: Implementing Stack and Queue](#arrays-implementing-stack-and-queue)
 - [Sets and WeakSets](#iterables-sets-and-weaksets)
 - [Maps and WeakMaps](#iterables-maps-and-weakmaps)
+- [Dates](#dates)
 
 </details>
 
@@ -33,6 +34,7 @@
 <summary>Functions</summary>
 
 - [Functions](#functions)
+- [Execution context and stack](#execution-context-and-stack)
 - [Scope](#scope)
 
 </details>
@@ -56,6 +58,8 @@
 <summary>Browser</summary>
 
 - [Window Object](#window-object)
+- [BOM](#bom)
+- [CSSOM](#cssom)
 - [DOM](#dom)
 - [Events](#events)
 - [Forms](#forms)
@@ -824,6 +828,14 @@ Math.max(...values);
 const newValues = [...values];
 const filteredValues = [...values].filter();
 ```
+
+</details>
+
+<details>
+<summary>What is the difference between Array.from() and spread operator?</summary>
+
+- `Array.from()` works both with array-likes and iterables
+- `...` works only with iterables
 
 </details>
 
@@ -3116,6 +3128,105 @@ const newPlayer = Object.fromEntries(playerMap);
 
 </details>
 
+## Dates
+<details>
+<summary>How to create a current date and time?</summary>
+
+```JavaScript
+const now = new Date();
+// Sun Jun 06 2021 15:09:24 GMT-0800 (Pacific Standard Time)
+console.log(now);
+```
+
+</details>
+
+<details>
+<summary>How to create a particular date?</summary>
+
+```JavaScript
+// milliseconds (1/1000s) - timestamp
+// passed after the Jan 1st of 1970 UTC+0
+// 0 creates 01.01.1970 UTC+0
+const jan01of1970 = new Date(0);
+console.log(jan01of1970);
+// add 24h to create 02.01.1970 UTC+0
+const jan02of1970 = new Date(24 * 60 * 60 * 1000);
+console.log(jan02of1970);
+// dates before the Jan 1st of 1970 UTC+0
+// have negative timestamps
+const dec31of1969 = new Date(-24 * 60 * 60 * 1000);
+console.log(dec31of1969);
+
+// from a string, if only single arg
+// automatically parsed with the same algorithm
+// as Date.parse
+const date = new Date('2015-08-31');
+// the time is not set so it's assumed to be midnight GMT
+// adjusted according to the timezone
+// ... Aug 30 2015 16:00:00 GMT-0800 (Pacific Standard Time)
+console.log(date);
+
+// with the given components in the local time zone
+// only the first two args are required
+// year, month, date, hours, minutes, seconds, ms
+// year - must be 4 digits
+// month - from 0 to 11
+// date - the day of month (default 1)
+// hours/minutes/seconds/ms (default 0)
+const date = new Date(2015, 0, 2, 5, 30, 3, 450);
+console.log(date);
+```
+
+</details>
+
+<details>
+<summary>How to access date components?</summary>
+
+```JavaScript
+const date = new Date(2015, 0, 2, 5, 30, 3, 450);
+// not getYear() - deprecated, sometimes returns 2-digit
+// => 2015
+date.getFullYear();
+// from 0 to 11
+date.getMonth();
+// from 1 to 31
+date.getDate();
+// corresponding components
+date.getHours();
+date.getMinutes();
+date.getSeconds();
+date.getMilliseconds();
+// from 0 (Sun) to 6 (Sat)
+date.getDay();
+// if add UTC to all above - in UTC+0 time zone
+// (London time without daylight savings)
+date.getUTCHours();
+// returns a timestamp
+date.getTime();
+// difference between UTC and local time zone
+date.getTimezoneOffset();
+```
+
+</details>
+
+<details>
+<summary>How to set date components?</summary>
+
+```JavaScript
+// all (except setTime) has UTC variation setUTCHours()
+date.setFullYear(year, [month], [date]);
+date.setMonth(month, [date]);
+date.setDate(date);
+date.setHours(hour, [min], [sec], [ms]);
+date.setMinutes(min, [sec], [ms]);
+date.setSeconds(sec, [ms]);
+date.setMilliseconds(ms);
+// sets the whole date by ms since 01.01.1970 UTC
+date.setTime(ms);
+```
+
+</details>
+
 ## Functions
 <details>
 <summary>What does function without `return` statement or with empty `return` return?</summary>
@@ -3379,8 +3490,9 @@ console.log(calculateIncomeTaxAmount(100));
 </details>
 
 <details>
-<summary>What is a recursion and why to use it?</summary>
+<summary>What is a recursion?</summary>
 
+- when a function calls itself
 - sometimes it's shorter than other ways
 - if too many calls => stack overflow
 ```JavaScript
@@ -3394,6 +3506,7 @@ const getPower = (a, n) => {
   return result;
 };
 
+// recursively calls itself till n === 1
 const getPowerRec = (a, n) => {
   // don't forget to add an exit condition
   if (n === 1) {
@@ -3408,7 +3521,27 @@ const getPowerRec = (a, n) => {
   return n === 1 ? a : a * getPowerRec(a, n - 1);
 };
 ```
-- where do we need the recursion?
+</details>
+
+<details>
+<summary>What is the recursion depth?</summary>
+
+- the maximal number of nested calls (including the first one)
+- limited by JS engine (about `10 000`, some more, but `100 000` is out of limit)
+
+</details>
+
+<details>
+<summary>What is better - recursion or loop?</summary>
+
+- contexts take memory (recursion creates a new context for every function call), equals to `n` in case of `pow` function
+- loops are more memory-saving, use a single context changing `i` and `result`, it's memory requirements are small, fixed and do not depend on `n`
+
+</details>
+
+<details>
+<summary>Where do we need the recursion?</summary>
+
 - when there are some nested objects but we don't know exactly how many
 ```JavaScript
 const player = {
@@ -3463,6 +3596,34 @@ console.log(getTeamMemberNames(player));
 - [Tagged templates on  MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals#Tagged_templates)
 - [Arrow functions on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions)
 - [Arrow function expressions on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions#No_binding_of_this)
+
+</details>
+
+## Execution context and stack
+<details>
+<summary>What is the execution context?</summary>
+
+- an internal data structure that contains details about the execution of a function
+  - where the control flow is now
+  - the current variables
+  - the value of `this`
+
+</details>
+
+<details>
+<summary>How many execution contexts can one function call have?</summary>
+
+- exactly one
+
+</details>
+
+<details>
+<summary>What happens when a function makes a nested call?</summary>
+
+- the current function is paused
+- the execution context associated with it is remembered in a special data structure called <b>execution context stack</b>
+- the nested call executes
+- after it ends, the old execution context is retrieved from the stack and the outer function is resumed from where it stopped
 
 </details>
 
@@ -4338,6 +4499,8 @@ import { nameOne, nameTwo } from './folder';
 <details>
 <summary>What is the `window` object and how do we use it?</summary>
 
+- a root object - acts as global object for JS code
+- represents the browser window and provides methods to control it
 - browser API, contains all the global properties and methods
 ```JavaScript
 // can call both ways
@@ -4354,16 +4517,42 @@ window.alert('Say something');
 
 </details>
 
+## BOM
+<details>
+<summary>What is BOM?</summary>
+
+- represents additional objects provided by the browser (host environment) for working with everything except the document (navigator, location, ...)
+
+</details>
+
+## CSSOM
+<details>
+<summary>What is CSSOM?</summary>
+
+- a separate specification for CSS rules and stylesheets, explains how they are represented as objects, how to work with them
+- used together with DOM when we modify style rules for the document (in practice rarely required as mostly we use classes for styling)
+
+</details>
+
 ## DOM
 <details>
 <summary>What is DOM?</summary>
 
-- a part of `window` object
+- a part of `window` object, represents all page content as objects that can be modified
+- the main entry point to the page, we can change or create anything on the page using it
 
 </details>
 
 <details>
-<summary>How does the browser searches through the DOM?</summary>
+<summary>Is DOM only for browsers?</summary>
+
+- the DOM specification explains the structure, there are non-browser instruments that use DOM too
+- for example server-side scripts that download HTML pages and process them (though may support only a part of the specification)
+
+</details>
+
+<details>
+<summary>How does the browser search through the DOM?</summary>
 
 - browser searches DOM in depths, so that the first tag is being found (otherwise not obvious)
 

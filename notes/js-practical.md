@@ -16,7 +16,7 @@ console.log(2 * ++counter);
 ### 2. What will be logged to the console?
 ```JavaScript
 let counter = 1;
-console.log(2 * counter++); // => 2
+console.log(2 * counter++);
 ```
 
 <details>
@@ -226,3 +226,7 @@ false || console.log('Logged!');
 ```
 
 </details>
+
+## Data types and structures
+
+### 1. How to set a date?
