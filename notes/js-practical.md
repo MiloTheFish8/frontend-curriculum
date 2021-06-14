@@ -227,6 +227,79 @@ false || console.log('Logged!');
 
 </details>
 
+### 9. What will be logged to the console?
+```JavaScript
+let a = 1;
+let b = 2;
+let c = 3 - (a = b + 1);
+
+console.log(a);
+console.log(c);
+
+let a, b, c;
+
+a = b = c = 2 + 2;
+console.log(a);
+console.log(b);
+console.log(c);
+
+console.log(2 ** 2);
+console.log(4 ** (1 / 2));
+console.log(8 ** (1 / 3));
+```
+
+<details>
+<summary>Answer</summary>
+
+```JavaScript
+// assignment returns a value
+// x = value writes the value into x and then returns it
+let a = 1;
+let b = 2;
+let c = 3 - (a = b + 1);
+
+console.log(a); // => 3
+console.log(c); // => 0
+
+// chaining assignment
+// evaluate from right to left
+// 1. the rightmost expression 2 + 2 is evaluated 
+// 2. and then assigned to the variables on the left: c, b and a
+let a, b, c;
+
+a = b = c = 2 + 2;
+console.log(a); // => 4
+console.log(b); // => 4
+console.log(c); // => 4
+
+console.log(2 ** 2); // => 4 (2 pow 2)
+console.log(4 ** (1 / 2)); // => square root
+console.log(8 ** (1 / 3)); // => cubic root
+```
+
+</details>
+
+### 10. What will be logged to the console?
+```JavaScript
+let text1 = 'one' && 'two' ?? 'three';
+let text2 = ('one' && 'two') ?? 'three';
+
+console.log(text1);
+console.log(text2);
+```
+
+<details>
+<summary>Answer</summary>
+
+```JavaScript
+// Syntax error
+let text = 'one' && 'two' ?? 'three';
+// Works just fine (=> 'two')
+let text = ('one' && 'two') ?? 'three';
+```
+
+</details>
+
 ## Data types and structures
 
 ### 1. How to set a date?

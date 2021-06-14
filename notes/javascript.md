@@ -227,61 +227,48 @@ const arr = [1, 2, 3, 4];
 </details>
 
 <details>
-<summary>How to declare different types of immutable constants?</summary>
+<summary>How to declare a primitive value as an immutable constant?</summary>
 
-  <details>
-  <summary>Primitive value</summary>
+- immutable (code agreement: protected, hardcoded) constant primitive value (physical constants, coefficients, etc)
+```JavaScript
+const LIGHT_SPEED = 255792458;
+```
 
-  - immutable (code agreement: protected, hardcoded) constant primitive value (physical constants, coefficients, etc)
-  ```JavaScript
-  const LIGHT_SPEED = 255792458;
-  ```
-
-  </details>
+</details>
   
-  <details>
-  <summary>Immutable constant array</summary>
+<details>
+<summary>How to declare an array as an immutable constant?</summary>
 
-  ```JavaScript
-  const DEFAULT_NAMES = ['Michael', 'Anna', 'Chris'];
-  ```
-
-  </details>
-
-  <details>
-  <summary>Enumeration</summary>
-
-  - enumeration (immutable constant) is a complete list of constants grouped by some sign
-  ```JavaScript
-  const Code = {
-    SUCCESS: 200,
-    CACHED: 302,
-    NOT_FOUND: 404,
-    SERVER_ERROR: 500
-  };
-  ```
-
-  </details>
-
-  <details>
-  <summary>Immutable constant object</summary>
-
-  ```JavaScript
-  const Earth = {
-    RADIUS: 6.371,
-    GRAVITATION: 6.67408
-  };
-  ```
-
-  </details>
+```JavaScript
+const DEFAULT_NAMES = ['Michael', 'Anna', 'Chris'];
+```
 
 </details>
 
 <details>
-<summary>Learn more</summary>
+<summary>How to declare an enum?</summary>
 
-- [Let on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/let)
-- [Const on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/const)
+- enumeration (immutable constant) is a complete list of constants grouped by some sign
+```JavaScript
+const Code = {
+  SUCCESS: 200,
+  CACHED: 302,
+  NOT_FOUND: 404,
+  SERVER_ERROR: 500
+};
+```
+
+</details>
+
+<details>
+<summary>How to declare an immutable constant object?</summary>
+
+```JavaScript
+const Earth = {
+  RADIUS: 6.371,
+  GRAVITATION: 6.67408
+};
+```
 
 </details>
 
@@ -289,44 +276,18 @@ const arr = [1, 2, 3, 4];
 <details>
 <summary>What are the basic math operators?</summary>
 
-- `=`
-```JavaScript
-// assignment returns a value
-// x = value writes the value into x and then returns it
-let a = 1;
-let b = 2;
-let c = 3 - (a = b + 1);
-
-console.log(a); // 3
-console.log(c); // 0
-
-// chaining assignment
-// evaluate from right to left
-// 1. the rightmost expression 2 + 2 is evaluated 
-// 2. and then assigned to the variables on the left: c, b and a
-let a, b, c;
-
-a = b = c = 2 + 2;
-console.log(a); // => 4
-console.log(b); // => 4
-console.log(c); // => 4
- ```
+- `=` - assignment returns a value
 - `+` or `+=`
 - `-` or `-=`
 - `*` or `*=`
 - `/` or `/=`
 - `%`
 - `**` exponentiation operator (not supported in IE)
-```JavaScript
-console.log(2 ** 2); // => 4 (2 pow 2)
-console.log(4 ** (1 / 2)); // => square root
-console.log(8 ** (1 / 3)); // => cubic root
-```
 
 </details>
 
 <details>
-<summary>How increment and decrement operators can be applied?</summary>
+<summary>To what exactly can increment and decrement operators be applied?</summary>
 
 - only to variables, `5++` will cause an error
 
@@ -343,22 +304,6 @@ let counter = initialNumber++;
 let counter2 = ++initialNumber;
 console.log(counter); // => 1
 console.log(counter2); // => 2
-```
-
-</details>
-
-<details>
-<summary>How to use increment and decrement inside the expression?</summary>
-
-```JavaScript
-let counter = 1;
-console.log(2 * ++counter); // => 4
-
-let counter = 1;
-console.log(2 * counter++); // => 2
-// if you need multiply and then increase, more readable
-console.log(2 * counter);
-counter++;
 ```
 
 </details>
@@ -438,8 +383,8 @@ switch (+expression) {
 <details>
 <summary>What are the 'falsy' values?</summary>
 
-- `0`
-- `''`
+- `0` though `'0'` is true
+- `''` though `'  '` is true
 - `NaN`
 - `null`
 - `undefined`
@@ -485,21 +430,7 @@ console.log('a' > 'B'); // => true
 <details>
 <summary>How does JS compare different types (except === and !==)?</summary>
 
-- converts the values to numbers
-```JavaScript
-console.log('3' > 1); // true
-console.log('04' == 4); // true
-console.log(true == 1); // true
-console.log(false == 0); // true
-
-// the strange thing because of this conversion
-const a = 0;
-const b = '0';
-
-console.log(Boolean(a)); // false
-console.log(Boolean(b)); // true
-console.log(a == b); // true
-```
+- converts the values to numbers and compares
 
 </details>
 
@@ -539,7 +470,7 @@ console.log(undefined == 0); // false
 </details>
 
 <details>
-<summary>What are logical operators?</summary>
+<summary>What are logical operators and what is the result?</summary>
 
 - `||` or
 - `&&` and
@@ -561,28 +492,18 @@ console.log(undefined == 0); // false
 <details>
 <summary>How to use OR and AND, which one is higher?</summary>
 
-- `a && b` if both are true
+- `a && b` if both are true 
+  - returns the 1st falsy value
+  - if all are truthy, the last one is returned
+  - conditional assignment
 - `a || b` if at least one is true
+  - returns 1st truthy value
+  - if all falsy, the last value is returned
+  - default value assignment
+  - short-circuit evaluation
 - `&&` precedence is higher than `||`
 - do not convert value into a boolean
 ```JavaScript
-// returns the 1st falsy value
-const userName1 = null && 'Mary'; // => null
-// use value if the condition is true
-const isLoggedIn = true; // if false => false
-const userName0 = isLoggedIn && 'Mary'; // => 'Mary'
-// if all are truthy, the last one is returned
-const userName2 = 'Lily' && 'Max' && 'Mary'; // => 'Mary'
-```
-```JavaScript
-// default value assignment
-// getting the first truthy value from a list of variables or expressions
-// returns 1st truthy value
-const userName1 = '' || 'Mary' || 'Maya'; // => 'Mary'
-const userName2 = 'Max' || 'Mary' || ''; // => 'Max'
-// if all falsy, the last value is returned
-const userName3 = null || 0 || ''; // => ''
-
 // short-circuit evaluation
 true || console.log('Will not be logged!');
 false || console.log('Logged!');
@@ -593,7 +514,7 @@ false || console.log('Logged!');
 <details>
 <summary>How does nullish coalescing work and the cases?</summary>
 
-- to provide a default value
+- case: to provide a default value
 ```JavaScript
 // returns the first argument if it's not `null` or `undefined`
 // otherwise the second
