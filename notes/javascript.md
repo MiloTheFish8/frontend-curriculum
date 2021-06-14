@@ -1,34 +1,25 @@
 # JavaScript
-<details>
-<summary>Fundamentals</summary>
-
-- [Basic definitions](#basic-definitions)
-- [Good practices](#good-practices)
-- [Code quality](#code-quality)
-- [Constants and variables](#constants-and-variables)
-- [Expressions, Control structures and Operators](#expressions-control-structures-and-operators)
-
-</details>
-
-<details>
-<summary>Data types and structures</summary>
-
-- [Data types and structures](#data-types-and-structures)
-- [Numbers](#numbers)
-- [Strings](#strings)
-- [Objects](#objects)
-- [Iterables](#iterables)
-- [Arrays](#iterables-arrays)
-- [Arrays: Add or remove items](#arrays-add-or-remove-items)
-- [Arrays: Iterate](#arrays-iterate)
-- [Arrays: Search](#arrays-search)
-- [Arrays: Transform](#arrays-transform)
-- [Arrays: Implementing Stack and Queue](#arrays-implementing-stack-and-queue)
-- [Sets and WeakSets](#iterables-sets-and-weaksets)
-- [Maps and WeakMaps](#iterables-maps-and-weakmaps)
-- [Dates](#dates)
-
-</details>
+- <b>Fundamentals</b>
+  - [Basic definitions](#basic-definitions)
+  - [Good practices](#good-practices)
+  - [Code quality](#code-quality)
+  - [Constants and variables](#constants-and-variables)
+  - [Expressions, Control structures and Operators](#expressions-control-structures-and-operators)
+- <b>Data types and structures</b>
+  - [Data types and structures](#data-types-and-structures)
+  - [Numbers](#numbers)
+  - [Strings](#strings)
+  - [Objects](#objects)
+  - [Iterables](#iterables)
+  - [Arrays](#iterables-arrays)
+  - [Arrays: Add or remove items](#arrays-add-or-remove-items)
+  - [Arrays: Iterate](#arrays-iterate)
+  - [Arrays: Search](#arrays-search)
+  - [Arrays: Transform](#arrays-transform)
+  - [Arrays: Implementing Stack and Queue](#arrays-implementing-stack-and-queue)
+  - [Sets and WeakSets](#iterables-sets-and-weaksets)
+  - [Maps and WeakMaps](#iterables-maps-and-weakmaps)
+  - [Dates](#dates)
 
 <details>
 <summary>Functions</summary>
