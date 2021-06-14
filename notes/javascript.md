@@ -556,8 +556,8 @@ let text = ('one' && 'two') ?? 'three';
 <details>
 <summary>How to use destructuring with iterables?</summary>
 
-- for iterable structures only (doesn't work on strings!)
-- works like `for ... of`
+- for iterable structures only
+- works like `for ... of` - uses the same mechanism of `Symbol.iterator`, kind of syntax sugar for calling `for ... of` over the value to the right of `=` and assigning the values
 - all the elements go in an order, can't address the last one
 ```JavaScript
 const numbers = [1, 2, 3, 4, 5];

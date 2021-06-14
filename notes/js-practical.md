@@ -1,4 +1,7 @@
 # Practical Questions
+- [Fundamentals](#fundamentals)
+- [Data types and structures](#data-types-and-structures)
+
 ## Fundamentals
 ### 1. What will be logged to the console?
 ```JavaScript
