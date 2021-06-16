@@ -198,14 +198,17 @@ name = 'Mary';
 // converted into
 var name = 'Mary';
 ```
-- hoisting
-- recreating
+- hoisting declarations, not assignments (inside the global or function scope)
+- re-declaration
 ```JavaScript
 var i = 21;
 // ... some code here
+// var keyword is just ignored like as if (i = 45)
 var i = 45;
+// => 45
+console.log(i);
 ```
-- function and global scope (but no block scope)
+- function and global scope (but no block scope) because long time ago in JS blocks had no Lexical Environments
 - reserved names usage (not allowed with `'use strict';`)
 ```JavaScript
 var undefined = 67;
@@ -3337,6 +3340,14 @@ getPlayerInfo`${name} is ${level} for now`;
 </details>
 
 <details>
+<summary>What are nested functions?</summary>
+
+- a function created inside another function
+- the nested function can be returned
+
+</details>
+
+<details>
 <summary>What are pure functions and the side effects?</summary>
 
 - for the same input always give the same output
@@ -3395,8 +3406,8 @@ console.log(calculateIncomeTaxAmount(100));
 <details>
 <summary>What are closures?</summary>
 
-- all functions in JS are closures
-- function locks in all surrounding variables
+- all functions in JS are closures (except when we call with a `new Function`)
+- a function that remembers its outer variables and can access them
 - mostly used for factory functions
 
 </details>
@@ -3540,6 +3551,90 @@ console.log(getTeamMemberNames(player));
 </details>
 
 ## Scope
+<details>
+<summary>What is the Lexical Environment?</summary>
+
+- an internal (hidden) associated object of every running function, code block and the script as a whole
+- consists of <b>Environmental Record</b> and <b>a reference to the outer lexical environment</b>, the one associated with the outer code
+- is a specification object: exists only <b>theoretically</b> in the spec to describe how things work, you can't access it in the code or manipulate it
+- JS engines can optimize it, discard variables that are unused to save the memory and perform other internal tricks
+
+</details>
+
+<details>
+<summary>What is the Environment Record?</summary>
+
+- an object that stores all local variables as its properties (and some other information like the value of `this`)
+
+</details>
+
+<details>
+<summary>What is a Global Lexical Environment and what is the outer reference for it?</summary>
+
+- LE associated with the whole script
+- has no outer reference, the outer reference is `null`
+
+</details>
+
+<details>
+<summary>What is the variable in the context of Lexical Environment?</summary>
+
+- just a property of the special internal object (Environment Record), associated with the currently executing block/function/script
+- to get or change the variable means to get or change a property of that object
+
+</details>
+
+<details>
+<summary>How is the Function Declaration different to a variable?</summary>
+
+- the difference is that it is instantly fully initialized (instead of uninitialized state of the variable)
+
+</details>
+
+<details>
+<summary>How does the Lexical Environment change during the execution?</summary>
+
+- when the script starts, the LE is pre-populated with all declared variables. Initially they are in the <b>uninitialized</b> state (special initial state - the engine knows about the variables but the can't be referenced until declared, almost the same as if the variable didn't exist)
+- `let time;` - value is undefined
+- `time = 10;` - value is assigned
+- `time = 12;` - value is changed
+
+</details>
+
+<details>
+<summary>What is the LE creation flow when the function is called?</summary>
+
+- before the function is called - it remembers the LE in which is was made
+- the environment reference is set once and forever at the function creation time
+- at the beginning of the call the new LE is created automatically to store all the local variables and parameters of the call
+- during the function call we have 2 LEs: the inner (for the function call) and the outer (global, has also the function itself, that's why we can create a recursion)
+
+</details>
+
+<details>
+<summary>How does the two LE behave when the function is called?</summary>
+
+- the inner LE is searched first then the outer, then more outer till the global
+- if not found - error in strict mode (without the strict mode - an assignment creates a new global variable)
+
+</details>
+
+<details>
+<summary>How do browsers optimise the not removing the env variable while there is still a reference?</summary>
+
+- they analyse variable usage and if it's obvious from the code that an outer variable is not used, it is removed
+- <b>side effect in V8</b> - such variable becomes unavailable in debugging
+
+</details>
+
+<details>
+<summary>When is the LE removed by the garbage collector?</summary>
+
+- usually it is removed with all the variables after the function call finishes (because there are no references to it left, the same behavior as with the objects)
+- but if there is a nested function that is still reachable after the end of a function call, then it has the Environment property that references the LE (still reachable)
+
+</details>
+
 <details>
 <summary>What is a scope and a context?</summary>
 

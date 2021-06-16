@@ -1,6 +1,7 @@
 # Practical Questions
 - [Fundamentals](#fundamentals)
 - [Data types and structures](#data-types-and-structures)
+- [Functions](#functions)
 
 ## Fundamentals
 ### 1. What will be logged to the console?
@@ -303,6 +304,81 @@ let text = ('one' && 'two') ?? 'three';
 
 </details>
 
+### 11. What will be logged to the console?
+```JavaScript
+function greet() {
+  console.log(message);
+
+  var message = 'Hello!';
+}
+```
+
+<details>
+<summary>Answer</summary>
+
+- `undefined` - the assignment doesn't hoist
+
+</details>
+
+### 12. What will be logged to the console?
+```JavaScript
+function greet() {
+  message = 'Hello!';
+
+  if (false) {
+    var message;
+  }
+
+  console.log(message);
+}
+```
+
+<details>
+<summary>Answer</summary>
+
+```JavaScript
+function greet() {
+  // even if the if block never executes,
+  // the var hoists here anyways var message;
+  // assigns to 'Hello!'
+  message = 'Hello!';
+
+  if (false) {
+    var message;
+  }
+  // => "Hello!"
+  console.log(message);
+}
+```
+
+</details>
+
 ## Data types and structures
 
 ### 1. How to set a date?
+
+## Functions
+
+### 1. What will be logged to the console?
+```JavaScript
+function createCounter() {
+  let count = 0;
+
+  return function() {
+    return count++;
+  };
+}
+
+let count = createCounter();
+
+console.log(count());
+console.log(count());
+console.log(count());
+```
+
+<details>
+<summary>Answer</summary>
+
+- `0`, `1`, `2`
+
+</details>
