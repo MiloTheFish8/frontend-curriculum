@@ -3244,6 +3244,51 @@ const doSomething = (text = isRequired()) => {};
 </details>
 
 <details>
+<summary>What is a Named Function Expression?</summary>
+
+- Function Expression that has a name
+```JavaScript
+// FE
+const play = function() {};
+// NFE
+const greetPlayer = function greet() {};
+```
+
+</details>
+
+<details>
+<summary>What are the reasons to use a NFE?</summary>
+
+- the name is not visible outside the function
+- allows to reference itself internally
+```JavaScript
+let greetPlayer = function greet(name) {
+  if (name) {
+    console.log(name);
+  } else {
+    // if we used greetPlayer() here
+    // it will yield an error if we reassign the function
+    // the greetPlayer is from the outer scope
+    // the greet is from local
+    greet('Unknown');
+  }
+};
+
+// => "Unknown"
+greetPlayer();
+// Error, greet is not defined (not visible outside the function)
+greet();
+
+// with greetPlayer inside will be an error
+let greetGuest = greetPlayer;
+greetPlayer = null;
+// => "Unknown"
+greetGuest();
+```
+
+</details>
+
+<details>
 <summary>What are the differences between Function Declaration and Function Expression?</summary>
 
 - the syntax is different
@@ -3616,6 +3661,81 @@ const arr = [function() {}];
 // => ''
 console.log(arr[0].name);
 ```
+
+</details>
+
+<details>
+<summary>What does function length return?</summary>
+
+- the number of function parameters, the rest parameters are not counted
+
+</details>
+
+<details>
+<summary>What is introspection?</summary>
+
+- the ability of a program to examine the type or properties of an object at runtime
+
+</details>
+
+<details>
+<summary>How to use a function length for the introspection?</summary>
+
+- the idea is that we have a simple (no arguments) handler syntax for positive cases (most frequent) but are also able to support universal handlers as well
+- a case of polymorphism - treating arguments differently depending on the `length`
+```JavaScript
+const askQuestion = (question, ...handlers) => {
+  const isPositive = confirm(question);
+
+  if (!isPositive) {
+    return;
+  }
+
+  handlers.forEach((handler) => {
+    if (handler.length === 0) {
+      handler();
+    } else {
+      handler(isPositive);
+    }
+  });
+};
+
+askQuestion(
+  'Question?',
+  () => console.log('Yes!'),
+  (result) => console.log(result)
+);
+```
+
+</details>
+
+<details>
+<summary>Can we add a custom property to a function object?</summary>
+
+```JavaScript
+// count how many times the function has been called
+function greet() {
+  console.log('Hello!');
+
+  greet.count++;
+}
+// set the initial value
+greet.count = 0;
+
+greet();
+greet();
+
+// => 2
+console.log(greet.count);
+```
+
+</details>
+
+<details>
+<summary>How is custom property is different to a closure?</summary>
+
+- the main difference is that if `count` lives in a variable (outer scope), external code is unable to access it
+- if it's stored as a function property - we can change it `greet.count = 10;`
 
 </details>
 

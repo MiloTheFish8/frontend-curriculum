@@ -485,12 +485,19 @@ console.log(arr[0].name);
 
 ### 9. What will be logged to the console?
 ```JavaScript
+function greet(name) {}
+function play(name, game) {}
+function makeATeam(name, game, ...members) {}
 
+console.log(greet.length);
+console.log(play.length);
+console.log(makeATeam.length);
 ```
 
 <details>
 <summary>Answer</summary>
 
+- `1`, `2`, `2` - the rest parameters are not counted
 
 </details>
 
