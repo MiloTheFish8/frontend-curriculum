@@ -382,3 +382,33 @@ console.log(count());
 - `0`, `1`, `2`
 
 </details>
+
+### 2. What will be logged to the console?
+```JavaScript
+function() {
+  var message = 'Hello!';
+  console.log(message);
+}();
+```
+
+<details>
+<summary>Answer</summary>
+
+- `SyntaxError: Function statements require a function name` there will be an error because `function` in the FD must have a name
+
+</details>
+
+### 3. What will be logged to the console?
+```JavaScript
+function greet() {
+  var message = 'Hello!';
+  console.log(message);
+}();
+```
+
+<details>
+<summary>Answer</summary>
+
+- `SyntaxError: Unexpected token ')'` JS doesn't allow the FD to be called immediately
+
+</details>

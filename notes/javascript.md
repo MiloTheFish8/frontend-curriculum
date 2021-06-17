@@ -20,15 +20,11 @@
   - [Sets and WeakSets](#iterables-sets-and-weaksets)
   - [Maps and WeakMaps](#iterables-maps-and-weakmaps)
   - [Dates](#dates)
-
-<details>
-<summary>Functions</summary>
-
-- [Functions](#functions)
-- [Execution context and stack](#execution-context-and-stack)
-- [Scope](#scope)
-
-</details>
+- <b>Functions, scope, context</b>
+  - [Functions](#functions)
+  - [Execution context and stack](#execution-context-and-stack)
+  - [Scope](#scope)
+  - [Global object](#global-object)
 
 <details>
 <summary>Prototypes and inheritance</summary>
@@ -48,7 +44,6 @@
 <details>
 <summary>Browser</summary>
 
-- [Window Object](#window-object)
 - [BOM](#bom)
 - [CSSOM](#cssom)
 - [DOM](#dom)
@@ -219,8 +214,17 @@ var undefined = 67;
 <details>
 <summary>What are the differences between vars, lets and consts?</summary>
 
+- in browser global functions and variables declared with `var` (not `let` or `const`) become the property of the global object
 - `let`, `const` - no hoisting, no recreating, block scope, using reserved names is not allowed
 ```JavaScript
+// doesn't work with modules
+var globalVariable = 10;
+let globalLet = 10;
+// => 10
+console.log(window.globalVariable);
+// => undefined
+console.log(window.globalLet);
+
 // not any const = constant
 // declares a variable with immutable link
 const element = document.querySelector('p');
@@ -3510,6 +3514,61 @@ console.log(getTeamMemberNames(player));
 </details>
 
 <details>
+<summary>What is the IIFE and why was it invented?</summary>
+
+- immediately-invoked function expression - when there were only `var` with no block-scope, the IIFE were used to emulate it
+```JavaScript
+(function() {
+  var message = 'Hello!';
+  // => "Hello!"
+  console.log(message);
+})();
+```
+
+</details>
+
+<details>
+<summary>Why should we wrap the IIFE in ()?</summary>
+
+- when JS engine finds `function` in the main code, it interprets it as the start of <b>Function Declaration</b> but the FD must have a name so without `()` there will be an error
+```JavaScript
+// SyntaxError: Function statements require a function name
+function() {}();
+```
+
+</details>
+
+<details>
+<summary>What if we give the FD a name and don't wrap it into ()?</summary>
+
+- JS doesn't allow the FD to be called immediately, there will be an error
+
+</details>
+
+<details>
+<summary>What do the wrapping () do for the IIFE?</summary>
+
+- it's a trick to show JS that the function is created in the context of another expression. It's a Function Expression, needs no name and can be called immediately
+
+</details>
+
+<details>
+<summary>What are the ways to create an IIFE?</summary>
+
+```JavaScript
+// () around the function
+(function() {})();
+// () around the whole thing
+(function() {}());
+// NOT operator to start the expression
+!function() {}();
+// unary + to start the expression
++function() {}();
+```
+
+</details>
+
+<details>
 <summary>Learn more</summary>
 
 - [Functions on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Functions)
@@ -3941,6 +4000,48 @@ players.getMembers();
 
 - [this on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this)
 - [What is `this`? The Inner Workings of JavaScript Objects](https://medium.com/javascript-scene/what-is-this-the-inner-workings-of-javascript-objects-d397bfa0708a)
+
+</details>
+
+## Global object
+<details>
+<summary>What is a global object?</summary>
+
+- provides variables and functions that are available anywhere
+- `window` (in a browser), `global` (in nodejs), for other environments it may have another name
+- `globalThis` was added to the language as a standardized name for the global object, should be supported across all environments
+
+</details>
+
+<details>
+<summary>What is the `window` object and how do we use it?</summary>
+
+- a root object - acts as global object for JS code in browser
+- represents the browser window and provides methods to control it
+- browser API, contains all the global properties and methods
+
+</details>
+
+<details>
+<summary>How can we access the properties and methods of the global object?</summary>
+
+```JavaScript
+// can be accessed directly
+alert('Say something');
+window.alert('Say something');
+```
+
+</details>
+
+<details>
+<summary>How to use the global object for polyfills?</summary>
+
+```JavaScript
+if (!window.Promise) {
+  console.log('The browser is pretty old!');
+  window.Promise = 'some custom implementation';
+}
+```
 
 </details>
 
@@ -4499,28 +4600,6 @@ import { nameOne, nameTwo } from './folder';
 - [export on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/export)
 - [Exploring ES6 - 16. Modules](https://exploringjs.com/es6/ch_modules.html)
 - [ ] [Modules on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules)
-
-</details>
-
-## Window Object
-<details>
-<summary>What is the `window` object and how do we use it?</summary>
-
-- a root object - acts as global object for JS code
-- represents the browser window and provides methods to control it
-- browser API, contains all the global properties and methods
-```JavaScript
-// can call both ways
-alert('Say something');
-window.alert('Say something');
-```
-
-</details>
-
-<details>
-<summary>Learn more</summary>
-
-- [ ] [Window on MDN](https://developer.mozilla.org/en-US/docs/Web/API/Window)
 
 </details>
 
