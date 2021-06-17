@@ -1,6 +1,45 @@
 # Data structures and Algorithms
 Programming = Algorithms + Data Structures
 
+## Tools of Computer Science
+<details>
+<summary>How do computers make decisions?</summary>
+
+- computers use the decision trees to turn many simple decisions into one big
+
+</details>
+
+<details>
+<summary>What is a decision tree?</summary>
+
+- encoded series of simple yes-or-no questions that you can follow to answer a more complex question
+
+</details>
+
+<details>
+<summary>What is a balanced decision tree?</summary>
+
+- splits the options into even groups with each question
+
+</details>
+
+<details>
+<summary>Why the shape of a decision tree matters?</summary>
+
+- has a big impact on the number of questions you have to ask (balanced are the min)
+
+</details>
+
+<details>
+<summary>What are the key ideas behind the decision tree?</summary>
+
+- computers are very fast at answering simple questions
+- break down complex decisions into simple questions
+- the order of questions can change the number of questions you have to ask
+- incomplete information leads to the unintended outcomes (ex: skin or hair color)
+
+</details>
+
 ## Algorithms
 <details>
 <summary>General info</summary>

@@ -3569,15 +3569,53 @@ function() {}();
 </details>
 
 <details>
-<summary>Learn more</summary>
+<summary>How to get the function name?</summary>
 
-- [Functions on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Functions)
-- [Bind on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_objects/Function/bind)
-- [Closures on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Closures)
-- [Recursion on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Functions#Recursion)
-- [Tagged templates on  MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals#Tagged_templates)
-- [Arrow functions on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions)
-- [Arrow function expressions on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions#No_binding_of_this)
+```JavaScript
+function greet() {}
+// => greet
+console.log(greet.name);
+```
+
+</details>
+
+<details>
+<summary>What is the contextual name of a function?</summary>
+
+- if the function does not provide a name, then in an assignment it is figured out from the context
+```JavaScript
+const greet = function() {};
+// => greet
+console.log(greet.name);
+
+// also for default values
+function do(greet = function() {}) {
+  // => greet
+  console.log(greet.name);
+}
+
+// and in objects
+const player = {
+  logLevel() {},
+  logName: function() {}
+};
+// => logLevel
+console.log(player.logLevel.name);
+// => logName
+console.log(player.logName.name);
+```
+
+</details>
+
+<details>
+<summary>What if JS can't figure out the function name?</summary>
+
+- the engine has no way to set up the right name, so there is none
+```JavaScript
+const arr = [function() {}];
+// => ''
+console.log(arr[0].name);
+```
 
 </details>
 

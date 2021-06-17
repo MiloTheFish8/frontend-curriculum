@@ -412,3 +412,106 @@ function greet() {
 - `SyntaxError: Unexpected token ')'` JS doesn't allow the FD to be called immediately
 
 </details>
+
+### 4. What will be logged to the console?
+```JavaScript
+function greet() {}
+console.log(greet.name);
+```
+
+<details>
+<summary>Answer</summary>
+
+- `greet`
+
+</details>
+
+### 5. What will be logged to the console?
+```JavaScript
+const greet = function() {};
+console.log(greet.name);
+```
+
+<details>
+<summary>Answer</summary>
+
+- `greet` because of contextual name
+
+</details>
+
+### 6. What will be logged to the console?
+```JavaScript
+function do(greet = function() {}) {
+  console.log(greet.name);
+}
+```
+
+<details>
+<summary>Answer</summary>
+
+- `greet` because of contextual name
+
+</details>
+
+### 7. What will be logged to the console?
+```JavaScript
+const player = {
+  logLevel() {},
+  logName: function() {}
+};
+console.log(player.logLevel.name);
+console.log(player.logName.name);
+```
+
+<details>
+<summary>Answer</summary>
+
+- `logLevel`, `logName` because of the contextual name
+
+</details>
+
+### 8. What will be logged to the console?
+```JavaScript
+const arr = [function() {}];
+console.log(arr[0].name);
+```
+
+<details>
+<summary>Answer</summary>
+
+- `''` the engine has no way to set up the right name, so there is none
+
+</details>
+
+### 9. What will be logged to the console?
+```JavaScript
+
+```
+
+<details>
+<summary>Answer</summary>
+
+
+</details>
+
+### 10. What will be logged to the console?
+```JavaScript
+
+```
+
+<details>
+<summary>Answer</summary>
+
+
+</details>
+
+### 11. What will be logged to the console?
+```JavaScript
+
+```
+
+<details>
+<summary>Answer</summary>
+
+
+</details>
