@@ -5919,6 +5919,106 @@ self.addEventListener('fetch', (evt) => {
 
 ## Timers and intervals
 <details>
+<summary>How to set a timer?</summary>
+
+- not a part of JS specification but mos environments have it
+```JavaScript
+function greet() {
+  console.log('Hello!');
+}
+
+function greetPlayer(name, message) {
+  console.log(`${message}, ${name}`);
+}
+// by default 0
+setTimeout(greet, 1000);
+// with parameters
+setTimeout(greetPlayer, 1000, 'Harry', 'Hello');
+// if the first is string (but better the func)
+setTimeout('console.log(1)', 1000);
+```
+
+</details>
+
+<details>
+<summary>What is the return value of setTimeout?</summary>
+
+- a timer identifier
+
+</details>
+
+<details>
+<summary>How to cancel the timeout?</summary>
+
+```JavaScript
+const timerId = setTimeout(greet, 1000);
+clearTimeout(timerId);
+// doesn't become null
+console.log(timerId);
+```
+
+</details>
+
+<details>
+<summary>How to set and clear the interval?</summary>
+
+- exactly the same as with timeout but `setInterval` and `clearInterval`
+
+</details>
+
+<details>
+<summary>How to set the interval using setTimeout?</summary>
+
+```JavaScript
+let delay = 1000;
+
+let timerId = setTimeout(function log() {
+  console.log('Hello!');
+
+  if (!!0) {
+    delay *= 2;
+  }
+
+  timerId = setTimeout(log, delay);
+}, delay);
+```
+
+</details>
+
+<details>
+<summary>How nested timeout is different from interval?</summary>
+
+- nested timeout allows to set the delay between the executions more precisely
+- in interval the real delay is less than in the code (counts with the execution)
+- in the nested timeout a new call is planned at the end of the previous
+
+</details>
+
+<details>
+<summary>How doest GC work (and the side effect) with functions inside the interval and timeout?</summary>
+
+- reference is saved in the scheduler, prevents from GC even if there are not refs
+- for interval the function stays until `clearInterval` is called
+- <b>side-effect</b> a function references the outer lexical environment, so while it lives, outer variables live too, it's better to always cancel
+
+</details>
+
+<details>
+<summary>What is a zero delay timeout?</summary>
+
+- schedules the execution of the function as soon as possible but the scheduler will invoke it only after the currently executing script is complete
+
+</details>
+
+<details>
+<summary>In what case zero delay becomes not a zero (both for intervals and timeouts)?</summary>
+
+- there is a limitation in a browser of how ofter nested timers can run, after 5 nested timers the interval is forced to be at least 4ms
+- the same thing is with interval
+
+</details>
+
+<details>
 <summary>How to cook a dish using callbacks and timeouts?</summary>
 
 ```JavaScript
