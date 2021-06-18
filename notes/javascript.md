@@ -3732,10 +3732,42 @@ console.log(greet.count);
 </details>
 
 <details>
-<summary>How is custom property is different to a closure?</summary>
+<summary>How is custom property different to a closure?</summary>
 
 - the main difference is that if `count` lives in a variable (outer scope), external code is unable to access it
 - if it's stored as a function property - we can change it `greet.count = 10;`
+
+</details>
+
+<details>
+<summary>What is new Function and why is it used?</summary>
+
+- the major difference from other creation methods is that the function is created from a string
+- the `[[Environment]]` is set to reference not the current Lexical Environment but the global one
+- used in very specific cases like when we receive code from a server or dynamically compile a function from a template (in complex web apps mostly)
+- ex: can receive a new function from the server and execute it
+```JavaScript
+// with no arguments - only the function body
+const logMessage = new Function('console.log("Hello!")');
+// with arguments - arguments first
+const sumNumbers = new Function('a', 'b', 'return a + b');
+// for historical reasons - the same
+const sumNumbers = new Function('a,b', 'return a + b');
+const sumNumbers = new Function('a , b', 'return a + b');
+// => "Hello!"
+logMessage();
+// => 3
+console.log(sumNumbers(1, 2));
+```
+
+</details>
+
+<details>
+<summary>Why does environment of a new Function references the global scope?</summary>
+
+- to avoid problems with minifier
+- such code would be architecturally bad and prone to errors
+- we should use arguments to pass something to a new Function
 
 </details>
 

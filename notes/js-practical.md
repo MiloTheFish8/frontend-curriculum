@@ -503,12 +503,20 @@ console.log(makeATeam.length);
 
 ### 10. What will be logged to the console?
 ```JavaScript
+function getLog() {
+  const message = 'Hello!';
+  const greet = new Function('console.log(message)');
 
+  return greet;
+}
+
+getLog()();
 ```
 
 <details>
 <summary>Answer</summary>
 
+- error: message is not defined
 
 </details>
 
