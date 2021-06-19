@@ -3772,6 +3772,22 @@ console.log(sumNumbers(1, 2));
 
 </details>
 
+<details>
+<summary>What is a partial function and how to use it with bind?</summary>
+
+- creating a new function by fixing some parameters of the existing one
+```JavaScript
+function multiply(a, b) {
+  return a * b;
+}
+
+const double = multiply.bind(null, 2);
+// => 6
+console.log(double(3));
+```
+
+</details>
+
 ## Execution context and stack
 <details>
 <summary>What is the execution context?</summary>
