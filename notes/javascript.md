@@ -25,6 +25,7 @@
   - [Execution context and stack](#execution-context-and-stack)
   - [Scope](#scope)
   - [Global object](#global-object)
+  - [Decorators](#decorators)
 
 <details>
 <summary>Prototypes and inheritance</summary>
@@ -4231,6 +4232,61 @@ if (!window.Promise) {
   console.log('The browser is pretty old!');
   window.Promise = 'some custom implementation';
 }
+```
+
+</details>
+
+## Decorators
+<details>
+<summary>What is a decorator?</summary>
+
+- a special function that takes another function and alters its behavior
+
+</details>
+
+<details>
+<summary>What is the idea behind the decorator?</summary>
+
+- we can call it for any function and it will add the additional functionality we need (ex: caching values for heavy tasks)
+
+</details>
+
+<details>
+<summary>What are the benefits of the decorator?</summary>
+
+- it is reusable
+- the logic is separate, didn't increase the complexity of the original function
+- we can combine several decorators
+
+</details>
+
+<details>
+<summary>What is the example of caching decorator?</summary>
+
+```JavaScript
+let sumNumbers = (a, b) => a + b;
+
+const cachingDecorator = (func) => {
+  const cache = new Map();
+
+  return (a, b) => {
+    const key = [a, b];
+
+    if (cache.has(key)) {
+      return cache.get(key);
+    }
+
+    const result = func(a, b);
+
+    cache.set(key, result);
+    return result;
+  };
+};
+
+sumNumbers = cachingDecorator(sumNumbers);
+console.log(sumNumbers(1, 2));
+console.log(sumNumbers(4, 2));
+console.log(sumNumbers(5, 2));
 ```
 
 </details>
